@@ -5,6 +5,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/thomiceli/opengist/internal/db"
@@ -118,6 +119,7 @@ func CreateGist(ctx *context.Context) error {
 	gist.AddInIndex()
 	gist.UpdateLanguages()
 	_ = gist.UpdatePreviewAndCount(true)
+	_ = db.IncrementActivity(user.ID, time.Now(), 1)
 	if awaitingModeration {
 		moderation.Enqueue(gist.ID)
 	}
