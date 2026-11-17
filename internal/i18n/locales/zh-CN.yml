@@ -626,3 +626,8 @@ admin.moderation.pending: 审核中
 admin.moderation.rejected: 未通过
 
 admin.invitations.generate: 生成邀请码
+sidebar.gists: Gist
+sidebar.explore: 发现
+settings.link-oidc-account: 关联 OpenID 账号
+settings.unlink-oidc-account: 解除 OpenID 关联
+settings.unlink-oauth-confirm: 确定要解除 %s 账号的关联吗？如果这是你登录 Opengist 的唯一方式，你可能将无法再访问账户。

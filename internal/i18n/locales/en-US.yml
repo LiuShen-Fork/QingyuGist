@@ -638,3 +638,8 @@ admin.moderation.pending: In review
 admin.moderation.rejected: Rejected
 
 admin.invitations.generate: Generate invitation
+sidebar.gists: Gists
+sidebar.explore: Explore
+settings.link-oidc-account: Link OpenID account
+settings.unlink-oidc-account: Unlink OpenID account
+settings.unlink-oauth-confirm: Are you sure you want to unlink your %s account? You may lose access to Opengist if it is your only way to log in.

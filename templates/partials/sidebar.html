@@ -64,7 +64,7 @@
             </div>
         {{ else if .gist }}
             <!-- Gist context (single gist viewer) -->
-            <p class="flex items-center gap-2 rounded-md px-2 py-1 text-sm font-bold">Gist</p>
+            <p class="flex items-center gap-2 rounded-md px-2 py-1 text-sm font-bold">{{ .locale.Tr "sidebar.gists" }}</p>
 
             <div role="group">
                 <ul class="flex flex-col gap-1">
@@ -171,7 +171,7 @@
                 </ul>
             </div>
         {{ else }}
-            <p class="flex items-center gap-2 rounded-md px-2 py-1 text-sm font-bold">Explore</p>
+            <p class="flex items-center gap-2 rounded-md px-2 py-1 text-sm font-bold">{{ .locale.Tr "sidebar.explore" }}</p>
 
             <div role="group">
                 <ul class="flex flex-col gap-1">
