@@ -407,7 +407,9 @@ func csrfInit(next Handler) Handler {
 func loadSettings(ctx *context.Context) error {
 	// Pick up writes made through the db package (legacy route, tests) without
 	// querying on every request.
-	settings.EnsureFresh()
+	if err := settings.EnsureFresh(); err != nil {
+		return err
+	}
 	ctx.SetData("c", config.C)
 
 	snap := settings.Snapshot()

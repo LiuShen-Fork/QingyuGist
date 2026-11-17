@@ -59,10 +59,16 @@ func AdminIndex(ctx *context.Context) error {
 	ctx.SetData("countInvitations", countInvites)
 
 	home := config.GetHomeDir()
-	ctx.SetData("storageRepos", dirSize(filepath.Join(home, "repos")))
-	ctx.SetData("storageUploads", dirSize(filepath.Join(home, "uploads")))
-	ctx.SetData("storageIndex", dirSize(filepath.Join(home, "opengist.index")))
-	ctx.SetData("storageTotal", dirSize(home))
+	storageRepos := dirSize(filepath.Join(home, "repos"))
+	storageUploads := dirSize(filepath.Join(home, "uploads"))
+	storageIndex := dirSize(filepath.Join(home, "opengist.index"))
+	ctx.SetData("storageRepos", storageRepos)
+	ctx.SetData("storageUploads", storageUploads)
+	ctx.SetData("storageIndex", storageIndex)
+	// Content storage, not the whole data directory: the latter also contains
+	// the database, logs, sessions and (on Windows) a copy of the executable,
+	// which would make the number look alarming and unactionable.
+	ctx.SetData("storageTotal", storageRepos+storageUploads+storageIndex)
 
 	var mem runtime.MemStats
 	runtime.ReadMemStats(&mem)
@@ -296,6 +302,7 @@ func AdminUpdateConfig(ctx *context.Context) error {
 func AdminSetConfig(ctx *context.Context) error {
 	key := ctx.FormValue("key")
 	value := ctx.FormValue("value")
+	key, value = settings.NormalizeLegacyValue(key, value)
 
 	if _, ok := settings.Define(key); ok {
 		if err := settings.Set(key, value); err != nil {

@@ -155,8 +155,8 @@ var definitions = []Definition{
 	{Key: KeySiteName, Kind: KindString, Category: CategorySite, Label: "settings.site.name", Help: "settings.site.name_help", Placeholder: "Opengist", Max: 80},
 	{Key: KeySiteDescription, Kind: KindString, Category: CategorySite, Label: "settings.site.description", Help: "settings.site.description_help", Max: 200},
 	{Key: KeySiteExternalURL, Kind: KindURL, Category: CategorySite, Label: "settings.site.external_url", Help: "settings.site.external_url_help", Placeholder: "https://gist.example.com", Max: 300},
-	{Key: KeySiteLogo, Kind: KindString, Category: CategorySite, Label: "settings.site.logo", Help: "settings.site.logo_help", Placeholder: "/assets/logo.svg", Max: 300},
-	{Key: KeySiteFavicon, Kind: KindString, Category: CategorySite, Label: "settings.site.favicon", Help: "settings.site.favicon_help", Placeholder: "/assets/favicon.png", Max: 300},
+	{Key: KeySiteLogo, Kind: KindString, Category: CategorySite, Label: "settings.site.logo", Help: "settings.site.logo_help", Placeholder: "logo.svg", Max: 300},
+	{Key: KeySiteFavicon, Kind: KindString, Category: CategorySite, Label: "settings.site.favicon", Help: "settings.site.favicon_help", Placeholder: "favicon.png", Max: 300},
 	{Key: KeySiteCustomCSS, Kind: KindText, Category: CategorySite, Label: "settings.site.custom_css", Help: "settings.site.custom_css_help", Rows: 6},
 	{Key: KeySiteCustomJS, Kind: KindText, Category: CategorySite, Label: "settings.site.custom_js", Help: "settings.site.custom_js_help", Rows: 6},
 
@@ -252,6 +252,35 @@ func Define(key string) (Definition, bool) {
 	return *d, true
 }
 
+// ResolveKey maps a legacy admin-setting key written by older releases to its
+// canonical dotted key. Unknown keys are returned unchanged.
+func ResolveKey(key string) string {
+	switch key {
+	case db.SettingRequireLogin:
+		return KeyRequireLogin
+	case db.SettingAllowGistsWithoutLogin:
+		return KeyAllowGistsWithoutLogin
+	case db.SettingDisableLoginForm:
+		return KeyDisableLoginForm
+	case db.SettingDisableGravatar:
+		return KeyDisableGravatar
+	}
+	return key
+}
+
+// NormalizeLegacyValue converts a value sent for a legacy key into the
+// representation used by the canonical setting. Only registration mode has a
+// different shape: the old API used a boolean "disable-signup" flag.
+func NormalizeLegacyValue(key, value string) (string, string) {
+	if key == db.SettingDisableSignup && value == "1" {
+		return KeyRegistrationMode, RegistrationModeClosed
+	}
+	if key == db.SettingDisableSignup {
+		return KeyRegistrationMode, RegistrationModeOpen
+	}
+	return ResolveKey(key), value
+}
+
 // Init seeds missing defaults (including values imported from the legacy
 // config file/admin settings) and loads the in-memory snapshot. Call it once
 // after the database is ready and before the HTTP server starts.
@@ -315,13 +344,15 @@ func Reset() error {
 
 // EnsureFresh reloads the snapshot when another code path wrote a setting
 // directly through the db package.
-func EnsureFresh() {
+func EnsureFresh() error {
 	if loadedVersion.Load() == db.SettingsVersion() {
-		return
+		return nil
 	}
 	if err := Reload(); err != nil {
 		log.Warn().Err(err).Msg("Could not refresh settings cache")
+		return err
 	}
+	return nil
 }
 
 // defaultValues derives defaults that depend on the boot configuration or on
