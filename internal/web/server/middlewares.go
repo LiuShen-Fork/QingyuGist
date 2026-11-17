@@ -23,6 +23,7 @@ import (
 	"github.com/thomiceli/opengist/internal/db"
 	"github.com/thomiceli/opengist/internal/i18n"
 	"github.com/thomiceli/opengist/internal/ipc"
+	"github.com/thomiceli/opengist/internal/settings"
 	"github.com/thomiceli/opengist/internal/web/context"
 	"github.com/thomiceli/opengist/internal/web/handlers"
 	"golang.org/x/text/cases"
@@ -52,9 +53,7 @@ func (s *Server) registerMiddlewares() {
 	s.echo.Pre(middleware.RemoveTrailingSlash())
 	// Expose the API's pagination headers so cross-origin browser clients can
 	// read them (the CORS spec hides non-safelisted response headers by default).
-	s.echo.Pre(middleware.CORSWithConfig(middleware.CORSConfig{
-		ExposeHeaders: []string{"Link", "X-Page", "X-Per-Page", "X-Total", "X-Total-Pages"},
-	}))
+	s.echo.Pre(dynamicCORS)
 	s.echo.Pre(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogURI: true, LogStatus: true, LogMethod: true,
 		LogValuesFunc: func(ctx echo.Context, v middleware.RequestLoggerValues) error {
@@ -212,7 +211,7 @@ func logged(next Handler) Handler {
 		if user != nil {
 			return next(ctx)
 		}
-		return ctx.RedirectTo("/-/all")
+		return ctx.RedirectTo("/explore")
 	}
 }
 
@@ -363,7 +362,7 @@ func sessionInit(next Handler) Handler {
 				ctx.SaveSession(sess)
 				ctx.User = nil
 				ctx.SetData("userLogged", nil)
-				return ctx.RedirectTo("/-/all")
+				return ctx.RedirectTo("/explore")
 			}
 			if user != nil {
 				ctx.User = user
@@ -406,16 +405,44 @@ func csrfInit(next Handler) Handler {
 }
 
 func loadSettings(ctx *context.Context) error {
-	settings, err := db.GetSettings()
-	if err != nil {
-		return err
-	}
+	// Pick up writes made through the db package (legacy route, tests) without
+	// querying on every request.
+	settings.EnsureFresh()
+	ctx.SetData("c", config.C)
 
-	for key, value := range settings {
+	snap := settings.Snapshot()
+	legacy := func(key string) bool { return snap[key] == "1" }
+
+	for key, value := range snap {
+		d, ok := settings.Define(key)
+		if !ok || d.Kind != settings.KindBool {
+			continue
+		}
 		s := strings.ReplaceAll(key, "-", " ")
+		s = strings.ReplaceAll(s, ".", " ")
 		s = cases.Title(language.English).String(s)
 		ctx.SetData(strings.ReplaceAll(s, " ", ""), value == "1")
 	}
+
+	// Explicit names used by templates. Keeping these stable avoids leaking
+	// the registry's key format into every page.
+	ctx.SetData("RegistrationMode", settings.RegistrationMode())
+	ctx.SetData("OAuthOnlyRegistration", settings.OAuthOnlyRegistration())
+	// A legacy key written directly into the settings table (older releases,
+	// tests, third-party tooling) still has to switch the feature off.
+	ctx.SetData("DisableSignup", settings.ClosedRegistration() || legacy(db.SettingDisableSignup))
+	ctx.SetData("RequireLogin", settings.RequireLogin() || legacy(db.SettingRequireLogin))
+	ctx.SetData("AllowGistsWithoutLogin", settings.AllowGistsWithoutLogin() || legacy(db.SettingAllowGistsWithoutLogin))
+	ctx.SetData("DisableLoginForm", settings.DisableLoginForm() || legacy(db.SettingDisableLoginForm))
+	ctx.SetData("DisableGravatar", settings.DisableGravatar() || legacy(db.SettingDisableGravatar))
+	ctx.SetData("DisableFileUpload", !settings.UploadEnabled())
+	ctx.SetData("UploadEnabled", settings.UploadEnabled())
+	ctx.SetData("SiteName", settings.SiteName())
+	ctx.SetData("SiteDescription", settings.SiteDescription())
+	ctx.SetData("CustomCSS", template.CSS(settings.CustomCSS()))
+	ctx.SetData("CustomJS", template.JS(settings.CustomJS()))
+	ctx.SetData("ModerationEnabled", settings.ModerationEnabled())
+	ctx.SetData("settings", settings.Snapshot())
 	return nil
 }
 
@@ -645,5 +672,74 @@ func ipcAuth(next Handler) Handler {
 			return ctx.NoContent(http.StatusUnauthorized)
 		}
 		return next(ctx)
+	}
+}
+
+// dynamicCORS applies the instance CORS policy, which administrators can change
+// at runtime without a restart. Only requests that carry an Origin header are
+// affected, so same-origin browsing is untouched.
+func dynamicCORS(next echo.HandlerFunc) echo.HandlerFunc {
+	const exposed = "Link, X-Page, X-Per-Page, X-Total, X-Total-Pages"
+
+	return func(c echo.Context) error {
+		origin := c.Request().Header.Get("Origin")
+		if origin == "" || !settings.CORSEnabled() {
+			return next(c)
+		}
+
+		wildcard := false
+		allowed := false
+		for _, candidate := range settings.CORSOrigins() {
+			if candidate == "*" {
+				wildcard = true
+				allowed = true
+				break
+			}
+			if candidate == origin {
+				allowed = true
+			}
+		}
+		if !allowed {
+			return next(c)
+		}
+
+		h := c.Response().Header()
+		credentials := settings.CORSCredentials()
+		if wildcard && !credentials {
+			h.Set("Access-Control-Allow-Origin", "*")
+		} else {
+			h.Set("Access-Control-Allow-Origin", origin)
+			h.Add("Vary", "Origin")
+		}
+		h.Set("Access-Control-Expose-Headers", exposed)
+
+		if credentials {
+			h.Set("Access-Control-Allow-Credentials", "true")
+		}
+
+		if c.Request().Method == http.MethodOptions && c.Request().Header.Get("Access-Control-Request-Method") != "" {
+			h.Set("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS")
+			if requested := c.Request().Header.Get("Access-Control-Request-Headers"); requested != "" {
+				h.Set("Access-Control-Allow-Headers", requested)
+			}
+			h.Add("Vary", "Access-Control-Request-Method")
+			h.Add("Vary", "Access-Control-Request-Headers")
+			h.Set("Access-Control-Max-Age", "600")
+			return c.NoContent(http.StatusNoContent)
+		}
+
+		return next(c)
+	}
+}
+
+// redirectToExplore permanently redirects a legacy route to its replacement
+// while preserving the query string.
+func redirectToExplore(target string) Handler {
+	return func(ctx *context.Context) error {
+		url := target
+		if q := ctx.Request().URL.RawQuery; q != "" {
+			url += "?" + q
+		}
+		return ctx.RedirectTo(url)
 	}
 }

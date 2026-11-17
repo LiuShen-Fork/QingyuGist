@@ -1,132 +1,131 @@
 {{ define "content" }}
 <div class="space-y-6">
-    <header class="space-y-1">
-        <h1 class="text-2xl font-bold leading-tight">{{ .locale.Tr "admin.admin_panel" }}</h1>
-        <p class="text-muted-foreground text-sm">{{ .locale.Tr "admin.configuration" }}</p>
+    <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div class="space-y-1">
+            <p class="text-muted-foreground text-xs font-medium uppercase tracking-wider">{{ .locale.Tr "admin.admin_panel" }}</p>
+            <h1 class="text-2xl font-semibold tracking-tight">{{ .locale.Tr "admin.configuration" }}</h1>
+            <p class="text-muted-foreground max-w-2xl text-sm">{{ .locale.Tr "admin.config-description" }}</p>
+        </div>
+        <a href="{{ .c.ExternalUrl }}/-/admin-panel" class="btn-sm-outline w-fit">{{ .locale.Tr "admin.back-to-dashboard" }}</a>
     </header>
 
-    <div class="grid gap-4 lg:grid-cols-2">
-        <!-- Read-only configuration -->
-        <section class="bg-card h-fit rounded-lg border">
-            <div class="border-b px-4 py-3">
-                <p class="text-muted-foreground text-xs italic">{{ .locale.Tr "admin.config-link" (join "<a target=\"_blank\" class=\"text-primary hover:underline\" href=\"https://github.com/thomiceli/opengist/blob/master/docs/configuration/configure.md#configuration\">" (toStr (.locale.Tr "admin.config-link-overriden")) "</a>") }}</p>
-            </div>
-            <div class="space-y-4 p-4">
-                {{ template "admin_config_section" (dict "title" "General") }}
-                <dl class="divide-y text-sm">
-                    {{ template "admin_config_row" (dict "k" "Log level" "v" .c.LogLevel) }}
-                    {{ template "admin_config_row" (dict "k" "Log output" "v" .c.LogOutput) }}
-                    {{ template "admin_config_row" (dict "k" "External URL" "v" .c.ExternalUrl) }}
-                    {{ template "admin_config_row" (dict "k" "Opengist home" "v" .c.OpengistHome) }}
-                    <div class="flex items-center justify-between gap-4 py-1.5">
-                        <dt class="text-muted-foreground">Database type</dt>
-                        <dd class="text-right font-medium break-all">{{ .dbtype }}{{ if eq .dbtype "SQLite" }} ({{ .c.SqliteJournalMode }}){{ end }}</dd>
-                    </div>
-                    {{ template "admin_config_row" (dict "k" "Database name" "v" .dbname) }}
-                    {{ template "admin_config_row" (dict "k" "Index" "v" .c.Index) }}
-                    {{ template "admin_config_row" (dict "k" "MeiliSearch Host" "v" .c.MeiliHost) }}
-                    {{ template "admin_config_defined" (dict "k" "MeiliSearch API Key" "v" .c.MeiliAPIKey) }}
-                    {{ template "admin_config_row" (dict "k" "Git default branch" "v" .c.GitDefaultBranch) }}
-                </dl>
+    <form method="post" action="{{ .c.ExternalUrl }}/-/admin-panel/configuration" class="grid items-start gap-6 lg:grid-cols-[210px_minmax(0,1fr)]">
+        {{ .csrfHtml }}
 
-                {{ template "admin_config_section" (dict "title" "HTTP") }}
-                <dl class="divide-y text-sm">
-                    {{ template "admin_config_row" (dict "k" "HTTP host" "v" .c.HttpHost) }}
-                    {{ template "admin_config_row" (dict "k" "HTTP port" "v" .c.HttpPort) }}
-                    {{ template "admin_config_row" (dict "k" "HTTP Git enabled" "v" .c.HttpGit) }}
-                </dl>
-
-                {{ template "admin_config_section" (dict "title" "SSH") }}
-                <dl class="divide-y text-sm">
-                    {{ template "admin_config_row" (dict "k" "SSH Git enabled" "v" .c.SshGit) }}
-                    {{ template "admin_config_row" (dict "k" "SSH host" "v" .c.SshHost) }}
-                    {{ template "admin_config_row" (dict "k" "SSH port" "v" .c.SshPort) }}
-                    {{ template "admin_config_row" (dict "k" "SSH external domain" "v" .c.SshExternalDomain) }}
-                </dl>
-
-                {{ template "admin_config_section" (dict "title" "OAuth") }}
-                <dl class="divide-y text-sm">
-                    {{ template "admin_config_defined" (dict "k" "Github Client key" "v" .c.GithubClientKey) }}
-                    {{ template "admin_config_defined" (dict "k" "Github Secret" "v" .c.GithubSecret) }}
-                    {{ template "admin_config_defined" (dict "k" "GitLab client Key" "v" .c.GitlabClientKey) }}
-                    {{ template "admin_config_defined" (dict "k" "GitLab Secret" "v" .c.GitlabSecret) }}
-                    {{ template "admin_config_row" (dict "k" "GitLab URL" "v" .c.GitlabUrl) }}
-                    {{ template "admin_config_row" (dict "k" "GitLab Name" "v" .c.GitlabName) }}
-                    {{ template "admin_config_defined" (dict "k" "Gitea client Key" "v" .c.GiteaClientKey) }}
-                    {{ template "admin_config_defined" (dict "k" "Gitea Secret" "v" .c.GiteaSecret) }}
-                    {{ template "admin_config_row" (dict "k" "Gitea URL" "v" .c.GiteaUrl) }}
-                    {{ template "admin_config_row" (dict "k" "Gitea Name" "v" .c.GiteaName) }}
-                    {{ template "admin_config_row" (dict "k" "OIDC Provider name" "v" .c.OIDCProviderName) }}
-                    {{ template "admin_config_defined" (dict "k" "OIDC client Key" "v" .c.OIDCClientKey) }}
-                    {{ template "admin_config_defined" (dict "k" "OIDC Secret" "v" .c.OIDCSecret) }}
-                    {{ template "admin_config_defined" (dict "k" "OIDC Discovery URL" "v" .c.OIDCDiscoveryUrl) }}
-                    {{ template "admin_config_row" (dict "k" "OIDC Group Claim Name" "v" .c.OIDCGroupClaimName) }}
-                    {{ template "admin_config_row" (dict "k" "OIDC Admin Group" "v" .c.OIDCAdminGroup) }}
-                </dl>
-
-                {{ template "admin_config_section" (dict "title" "LDAP") }}
-                <dl class="divide-y text-sm">
-                    {{ template "admin_config_row" (dict "k" "LDAP URL" "v" .c.LDAPUrl) }}
-                    {{ template "admin_config_row" (dict "k" "LDAP Bind DN" "v" .c.LDAPBindDn) }}
-                    {{ template "admin_config_defined" (dict "k" "LDAP Bind Credentials" "v" .c.LDAPBindCredentials) }}
-                    {{ template "admin_config_row" (dict "k" "LDAP Search Base" "v" .c.LDAPSearchBase) }}
-                    {{ template "admin_config_row" (dict "k" "LDAP Search Filter" "v" .c.LDAPSearchFilter) }}
-                </dl>
-            </div>
-        </section>
-
-        <!-- Toggleable settings -->
-        <section class="bg-card h-fit rounded-lg border">
-            {{ .csrfHtml }}
-            <ul class="divide-y">
-                {{ template "admin_config_toggle" (dict "url" .c.ExternalUrl "id" "disable-signup" "title" (.locale.Tr "admin.disable-signup") "help" (.locale.Tr "admin.disable-signup_help") "on" .DisableSignup) }}
-                {{ template "admin_config_toggle" (dict "url" .c.ExternalUrl "id" "require-login" "title" (.locale.Tr "admin.require-login") "help" (.locale.Tr "admin.require-login_help") "on" .RequireLogin) }}
-                {{ template "admin_config_toggle" (dict "url" .c.ExternalUrl "id" "allow-gists-without-login" "title" (.locale.Tr "admin.allow-gists-without-login") "help" (.locale.Tr "admin.allow-gists-without-login_help") "on" .AllowGistsWithoutLogin) }}
-                {{ template "admin_config_toggle" (dict "url" .c.ExternalUrl "id" "disable-login-form" "title" (.locale.Tr "admin.disable-login") "help" (.locale.Tr "admin.disable-login_help") "on" .DisableLoginForm) }}
-                {{ template "admin_config_toggle" (dict "url" .c.ExternalUrl "id" "disable-gravatar" "title" (.locale.Tr "admin.disable-gravatar") "help" (.locale.Tr "admin.disable-gravatar_help") "on" .DisableGravatar) }}
+        <nav class="hidden lg:sticky lg:top-20 lg:block" aria-label="{{ .locale.Tr "admin.configuration" }}">
+            <ul class="space-y-1">
+                {{ range .settingSections }}
+                <li>
+                    <a href="#{{ .Key }}" class="text-muted-foreground hover:bg-accent hover:text-foreground flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors">
+                        <span>{{ $.locale.Tr .Label }}</span>
+                        <span class="text-muted-foreground/70 text-xs">{{ len .Fields }}</span>
+                    </a>
+                </li>
+                {{ end }}
+                <li class="pt-1"><a href="#instance" class="text-muted-foreground hover:bg-accent hover:text-foreground flex rounded-md px-3 py-2 text-sm transition-colors">{{ .locale.Tr "admin.instance" }}</a></li>
             </ul>
-        </section>
-    </div>
-</div>
-{{ end }}
+        </nav>
 
-{{ define "admin_config_section" }}
-<div class="flex items-center gap-3">
-    <span class="text-sm font-bold">{{ .title }}</span>
-    <span class="border-border flex-1 border-t" aria-hidden="true"></span>
-</div>
-{{ end }}
+        <div class="min-w-0 space-y-6">
+            {{ range .settingSections }}
+            <section id="{{ .Key }}" class="bg-card scroll-mt-20 overflow-hidden rounded-xl border">
+                <div class="border-b px-5 py-4">
+                    <h2 class="text-sm font-semibold tracking-tight">{{ $.locale.Tr .Label }}</h2>
+                </div>
+                <div class="divide-y">
+                    {{ range .Fields }}
+                    {{ $value := index $.settingValues .Key }}
+                    <div class="grid gap-3 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,340px)] sm:items-center sm:gap-8">
+                        <div class="min-w-0 space-y-1">
+                            <label for="{{ .Key }}" class="text-sm font-medium">{{ $.locale.Tr .Label }}</label>
+                            {{ if .Help }}<p class="text-muted-foreground text-xs leading-relaxed">{{ $.locale.Tr .Help }}</p>{{ end }}
+                            {{ if .ApplyAfterRestart }}<p class="text-xs font-medium text-amber-600 dark:text-amber-400">{{ $.locale.Tr "admin.restart-required" }}</p>{{ end }}
+                        </div>
 
-{{ define "admin_config_row" }}
-<div class="flex items-center justify-between gap-4 py-1.5">
-    <dt class="text-muted-foreground">{{ .k }}</dt>
-    <dd class="text-right font-medium break-all">{{ .v }}</dd>
-</div>
-{{ end }}
+                        <div class="flex items-center gap-2 sm:justify-end">
+                            {{ if eq (printf "%s" .Kind) "bool" }}
+                            <label class="relative inline-flex cursor-pointer items-center">
+                                <input type="checkbox" id="{{ .Key }}" name="{{ .Key }}" value="1" class="peer sr-only" {{ if eq $value "1" }}checked{{ end }} />
+                                <span class="bg-input peer-checked:bg-primary peer-focus-visible:ring-ring h-6 w-11 rounded-full transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background"></span>
+                                <span class="pointer-events-none absolute left-0.5 top-0.5 size-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5"></span>
+                            </label>
 
-{{ define "admin_config_defined" }}
-<div class="flex items-center justify-between gap-4 py-1.5">
-    <dt class="text-muted-foreground">{{ .k }}</dt>
-    <dd class="text-right font-medium">{{ if .v }}&#60;defined&#62;{{ end }}</dd>
-</div>
-{{ end }}
+                            {{ else if eq (printf "%s" .Kind) "enum" }}
+                            <select id="{{ .Key }}" name="{{ .Key }}" class="input h-9 w-full sm:max-w-[240px]">
+                                {{ range .Options }}
+                                <option value="{{ .Value }}" {{ if eq $value .Value }}selected{{ end }}>{{ $.locale.Tr .Label }}</option>
+                                {{ end }}
+                            </select>
 
-{{ define "admin_config_toggle" }}
-<li class="flex items-center justify-between gap-4 p-4">
-    <div class="min-w-0 space-y-1">
-        <p class="text-sm font-medium">{{ .title }}</p>
-        <p class="text-muted-foreground text-sm">{{ .help }}</p>
-    </div>
-    <button type="button" id="{{ .id }}" role="switch" aria-checked="{{ .on }}"
-            hx-put="{{ .url }}/-/admin-panel/set-config"
-            hx-swap="none"
-            hx-include="[name='_csrf']"
-            hx-vals='js:{key: this.id, value: this.getAttribute("aria-checked") === "true" ? "0" : "1"}'
-            _="on htmx:afterRequest if event.detail.successful
-                 if @aria-checked is 'true' set @aria-checked to 'false' else set @aria-checked to 'true' end
-               end"
-            class="group bg-input aria-checked:bg-primary relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-        <span class="pointer-events-none inline-block size-5 translate-x-0.5 rounded-full bg-white shadow transition-transform group-aria-checked:translate-x-[1.375rem]"></span>
-    </button>
-</li>
+                            {{ else if eq (printf "%s" .Kind) "text" }}
+                            <textarea id="{{ .Key }}" name="{{ .Key }}" rows="{{ if .Rows }}{{ .Rows }}{{ else }}4{{ end }}"
+                                      placeholder="{{ .Placeholder }}"
+                                      class="input min-h-24 w-full resize-y py-2 font-mono text-xs leading-relaxed">{{ $value }}</textarea>
+
+                            {{ else if eq (printf "%s" .Kind) "int" }}
+                            <input id="{{ .Key }}" name="{{ .Key }}" type="number" value="{{ $value }}"
+                                   min="{{ .Min }}" max="{{ .Max }}" step="1"
+                                   class="input h-9 w-full sm:max-w-[160px]" />
+                            {{ if .Unit }}<span class="text-muted-foreground shrink-0 text-xs">{{ $.locale.Tr .Unit }}</span>{{ end }}
+
+                            {{ else if eq (printf "%s" .Kind) "secret" }}
+                            <input id="{{ .Key }}" name="{{ .Key }}" type="password" value="{{ $value }}"
+                                   placeholder="{{ $.secretPlaceholder }}" autocomplete="new-password"
+                                   class="input h-9 w-full sm:max-w-[280px]" />
+
+                            {{ else if eq (printf "%s" .Kind) "url" }}
+                            <input id="{{ .Key }}" name="{{ .Key }}" type="url" value="{{ $value }}"
+                                   placeholder="{{ .Placeholder }}"
+                                   class="input h-9 w-full sm:max-w-[320px]" />
+
+                            {{ else }}
+                            <input id="{{ .Key }}" name="{{ .Key }}" type="text" value="{{ $value }}"
+                                   placeholder="{{ .Placeholder }}"
+                                   class="input h-9 w-full sm:max-w-[320px]" />
+                            {{ end }}
+                        </div>
+                    </div>
+                    {{ end }}
+                </div>
+            </section>
+            {{ end }}
+
+            <section id="instance" class="bg-card scroll-mt-20 overflow-hidden rounded-xl border">
+                <div class="border-b px-5 py-4">
+                    <h2 class="text-sm font-semibold tracking-tight">{{ .locale.Tr "admin.instance" }}</h2>
+                    <p class="text-muted-foreground mt-1 text-xs">{{ .locale.Tr "admin.instance-description" }}</p>
+                </div>
+                <dl class="divide-y text-sm">
+                    <div class="flex items-center justify-between gap-4 px-5 py-3">
+                        <dt class="text-muted-foreground">{{ .locale.Tr "admin.database" }}</dt>
+                        <dd class="text-right font-medium">{{ .dbtype }}{{ if eq .dbtype "SQLite" }} · {{ .c.SqliteJournalMode }}{{ end }}</dd>
+                    </div>
+                    <div class="flex items-center justify-between gap-4 px-5 py-3">
+                        <dt class="text-muted-foreground">{{ .locale.Tr "admin.database-name" }}</dt>
+                        <dd class="max-w-[60%] truncate text-right font-mono text-xs">{{ .dbname }}</dd>
+                    </div>
+                    <div class="flex items-center justify-between gap-4 px-5 py-3">
+                        <dt class="text-muted-foreground">{{ .locale.Tr "admin.search-index" }}</dt>
+                        <dd class="text-right font-medium">
+                            {{ if .indexEnabled }}{{ .indexType }}{{ if not .lastIndexRun.IsZero }} · {{ .lastIndexRun.Format "2006-01-02 15:04" }}{{ end }}{{ else }}{{ .locale.Tr "admin.disabled" }}{{ end }}
+                        </dd>
+                    </div>
+                    <div class="flex items-center justify-between gap-4 px-5 py-3">
+                        <dt class="text-muted-foreground">{{ .locale.Tr "admin.external-url" }}</dt>
+                        <dd class="max-w-[60%] truncate text-right font-mono text-xs">{{ .c.ExternalUrl }}</dd>
+                    </div>
+                    <div class="flex items-center justify-between gap-4 px-5 py-3">
+                        <dt class="text-muted-foreground">{{ .locale.Tr "admin.opengist-home" }}</dt>
+                        <dd class="max-w-[60%] truncate text-right font-mono text-xs">{{ .c.OpengistHome }}</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <div class="bg-background/90 sticky bottom-4 z-10 flex items-center justify-between gap-3 rounded-xl border px-4 py-3 shadow-sm backdrop-blur">
+                <p class="text-muted-foreground hidden text-xs sm:block">{{ .locale.Tr "admin.config-save-hint" }}</p>
+                <button type="submit" class="btn ml-auto">{{ .locale.Tr "admin.save-changes" }}</button>
+            </div>
+        </div>
+    </form>
+</div>
 {{ end }}

@@ -108,7 +108,9 @@ func (s *Server) registerRoutes() {
 			sB.POST("/sync-languages", admin.AdminSyncGistLanguages)
 			sB.POST("/delete-expired-gists", admin.AdminDeleteExpiredGists)
 			sB.POST("/sync-ssh-keys", admin.AdminSyncSSHKeys)
+			sB.POST("/backfill-activity", admin.AdminBackfillActivity)
 			sB.GET("/configuration", admin.AdminConfig)
+			sB.POST("/configuration", admin.AdminUpdateConfig)
 			sB.PUT("/set-config", admin.AdminSetConfig)
 		}
 
@@ -173,9 +175,13 @@ func (s *Server) registerRoutes() {
 
 		r.Any("/api/*", noRouteFoundApi)
 
-		r.GET("/-/all", gist.AllGists, checkRequireLogin, setAllGistsMode("all"))
-		r.GET("/-/liked", gist.AllGists, checkRequireLogin, setAllGistsMode("all-liked"))
-		r.GET("/-/forked", gist.AllGists, checkRequireLogin, setAllGistsMode("all-forked"))
+		r.GET("/explore", gist.AllGists, checkRequireLogin, setAllGistsMode("all"))
+		r.GET("/explore/liked", gist.AllGists, checkRequireLogin, setAllGistsMode("all-liked"))
+		r.GET("/explore/forked", gist.AllGists, checkRequireLogin, setAllGistsMode("all-forked"))
+		// Legacy discovery routes, kept so old bookmarks and links keep working.
+		r.GET("/-/all", redirectToExplore("/explore"))
+		r.GET("/-/liked", redirectToExplore("/explore/liked"))
+		r.GET("/-/forked", redirectToExplore("/explore/forked"))
 		r.GET("/-/topics", gist.Topics, checkRequireLogin)
 		r.GET("/-/users", gist.Users, checkRequireLogin)
 

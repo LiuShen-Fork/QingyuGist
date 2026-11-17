@@ -1,11 +1,11 @@
 {{ define "content" }}
 <div class="space-y-6">
-    <header class="space-y-1">
-        <h1 class="text-2xl font-bold leading-tight">{{ .locale.Tr "admin.admin_panel" }}</h1>
+    <header class="flex items-center justify-between gap-3">
+        <h1 class="text-2xl font-semibold tracking-tight">{{ .locale.Tr "admin.admin_panel" }}</h1>
         <p class="text-muted-foreground text-sm">{{ .locale.Tr "admin.actions.subtitle" }}</p>
     </header>
 
-    <section class="bg-card overflow-hidden rounded-lg border">
+    <section class="bg-card overflow-hidden rounded-xl border">
         {{/* The list re-fetches itself while any action is running (and briefly
              after a manual trigger via pollNow), then stops polling once idle. */}}
         <div id="actions-list"

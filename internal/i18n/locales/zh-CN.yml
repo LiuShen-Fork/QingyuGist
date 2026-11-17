@@ -333,3 +333,253 @@ gist.search.placeholder.topics: 话题
 gist.search.placeholder.search: 搜索
 gist.search.placeholder.public: 公开
 gist.search.placeholder.unlisted: 未列出的
+
+# 管理面板
+admin.dashboard: 概览
+admin.dashboard-subtitle: 实例的实时运行状态。
+admin.actions: 维护操作
+admin.back-to-dashboard: 返回概览
+admin.config-description: 配置保存在数据库中并即时生效，无需重启或修改配置文件。
+admin.config-save-hint: 所有字段会先校验，再统一写入。
+admin.restart-required: 需要重启生效
+admin.instance: 实例信息
+admin.instance-description: 启动时从配置文件与环境变量读取的值。
+admin.database: 数据库
+admin.database-name: 数据库名称
+admin.search-index: 搜索索引
+admin.disabled: 已禁用
+admin.external-url: 外部地址
+admin.opengist-home: 数据目录
+admin.public: 公开
+admin.private: 私有
+admin.storage: 存储占用
+admin.repositories: 仓库
+admin.uploads: 附件
+admin.memory: 内存
+admin.goroutines: 协程
+admin.uptime: 运行时长
+admin.storage-breakdown: 存储明细
+admin.storage-breakdown-description: 数据目录、仓库与搜索索引的磁盘占用。
+admin.heap: 堆内存
+admin.reserved: 已预留
+admin.runtime: 运行环境
+admin.invitations: 邀请码
+admin.last-index: 上次索引时间
+admin.save-changes: 保存更改
+
+# 设置项
+settings.category.site: 站点
+settings.category.auth: 认证
+settings.category.upload: 上传
+settings.category.search: 搜索
+settings.category.security: 安全
+settings.category.moderation: 内容审核
+settings.category.git: Git
+settings.category.api: API
+settings.unit.mb: MB
+settings.unit.days: 天
+settings.unit.seconds: 秒
+settings.site.name: 站点名称
+settings.site.name_help: 显示在侧边栏、页面标题和邮件中。
+settings.site.description: 站点描述
+settings.site.description_help: 用于登录页和页面元数据的一句话介绍。
+settings.site.external_url: 外部地址
+settings.site.external_url_help: 用于克隆链接与 OAuth 回调的公开基础地址。
+settings.site.logo: Logo 地址
+settings.site.logo_help: 显示在侧边栏和登录页的图片。
+settings.site.favicon: 站点图标地址
+settings.site.favicon_help: 浏览器标签页显示的图标。
+settings.site.custom_css: 自定义 CSS
+settings.site.custom_css_help: 在主题样式之后注入每个页面。
+settings.site.custom_js: 自定义 JavaScript
+settings.site.custom_js_help: 在每个页面末尾注入。
+settings.auth.registration_mode: 注册方式
+settings.auth.registration_mode_help: 控制谁可以创建账户。
+settings.auth.registration_open: 开放注册
+settings.auth.registration_oauth_only: 仅第三方登录
+settings.auth.registration_closed: 关闭注册
+settings.auth.require_login: 强制登录
+settings.auth.require_login_help: 访客必须登录后才能浏览任何内容。
+settings.auth.allow_gists_without_login: 允许匿名创建 Gist
+settings.auth.allow_gists_without_login_help: 开启强制登录后，仍允许访客创建 Gist。
+settings.auth.disable_login_form: 禁用密码登录
+settings.auth.disable_login_form_help: 仅保留第三方登录入口。
+settings.auth.disable_gravatar: 禁用 Gravatar
+settings.auth.disable_gravatar_help: 始终使用生成的头像，不请求 Gravatar。
+settings.upload.enabled: 允许上传附件
+settings.upload.enabled_help: 创建或编辑 Gist 时允许上传文件。
+settings.upload.max_file_size: 单文件大小上限
+settings.upload.max_file_size_help: 超过该大小的单个文件将被拒绝。
+settings.upload.max_total_size: 单个 Gist 总量上限
+settings.upload.max_total_size_help: 一个 Gist 中所有附件的总大小上限。
+settings.upload.allow_media: 允许媒体文件
+settings.upload.allow_media_help: 接受图片、音频与视频。关闭可节省磁盘空间。
+settings.upload.blocked_extensions: 禁止的扩展名
+settings.upload.blocked_extensions_help: 以逗号分隔，永远不会被接受的扩展名列表。
+settings.search.reindex_days: 重建索引间隔
+settings.search.reindex_days_help: 每隔 N 天自动重建搜索索引，0 表示关闭定时任务。
+settings.security.cors_enabled: 启用跨域
+settings.security.cors_enabled_help: 允许其他来源调用 API。
+settings.security.cors_origins: 允许的来源
+settings.security.cors_origins_help: 每行一个来源，或使用 * 允许所有来源。
+settings.security.cors_credentials: 允许携带凭据
+settings.security.cors_credentials_help: 跨域请求携带 Cookie，需明确指定来源。
+settings.moderation.enabled: AI 内容审核
+settings.moderation.enabled_help: 公开 Gist 发布前自动审核。
+settings.moderation.endpoint: 接口地址
+settings.moderation.endpoint_help: 兼容 OpenAI 的对话补全接口。
+settings.moderation.api_key: API 密钥
+settings.moderation.api_key_help: 留空或保持原值不会修改已保存的密钥。
+settings.moderation.model: 模型
+settings.moderation.model_help: 发送给接口的模型名称。
+settings.moderation.timeout: 超时时间
+settings.moderation.timeout_help: 等待审核服务返回的最长等待时间。
+settings.moderation.fail_closed: 失败时保持私有
+settings.moderation.fail_closed_help: 审核失败时将 Gist 保持私有，而不是直接公开。
+settings.moderation.prompt: 审核提示词
+settings.moderation.prompt_help: 发送给模型的系统提示词，必须返回包含 allowed 与 reason 的 JSON。
+settings.git.default_branch: 默认分支
+settings.git.default_branch_help: 新仓库使用的分支名称。
+settings.api.enabled: 启用 API
+settings.api.enabled_help: 开放 REST API 与访问令牌。
+
+# 登录与注册
+auth.hero.title: 分享代码，也掌控数据。
+auth.hero.subtitle: 一个快速、自托管的片段、笔记与代码之家。
+auth.hero.feature.gist: 基于 Git 的版本化 Gist
+auth.hero.feature.private: 支持私有、不公开与公开
+auth.hero.feature.search: 跨全部文件的即时全文搜索
+auth.hero.footer: 自托管 · 开源
+auth.welcome-back: 欢迎回来
+auth.create-account: 创建账户
+auth.login-subtitle: 登录以继续访问你的 Gist。
+auth.register-subtitle: 一个账户，管理所有代码片段。
+auth.oauth-only-notice: 本地注册已关闭，请使用下方任一第三方账户创建账号。
+auth.form-disabled: 密码登录已禁用，请使用第三方账户继续。
+auth.or: 或
+auth.continue-with: 使用
+auth.no-account: 还没有账户？
+auth.have-account: 已经有账户？
+error.signup-oauth-only: 仅支持通过第三方账户注册。
+flash.admin.config-saved: 配置已保存
+flash.admin.config-save-failed: 配置保存失败
+heatmap.title: 贡献活跃度
+heatmap.subtitle: 过去一年创建的 Gist
+heatmap.events: 次贡献
+heatmap.less: 少
+heatmap.more: 多
+heatmap.day.mon: 一
+heatmap.day.wed: 三
+heatmap.day.fri: 五
+error.file-too-large: 文件大小超出允许的上传限制
+error.file-type-blocked: 不允许上传此类型的文件
+error.media-disabled: 本实例已禁用媒体文件上传
+error.upload-total-too-large: 此 Gist 的文件总大小超出限制
+flash.gist.moderation-pending: 你的 Gist 正在审核中，通过后将自动公开
+admin.actions.delete-expired-gists: 删除已过期的 Gist
+admin.actions.run: 运行
+admin.actions.running: 运行中
+admin.actions.subtitle: 手动运行维护任务。部分任务也会按计划自动运行。
+admin.actions.sync-db: 删除数据库中没有记录的仓库
+admin.actions.sync-fs: 删除磁盘上没有仓库的 Gist
+admin.actions.sync-ssh-keys: 重新生成 authorized_keys 文件
+auth.oauth.already-have-account: 如果你已有 Opengist 账号，请先登录，然后在设置中关联你的 %s 账号。
+auth.oauth.cancel: 取消
+auth.oauth.complete-registration: 完成注册
+auth.oauth.complete-registration-button: 创建账号
+auth.oauth.existing-account: 已有账号？
+auth.oauth.no-provider: 未找到 OAuth 提供方
+auth.oauth.signing-in-with: 正在使用 %s 登录
+error.cannot-open-file: 无法打开上传的文件
+error.file-upload-disabled: 文件上传已禁用
+error.gist-form-too-large: Gist 表单超过了 10 MB 的请求限制
+error.go-home: 返回首页
+error.no-file-uploaded: 未上传文件
+explore.users.no-users: 暂无用户
+explore.users.search-placeholder: 搜索用户
+explore.users.sort-joined-asc: 最早加入
+explore.users.sort-joined-desc: 最新加入
+explore.users.sort-username-asc: 用户名（A → Z）
+explore.users.sort-username-desc: 用户名（Z → A）
+flash.auth.oauth-already-linked: 该 %s 账号已关联到其他用户
+flash.auth.oauth-session-expired: OAuth2 会话已过期，请重试
+flash.gist.archived: Gist 已归档
+flash.gist.unarchived: Gist 已取消归档
+flash.gist.updated: Gist 已更新
+flash.user.avatar-deleted: 头像已移除
+flash.user.avatar-invalid: 图片格式无效，仅支持 PNG、JPEG、GIF 和 WebP
+flash.user.avatar-too-large: 图片文件过大，最大为 5 MB
+flash.user.avatar-updated: 头像已更新
+gist.embed.view-all-files: 查看所有文件
+gist.file-binary-edit: 此文件为二进制文件。
+gist.file-raw: 此文件无法预览。
+gist.files-truncated: 此 Gist 中的部分文件未显示。克隆或下载 Gist 以查看全部内容。
+gist.header.archive: 归档
+gist.header.archived: 已归档
+gist.header.archived-help: 此 Gist 已归档，目前为只读状态。
+gist.header.edit-files: 编辑文件
+gist.header.expires: 过期时间
+gist.header.more-actions: 更多操作
+gist.header.unarchive: 取消归档
+gist.list.gists: Gist
+gist.list.no-topics: 暂无主题
+gist.list.recently-forked: 最近被 Fork
+gist.list.recently-liked: 最近被喜欢
+gist.list.search-for: 搜索结果
+gist.list.topic: 主题
+gist.list.topics: 主题
+gist.list.users: 用户
+gist.new.any-file-type: 上传任意类型文件
+gist.new.drop-files: 将文件拖到此处，或点击上传
+gist.new.expire: 过期时间
+gist.new.expire-12hours: 12 小时后
+gist.new.expire-15days: 15 天后
+gist.new.expire-1day: 1 天后
+gist.new.expire-1hour: 1 小时后
+gist.new.expire-7days: 7 天后
+gist.new.expire-custom: 自定义日期
+gist.new.expire-never: 永不过期
+gist.preview-non-available: 暂无预览
+gist.revision.binary-file-changes: 不显示二进制文件的变更
+gist.search.help.all: 搜索所有字段
+gist.search.help.description: 匹配描述中包含该内容的 Gist
+gist.settings.archive-help: 归档后的 Gist 将变为只读，你可以随时取消归档。
+gist.settings.danger-zone: 危险操作
+gist.settings.delete-gist: 删除此 Gist
+gist.settings.delete-help: 删除后，此 Gist 及其所有修订版本将永久消失。
+gist.settings.visibility-help: 控制谁可以查看和找到此 Gist。
+header.menu.recently-forked: 最近被 Fork
+header.menu.recently-liked: 最近被喜欢
+header.menu.topics: 主题
+header.menu.users: 用户
+settings.avatar: 头像
+settings.avatar-help: 上传自定义头像以替代 Gravatar
+settings.avatar-remove: 移除头像
+settings.header.authentication: 账号认证
+settings.style.added-lines-color: 新增行颜色
+settings.style.default-order: 默认排序方向
+settings.style.default-order-asc: 最早优先
+settings.style.default-order-desc: 最新优先
+settings.style.default-sort: 默认排序方式
+settings.style.default-sort-created: 创建时间
+settings.style.default-sort-updated: 更新时间
+settings.style.gist-code: Gist 代码
+settings.style.git-lines-color: Git 行颜色
+settings.style.no-soft-wrap: 不自动换行
+settings.style.removed-lines-color: 删除行颜色
+settings.style.save-style: 保存样式
+settings.style.soft-wrap: 自动换行
+settings.style.theme: 主题
+settings.style.theme-auto: 跟随系统
+settings.style.theme-dark: 深色
+settings.style.theme-light: 浅色
+sidebar.collapse: 收起
+ui.feedback-new: 对新界面的反馈
+validation.invalid-expiration-date: 过期日期无效，必须是未来的有效日期
+validation.should-only-contain-alphanumeric-characters-and-dashes-and-underscores: 字段 %s 只能包含字母、数字、短横线和下划线
+gist.moderation.pending: 此 Gist 正在等待自动审核，通过后才会公开显示。
+gist.moderation.rejected: 此 Gist 未通过公开审核，目前仅自己可见。
+header.search-placeholder: 搜索
+header.code-search-placeholder: 搜索代码
+admin.actions.backfill-activity: 根据现有 Gist 重建贡献热力图
+flash.admin.backfill-activity: 贡献活跃度重建任务已开始

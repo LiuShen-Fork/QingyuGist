@@ -19,6 +19,7 @@ import (
 	"github.com/thomiceli/opengist/internal/db"
 	"github.com/thomiceli/opengist/internal/git"
 	"github.com/thomiceli/opengist/internal/index"
+	"github.com/thomiceli/opengist/internal/settings"
 	"github.com/thomiceli/opengist/internal/web/context"
 	"github.com/thomiceli/opengist/internal/web/handlers/metrics"
 	"github.com/thomiceli/opengist/internal/web/server"
@@ -281,6 +282,7 @@ func Setup(t *testing.T) *Server {
 
 	err = db.Setup(databaseDsn)
 	require.NoError(t, err, "Could not initialize database")
+	require.NoError(t, settings.Reset(), "Could not initialize settings")
 
 	t.Cleanup(func() {
 		db.Close()

@@ -1,18 +1,25 @@
 package admin
 
 import (
+	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/thomiceli/opengist/internal/actions"
 	"github.com/thomiceli/opengist/internal/config"
 	"github.com/thomiceli/opengist/internal/db"
 	"github.com/thomiceli/opengist/internal/git"
+	"github.com/thomiceli/opengist/internal/index"
+	"github.com/thomiceli/opengist/internal/settings"
 	opengistssh "github.com/thomiceli/opengist/internal/ssh"
 	"github.com/thomiceli/opengist/internal/web/context"
 	"github.com/thomiceli/opengist/internal/web/handlers"
 )
+
+var processStart = time.Now()
 
 func AdminIndex(ctx *context.Context) error {
 	ctx.SetData("htmlTitle", ctx.TrH("admin.admin_panel"))
@@ -38,11 +45,35 @@ func AdminIndex(ctx *context.Context) error {
 	}
 	ctx.SetData("countGists", countGists)
 
+	publicGists, _ := db.CountGistsByVisibility(db.PublicVisibility)
+	privateGists, _ := db.CountGistsByVisibility(db.PrivateVisibility)
+	ctx.SetData("countPublicGists", publicGists)
+	ctx.SetData("countPrivateGists", privateGists)
+
 	countKeys, err := db.CountAll(&db.SSHKey{})
 	if err != nil {
 		return ctx.ErrorRes(500, "Cannot count SSH keys", err)
 	}
 	ctx.SetData("countKeys", countKeys)
+	countInvites, _ := db.CountAll(&db.Invitation{})
+	ctx.SetData("countInvitations", countInvites)
+
+	home := config.GetHomeDir()
+	ctx.SetData("storageRepos", dirSize(filepath.Join(home, "repos")))
+	ctx.SetData("storageUploads", dirSize(filepath.Join(home, "uploads")))
+	ctx.SetData("storageIndex", dirSize(filepath.Join(home, "opengist.index")))
+	ctx.SetData("storageTotal", dirSize(home))
+
+	var mem runtime.MemStats
+	runtime.ReadMemStats(&mem)
+	ctx.SetData("memAlloc", mem.Alloc)
+	ctx.SetData("memSys", mem.Sys)
+	ctx.SetData("memHeap", mem.HeapAlloc)
+	ctx.SetData("goroutines", runtime.NumGoroutine())
+	ctx.SetData("uptime", time.Since(processStart))
+	ctx.SetData("indexEnabled", index.IndexEnabled())
+	ctx.SetData("indexType", index.IndexType())
+	ctx.SetData("lastIndexRun", settings.LastIndexRun())
 
 	// The legacy admin dashboard renders actions on this page. Keep supplying
 	// their state while the new UI uses the dedicated actions page.
@@ -57,6 +88,17 @@ func AdminIndex(ctx *context.Context) error {
 	ctx.SetData("syncSSHKeys", actions.IsRunning(actions.SyncSSHKeys))
 	ctx.SetData("sshManagesAuthorizedKeys", config.C.SshManagesAuthorizedKeys())
 	return ctx.Html("admin_index.html")
+}
+
+func dirSize(path string) int64 {
+	var total int64
+	_ = filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
+		if err == nil && info != nil && info.Mode().IsRegular() {
+			total += info.Size()
+		}
+		return nil
+	})
+	return total
 }
 
 func AdminUsers(ctx *context.Context) error {
@@ -129,21 +171,137 @@ func AdminGistDelete(ctx *context.Context) error {
 	return ctx.RedirectTo("/-/admin-panel/gists")
 }
 
-func AdminConfig(ctx *context.Context) error {
+type configSection struct {
+	Key    string
+	Label  string
+	Icon   string
+	Fields []settings.Definition
+}
+
+var configSectionMeta = map[settings.Category]struct {
+	label string
+	icon  string
+}{
+	settings.CategorySite:       {"settings.category.site", "layout-template"},
+	settings.CategoryAuth:       {"settings.category.auth", "key-round"},
+	settings.CategoryUpload:     {"settings.category.upload", "upload"},
+	settings.CategorySearch:     {"settings.category.search", "search"},
+	settings.CategorySecurity:   {"settings.category.security", "shield-check"},
+	settings.CategoryModeration: {"settings.category.moderation", "sparkles"},
+	settings.CategoryGit:        {"settings.category.git", "git-branch"},
+	settings.CategoryAPI:        {"settings.category.api", "plug"},
+}
+
+func adminConfigData(ctx *context.Context, values map[string]string) {
 	ctx.SetData("htmlTitle", ctx.TrH("admin.configuration")+" - "+ctx.TrH("admin.admin_panel"))
 	ctx.SetData("adminHeaderPage", "config")
 
+	sections := make([]configSection, 0)
+	for _, category := range settings.Categories() {
+		meta := configSectionMeta[category]
+		sections = append(sections, configSection{
+			Key:    string(category),
+			Label:  meta.label,
+			Icon:   meta.icon,
+			Fields: settings.DefinitionsByCategory(category),
+		})
+	}
+	ctx.SetData("settingSections", sections)
+	ctx.SetData("settingValues", values)
+	ctx.SetData("secretPlaceholder", settings.SecretPlaceholder)
+
 	ctx.SetData("dbtype", db.DatabaseInfo.Type.String())
 	ctx.SetData("dbname", db.DatabaseInfo.Database)
+	ctx.SetData("indexEnabled", index.IndexEnabled())
+	ctx.SetData("indexType", index.IndexType())
+	ctx.SetData("lastIndexRun", settings.LastIndexRun())
+	ctx.SetData("config", config.C)
+}
 
+func AdminConfig(ctx *context.Context) error {
+	values := settings.Snapshot()
+	for _, d := range settings.AllDefinitions() {
+		if d.Kind != settings.KindSecret {
+			continue
+		}
+		if values[d.Key] != "" {
+			values[d.Key] = settings.SecretPlaceholder
+		}
+	}
+	adminConfigData(ctx, values)
 	return ctx.Html("admin_config.html")
 }
 
+// AdminUpdateConfig saves the whole configuration form. It validates every
+// field first so a single bad value does not leave the instance half-updated.
+func AdminUpdateConfig(ctx *context.Context) error {
+	values := make(map[string]string, len(settings.AllDefinitions()))
+	var errs []string
+
+	for _, d := range settings.AllDefinitions() {
+		var value string
+		if d.Kind == settings.KindBool {
+			value = "0"
+			if v := ctx.FormValue(d.Key); v == "1" || v == "on" || v == "true" {
+				value = "1"
+			}
+		} else {
+			value = strings.TrimSpace(ctx.FormValue(d.Key))
+		}
+
+		if d.Kind == settings.KindSecret {
+			// An untouched masked field keeps the stored secret.
+			if value == "" || value == settings.SecretPlaceholder {
+				continue
+			}
+		}
+
+		if err := settings.Validate(d.Key, value); err != nil {
+			errs = append(errs, ctx.Tr(d.Label)+": "+err.Error())
+			continue
+		}
+		values[d.Key] = value
+	}
+
+	if len(errs) > 0 {
+		for _, d := range settings.AllDefinitions() {
+			if _, ok := values[d.Key]; ok {
+				continue
+			}
+			if d.Kind == settings.KindSecret {
+				if v := ctx.FormValue(d.Key); v != "" {
+					values[d.Key] = v
+				}
+				continue
+			}
+			values[d.Key] = ctx.FormValue(d.Key)
+		}
+		ctx.AddFlash(strings.Join(errs, " · "), "error")
+		adminConfigData(ctx, values)
+		return ctx.Html("admin_config.html")
+	}
+
+	if err := settings.SetMany(values); err != nil {
+		ctx.AddFlash(ctx.Tr("flash.admin.config-save-failed")+": "+err.Error(), "error")
+		adminConfigData(ctx, settings.Snapshot())
+		return ctx.Html("admin_config.html")
+	}
+
+	ctx.AddFlash(ctx.Tr("flash.admin.config-saved"), "success")
+	return ctx.RedirectTo("/-/admin-panel/configuration")
+}
+
+// AdminSetConfig is the legacy endpoint used by the old dashboard switches. It
+// still accepts the legacy dash keys and forwards known keys to the registry.
 func AdminSetConfig(ctx *context.Context) error {
 	key := ctx.FormValue("key")
 	value := ctx.FormValue("value")
 
-	if err := db.UpdateSetting(key, value); err != nil {
+	if _, ok := settings.Define(key); ok {
+		if err := settings.Set(key, value); err != nil {
+			return ctx.ErrorRes(400, "Invalid setting", err)
+		}
+	} else if err := db.UpdateSetting(key, value); err != nil {
 		return ctx.ErrorRes(500, "Cannot set setting", err)
 	}
 

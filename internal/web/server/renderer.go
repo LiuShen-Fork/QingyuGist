@@ -224,6 +224,14 @@ func (s *Server) setFuncMap() {
 		"humanDateOnly": func(t int64) string {
 			return time.Unix(t, 0).Format("02/01/2006")
 		},
+		"humanSize":     humanSize,
+		"humanDuration": humanDuration,
+		"percent": func(part, total int64) int {
+			if total <= 0 {
+				return 0
+			}
+			return int(float64(part) / float64(total) * 100)
+		},
 		"mainTheme": func(theme *db.UserStyleDTO) string {
 			if theme == nil {
 				return "auto"
@@ -292,4 +300,36 @@ func parseManifest(files fs.FS) (map[string]context.Asset, error) {
 		return nil, err
 	}
 	return entries, nil
+}
+
+// humanSize formats a byte count the way a storage dashboard should read:
+// compact, one decimal at most, and never scientific.
+func humanSize(bytes int64) string {
+	const unit = 1024
+	if bytes < unit {
+		return fmt.Sprintf("%d B", bytes)
+	}
+	div, exp := int64(unit), 0
+	for n := bytes / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f %cB", float64(bytes)/float64(div), "KMGTPE"[exp])
+}
+
+// humanDuration renders an uptime without the sub-second noise of Duration.String.
+func humanDuration(d time.Duration) string {
+	if d < time.Minute {
+		return fmt.Sprintf("%ds", int(d.Seconds()))
+	}
+	days := int(d.Hours()) / 24
+	hours := int(d.Hours()) % 24
+	minutes := int(d.Minutes()) % 60
+	if days > 0 {
+		return fmt.Sprintf("%dd %dh %dm", days, hours, minutes)
+	}
+	if hours > 0 {
+		return fmt.Sprintf("%dh %dm", hours, minutes)
+	}
+	return fmt.Sprintf("%dm", minutes)
 }

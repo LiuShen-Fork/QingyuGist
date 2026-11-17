@@ -446,3 +446,152 @@ validation.invalid-gist-topics: Invalid gist topics, they must start with a lett
 validation.invalid-expiration-date: Invalid expiration date, it must be a valid date in the future
 
 html.title.admin-panel: Admin panel
+
+# Admin dashboard
+admin.dashboard: Dashboard
+admin.dashboard-subtitle: A live overview of this instance.
+admin.actions: Maintenance actions
+admin.back-to-dashboard: Back to dashboard
+admin.config-description: Stored in the database and applied instantly — no restart or configuration file needed.
+admin.config-save-hint: Every field is validated before anything is written.
+admin.restart-required: Requires a restart
+admin.instance: Instance
+admin.instance-description: Boot-time values read from the configuration file and environment.
+admin.database: Database
+admin.database-name: Database name
+admin.search-index: Search index
+admin.disabled: Disabled
+admin.external-url: External URL
+admin.opengist-home: Data directory
+admin.public: public
+admin.private: private
+admin.storage: Storage
+admin.repositories: Repositories
+admin.uploads: Uploads
+admin.memory: Memory
+admin.goroutines: goroutines
+admin.uptime: uptime
+admin.storage-breakdown: Storage breakdown
+admin.storage-breakdown-description: Disk usage of the data directory, repositories and the search index.
+admin.heap: Heap in use
+admin.reserved: Reserved
+admin.runtime: Runtime
+admin.invitations: Invitations
+admin.last-index: Last index run
+admin.save-changes: Save changes
+
+# Settings registry
+settings.category.site: Site
+settings.category.auth: Authentication
+settings.category.upload: Uploads
+settings.category.search: Search
+settings.category.security: Security
+settings.category.moderation: Moderation
+settings.category.git: Git
+settings.category.api: API
+settings.unit.mb: MB
+settings.unit.days: days
+settings.unit.seconds: seconds
+settings.site.name: Site name
+settings.site.name_help: Shown in the sidebar, page titles and emails.
+settings.site.description: Site description
+settings.site.description_help: A short sentence used on the sign-in page and in metadata.
+settings.site.external_url: External URL
+settings.site.external_url_help: Public base URL used for clone links and OAuth callbacks.
+settings.site.logo: Logo URL
+settings.site.logo_help: Image shown in the sidebar and on the sign-in page.
+settings.site.favicon: Favicon URL
+settings.site.favicon_help: Icon shown in browser tabs.
+settings.site.custom_css: Custom CSS
+settings.site.custom_css_help: Injected into every page after the theme styles.
+settings.site.custom_js: Custom JavaScript
+settings.site.custom_js_help: Injected at the end of every page.
+settings.auth.registration_mode: Registration
+settings.auth.registration_mode_help: Controls who can create an account.
+settings.auth.registration_open: Open registration
+settings.auth.registration_oauth_only: Third-party only
+settings.auth.registration_closed: Closed
+settings.auth.require_login: Require login
+settings.auth.require_login_help: Visitors must sign in to browse anything.
+settings.auth.allow_gists_without_login: Allow anonymous gists
+settings.auth.allow_gists_without_login_help: Let visitors create gists without an account when login is required.
+settings.auth.disable_login_form: Disable sign-in form
+settings.auth.disable_login_form_help: Only third-party sign-in is offered.
+settings.auth.disable_gravatar: Disable Gravatar
+settings.auth.disable_gravatar_help: Always use generated avatars instead of Gravatar.
+settings.upload.enabled: Allow uploads
+settings.upload.enabled_help: Permit file attachments when creating or editing gists.
+settings.upload.max_file_size: Max file size
+settings.upload.max_file_size_help: Reject a single uploaded file larger than this.
+settings.upload.max_total_size: Max upload per gist
+settings.upload.max_total_size_help: Total size of all attachments in one gist.
+settings.upload.allow_media: Allow media files
+settings.upload.allow_media_help: Accept images, audio and video. Disable to save disk space.
+settings.upload.blocked_extensions: Blocked extensions
+settings.upload.blocked_extensions_help: Comma-separated list of file extensions that are never accepted.
+settings.search.reindex_days: Reindex interval
+settings.search.reindex_days_help: Rebuild the search index automatically every N days. 0 disables the schedule.
+settings.security.cors_enabled: Enable CORS
+settings.security.cors_enabled_help: Allow other origins to call the API.
+settings.security.cors_origins: Allowed origins
+settings.security.cors_origins_help: One origin per line, or * for any origin.
+settings.security.cors_credentials: Allow credentials
+settings.security.cors_credentials_help: Send cookies on cross-origin requests. Requires explicit origins.
+settings.moderation.enabled: AI moderation
+settings.moderation.enabled_help: Review gists submitted as public before they become visible.
+settings.moderation.endpoint: API endpoint
+settings.moderation.endpoint_help: OpenAI-compatible chat completions endpoint.
+settings.moderation.api_key: API key
+settings.moderation.api_key_help: Leave unchanged to keep the stored key.
+settings.moderation.model: Model
+settings.moderation.model_help: Model name sent to the endpoint.
+settings.moderation.timeout: Timeout
+settings.moderation.timeout_help: How long to wait for the moderation provider.
+settings.moderation.fail_closed: Keep private on failure
+settings.moderation.fail_closed_help: When the check fails, keep the gist private instead of publishing it.
+settings.moderation.prompt: Review prompt
+settings.moderation.prompt_help: System prompt sent to the model. It must return JSON with allowed and reason.
+settings.git.default_branch: Default branch
+settings.git.default_branch_help: Branch created for new repositories.
+settings.api.enabled: Enable API
+settings.api.enabled_help: Expose the REST API and access tokens.
+
+# Auth screen
+auth.hero.title: Share code, keep it yours.
+auth.hero.subtitle: A fast, self-hosted home for your snippets, notes and code.
+auth.hero.feature.gist: Versioned gists powered by Git
+auth.hero.feature.private: Private, unlisted and public visibility
+auth.hero.feature.search: Instant full-text search across every file
+auth.hero.footer: Self-hosted · Open source
+auth.welcome-back: Welcome back
+auth.create-account: Create your account
+auth.login-subtitle: Sign in to continue to your gists.
+auth.register-subtitle: One account for all your snippets.
+auth.oauth-only-notice: Local sign-up is disabled. Continue with one of the providers below to create an account.
+auth.form-disabled: The sign-in form is disabled. Use a third-party provider to continue.
+auth.or: or
+auth.continue-with: Continue with
+auth.no-account: New here?
+auth.have-account: Already have an account?
+error.signup-oauth-only: Registration is only available through a third-party provider.
+flash.admin.config-saved: Configuration saved
+flash.admin.config-save-failed: Could not save configuration
+heatmap.title: Contribution activity
+heatmap.subtitle: Gists created over the past year
+heatmap.events: contributions
+heatmap.less: Less
+heatmap.more: More
+heatmap.day.mon: Mon
+heatmap.day.wed: Wed
+heatmap.day.fri: Fri
+error.file-too-large: The file is larger than the allowed upload size
+error.file-type-blocked: This file type is not allowed
+error.media-disabled: Media uploads are disabled on this instance
+error.upload-total-too-large: The total size of this gist's files exceeds the allowed limit
+flash.gist.moderation-pending: Your gist is being reviewed and will be published once approved
+gist.moderation.pending: This gist is waiting for an automated review before it can be published publicly.
+gist.moderation.rejected: This gist was not approved for public visibility and stays private.
+header.search-placeholder: Search
+header.code-search-placeholder: Search code
+admin.actions.backfill-activity: Rebuild contribution heatmap from existing gists
+flash.admin.backfill-activity: Contribution activity rebuild started

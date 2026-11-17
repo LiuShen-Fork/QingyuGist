@@ -7,6 +7,7 @@ import (
 	"path"
 	"path/filepath"
 	"syscall"
+	"time"
 
 	"github.com/rs/zerolog/log"
 	"github.com/thomiceli/opengist/internal/actions"
@@ -15,6 +16,8 @@ import (
 	"github.com/thomiceli/opengist/internal/db"
 	"github.com/thomiceli/opengist/internal/git"
 	"github.com/thomiceli/opengist/internal/index"
+	"github.com/thomiceli/opengist/internal/moderation"
+	"github.com/thomiceli/opengist/internal/settings"
 	"github.com/thomiceli/opengist/internal/ssh"
 	"github.com/thomiceli/opengist/internal/web/handlers/metrics"
 	"github.com/thomiceli/opengist/internal/web/server"
@@ -136,8 +139,22 @@ func Initialize(ctx *cli.Context) {
 		log.Error().Err(err).Msg("Failed to initialize WebAuthn")
 	}
 
+	// Runtime settings live in the database and must be loaded before anything
+	// that renders a template or reads a feature flag.
+	if err := settings.Init(); err != nil {
+		log.Fatal().Err(err).Msg("Failed to initialize instance settings")
+	}
+
+	moderation.Start()
+
 	index.DepreactionIndexDirname()
 	if index.IndexEnabled() {
+		// A mapping change recreates the index files, so refill them from the
+		// database as soon as the new indexer is live.
+		index.SetRebuildHook(func() { actions.RunOnce(actions.IndexGists) })
+		if settings.LastIndexRun().IsZero() {
+			settings.SetLastIndexRun(time.Now())
+		}
 		go index.NewIndexer(index.IndexType())
 	}
 }
