@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/signal"
 	"path"
@@ -196,7 +197,12 @@ func createSymlink(homePath string, configPath string) error {
 		}
 	}
 	if err = os.Symlink(exePath, symlinkExePath); err != nil {
-		return err
+		// Windows only lets privileged processes create symlinks. A copy works
+		// just as well for the git hooks that shell out to `opengist`, so fall
+		// back to it instead of refusing to start.
+		if copyErr := copyExecutable(exePath, symlinkExePath); copyErr != nil {
+			return err
+		}
 	}
 
 	if configPath == "" {
@@ -212,8 +218,39 @@ func createSymlink(homePath string, configPath string) error {
 		}
 	}
 	if err = os.Symlink(configPath, symlinkConfigPath); err != nil {
-		return err
+		if copyErr := copyExecutable(configPath, symlinkConfigPath); copyErr != nil {
+			return err
+		}
 	}
 
 	return nil
+}
+
+// copyExecutable copies src to dst with the permissions needed to run it. It is
+// the fallback for platforms (notably unprivileged Windows) where symlinks are
+// unavailable.
+func copyExecutable(src, dst string) error {
+	in, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer in.Close()
+
+	tmp := dst + ".tmp"
+	out, err := os.OpenFile(tmp, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0755)
+	if err != nil {
+		return err
+	}
+	if _, err = io.Copy(out, in); err != nil {
+		out.Close()
+		_ = os.Remove(tmp)
+		return err
+	}
+	if err = out.Close(); err != nil {
+		_ = os.Remove(tmp)
+		return err
+	}
+	// Windows will not rename over an existing file, so drop the target first.
+	_ = os.Remove(dst)
+	return os.Rename(tmp, dst)
 }

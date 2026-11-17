@@ -114,6 +114,14 @@ func parseDBURI(uri string) (*databaseInfo, error) {
 }
 
 func Setup(dbUri string) error {
+	// Re-initializing (tests, embedded use) must not leak the previous pool;
+	// its open file handles would keep the database locked on Windows.
+	if db != nil {
+		if previous, err := db.DB(); err == nil {
+			_ = previous.Close()
+		}
+	}
+
 	dbInfo, err := parseDBURI(dbUri)
 	if err != nil {
 		return err
@@ -189,6 +197,9 @@ func Close() error {
 	if err != nil {
 		return err
 	}
+	// Mark the settings cache stale so the next request notices that the
+	// database is gone instead of serving a snapshot indefinitely.
+	bumpSettingsVersion()
 	return sqlDB.Close()
 }
 
@@ -223,12 +234,14 @@ func setupSQLite(dbInfo databaseInfo) error {
 	if dbInfo.Database == ":memory:" {
 		dsn = ":memory:?_fk=true&cache=shared"
 	} else {
-		u, err := url.Parse(dbInfo.Database)
-		if err != nil {
-			return err
+		// Build the file URL from the OS path instead of round-tripping it
+		// through url.Parse, which treats a Windows drive letter ("C:") as a
+		// URI scheme and produces a DSN SQLite cannot open.
+		path := filepath.ToSlash(dbInfo.Database)
+		if len(path) >= 2 && path[1] == ':' {
+			path = "/" + path
 		}
-
-		u.Scheme = "file"
+		u := &url.URL{Scheme: "file", Path: path}
 		q := u.Query()
 		q.Set("_pragma", "foreign_keys(1)")
 		q.Add("_pragma", "busy_timeout(5000)")

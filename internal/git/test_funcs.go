@@ -17,6 +17,9 @@ func SetupTest(t *testing.T) {
 
 	err := config.InitConfig("", io.Discard)
 	require.NoError(t, err, "Could not init config")
+	// The repository's tests assume the historical master default; pin it so
+	// they do not depend on the developer's global init.defaultBranch.
+	config.C.GitDefaultBranch = "master"
 
 	err = os.MkdirAll(path.Join(config.GetHomeDir(), "tests"), 0755)
 	ReposDirectory = path.Join("tests")

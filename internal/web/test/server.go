@@ -227,6 +227,9 @@ func (s *Server) CreateGistAs(t *testing.T, user, visibility string) (string, *d
 func Setup(t *testing.T) *Server {
 	tmpDir := t.TempDir()
 	t.Setenv("OPENGIST_SKIP_GIT_HOOKS", "1")
+	// Never let git fall back to an interactive credential prompt when a test
+	// expects an anonymous clone to be rejected.
+	t.Setenv("GIT_TERMINAL_PROMPT", "0")
 
 	err := config.InitConfig("", io.Discard)
 	require.NoError(t, err, "Could not init config")
@@ -255,6 +258,10 @@ func Setup(t *testing.T) *Server {
 	err = exec.Command("git", "config", "--global", "user.email", "test@opengist.io").Run()
 	require.NoError(t, err)
 	err = exec.Command("git", "config", "--global", "user.name", "test").Run()
+	require.NoError(t, err)
+	// Clear any system credential helper so a rejected anonymous clone fails
+	// fast instead of opening a credential prompt or manager window.
+	err = exec.Command("git", "config", "--global", "credential.helper", "").Run()
 	require.NoError(t, err)
 	homePath := config.GetHomeDir()
 
@@ -285,6 +292,7 @@ func Setup(t *testing.T) *Server {
 	require.NoError(t, settings.Reset(), "Could not initialize settings")
 
 	t.Cleanup(func() {
+		index.Close()
 		db.Close()
 	})
 

@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/thomiceli/opengist/internal/auth/password"
 	"github.com/thomiceli/opengist/internal/db"
+	"github.com/thomiceli/opengist/internal/index"
 	"github.com/urfave/cli/v2"
 )
 
@@ -23,8 +24,10 @@ func runCreateUser(t *testing.T, args ...string) error {
 	// InitLog (called by initialize) creates a "log" subdir under home.
 	require.NoError(t, os.MkdirAll(filepath.Join(home, "log"), 0755))
 	t.Setenv("OG_OPENGIST_HOME", home)
+	t.Setenv("OG_LOG_OUTPUT", "stdout")
 
 	t.Cleanup(func() {
+		index.Close()
 		_ = db.Close()
 	})
 
@@ -95,7 +98,11 @@ func TestCmdAdminCreateUser_ReRunIsNoOp(t *testing.T) {
 	home := t.TempDir()
 	require.NoError(t, os.MkdirAll(filepath.Join(home, "log"), 0755))
 	t.Setenv("OG_OPENGIST_HOME", home)
-	t.Cleanup(func() { _ = db.Close() })
+	t.Setenv("OG_LOG_OUTPUT", "stdout")
+	t.Cleanup(func() {
+		index.Close()
+		_ = db.Close()
+	})
 
 	run := func() error {
 		app := &cli.App{

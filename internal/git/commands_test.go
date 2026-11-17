@@ -40,7 +40,9 @@ func TestSetFileContentRejectsSymlink(t *testing.T) {
 	t.Cleanup(func() { require.NoError(t, DeleteTmpRepository("symlink-test")) })
 	target := filepath.Join(t.TempDir(), "target")
 	require.NoError(t, os.WriteFile(target, []byte("original"), 0644))
-	require.NoError(t, os.Symlink(target, filepath.Join(tmpPath, "link")))
+	if err := os.Symlink(target, filepath.Join(tmpPath, "link")); err != nil {
+		t.Skipf("symlinks are not available in this environment: %v", err)
+	}
 
 	err := SetFileContent("symlink-test", "link", "overwritten")
 	require.Error(t, err)
@@ -59,7 +61,9 @@ func TestSetFileContentRejectsSymlinkParent(t *testing.T) {
 	t.Cleanup(func() { require.NoError(t, DeleteTmpRepository("symlink-parent-test")) })
 	target := filepath.Join(t.TempDir(), "target")
 	require.NoError(t, os.WriteFile(target, []byte("original"), 0644))
-	require.NoError(t, os.Symlink(filepath.Dir(target), filepath.Join(tmpPath, "link")))
+	if err := os.Symlink(filepath.Dir(target), filepath.Join(tmpPath, "link")); err != nil {
+		t.Skipf("symlinks are not available in this environment: %v", err)
+	}
 
 	err := SetFileContent("symlink-parent-test", "link/target", "overwritten")
 	require.Error(t, err)
@@ -239,7 +243,9 @@ func TestSetFileContentRejectsSymlinkChain(t *testing.T) {
 	if err := os.Symlink(".git", payloadLink); err != nil {
 		t.Skipf("symbolic links are unavailable: %v", err)
 	}
-	require.NoError(t, os.Symlink("payload/../../../../protected-hook", filepath.Join(repositoryPath, "task.md")))
+	if err := os.Symlink("payload/../../../../protected-hook", filepath.Join(repositoryPath, "task.md")); err != nil {
+		t.Skipf("symlinks are not available in this environment: %v", err)
+	}
 
 	err = SetFileContent(gistTmpId, "task.md", "malicious hook")
 	require.ErrorContains(t, err, "symbolic link")
