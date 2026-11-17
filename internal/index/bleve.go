@@ -6,9 +6,11 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync/atomic"
 
 	"github.com/blevesearch/bleve/v2"
 	"github.com/blevesearch/bleve/v2/analysis/analyzer/custom"
+	"github.com/blevesearch/bleve/v2/analysis/lang/cjk"
 	"github.com/blevesearch/bleve/v2/analysis/token/camelcase"
 	"github.com/blevesearch/bleve/v2/analysis/token/length"
 	"github.com/blevesearch/bleve/v2/analysis/token/lowercase"
@@ -18,6 +20,13 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/thomiceli/opengist/internal/config"
 )
+
+// bleveMappingVersion is bumped whenever the analyzer or field mapping changes
+// in a way that makes existing documents unsearchable. On mismatch the index is
+// rebuilt and re-populated from the database.
+const bleveMappingVersion = "2"
+
+var bleveNeedsRebuild atomic.Bool
 
 type BleveIndexer struct {
 	index bleve.Index
@@ -48,16 +57,31 @@ func (i *BleveIndexer) Init() error {
 }
 
 func (i *BleveIndexer) open() (bleve.Index, error) {
-	bleveIndex, err := bleve.Open(i.path)
-	if err == nil {
-		return bleveIndex, nil
+	versionPath := i.path + ".version"
+	existing, readErr := os.ReadFile(versionPath)
+	if readErr == nil && strings.TrimSpace(string(existing)) == bleveMappingVersion {
+		bleveIndex, err := bleve.Open(i.path)
+		if err == nil {
+			return bleveIndex, nil
+		}
+		if !errors.Is(err, bleve.ErrorIndexPathDoesNotExist) {
+			return nil, err
+		}
 	}
 
-	if !errors.Is(err, bleve.ErrorIndexPathDoesNotExist) {
-		return nil, err
+	// A missing or outdated mapping means the on-disk index cannot answer the
+	// current queries. Rebuild it from scratch and let the rebuild hook
+	// re-populate it from the database once the indexer is live.
+	if _, err := os.Stat(i.path); err == nil {
+		log.Info().Msg("Search index mapping changed, rebuilding index")
+		bleveNeedsRebuild.Store(true)
+		if err := os.RemoveAll(i.path); err != nil {
+			return nil, fmt.Errorf("failed to remove outdated Bleve index: %w", err)
+		}
 	}
 
 	mapping := bleve.NewIndexMapping()
+	var err error
 
 	// Token filters
 	if err = mapping.AddCustomTokenFilter("unicodeNormalize", map[string]any{
@@ -76,11 +100,13 @@ func (i *BleveIndexer) open() (bleve.Index, error) {
 
 	// Analyzer: split mode (camelCase splitting for partial search)
 	// "CPUCard" -> ["cpu", "card"]
+	// CJK text is additionally broken into overlapping bigrams so that
+	// "你好世界" can be found by searching any two-character substring.
 	if err = mapping.AddCustomAnalyzer("codeSplit", map[string]interface{}{
 		"type":          custom.Name,
 		"char_filters":  []string{},
 		"tokenizer":     unicode.Name,
-		"token_filters": []string{"unicodeNormalize", camelcase.Name, lowercase.Name, "lengthMin2"},
+		"token_filters": []string{"unicodeNormalize", cjk.WidthName, camelcase.Name, lowercase.Name, cjk.BigramName, "lengthMin2"},
 	}); err != nil {
 		return nil, err
 	}
@@ -91,7 +117,7 @@ func (i *BleveIndexer) open() (bleve.Index, error) {
 		"type":          custom.Name,
 		"char_filters":  []string{},
 		"tokenizer":     unicode.Name,
-		"token_filters": []string{"unicodeNormalize", lowercase.Name},
+		"token_filters": []string{"unicodeNormalize", cjk.WidthName, lowercase.Name, cjk.BigramName, "lengthMin2"},
 	}); err != nil {
 		return nil, err
 	}
@@ -137,7 +163,14 @@ func (i *BleveIndexer) open() (bleve.Index, error) {
 	docMapping.DefaultAnalyzer = "codeSplit"
 	mapping.DefaultMapping = docMapping
 
-	return bleve.New(i.path, mapping)
+	bleveIndex, err := bleve.New(i.path, mapping)
+	if err != nil {
+		return nil, err
+	}
+	if err := os.WriteFile(versionPath, []byte(bleveMappingVersion), 0644); err != nil {
+		log.Warn().Err(err).Msg("Could not write Bleve mapping version file")
+	}
+	return bleveIndex, nil
 }
 
 func (i *BleveIndexer) Reset() error {

@@ -10,6 +10,7 @@ import (
 )
 
 var atomicIndexer atomic.Pointer[Indexer]
+var rebuildHook atomic.Value
 
 type Indexer interface {
 	Init() error
@@ -70,6 +71,19 @@ func NewIndexer(idxType IndexerType) {
 		return
 	}
 	atomicIndexer.Store(&idx)
+
+	if bleveNeedsRebuild.Swap(false) {
+		if hook, ok := rebuildHook.Load().(func()); ok && hook != nil {
+			go hook()
+		}
+	}
+}
+
+// SetRebuildHook registers the function invoked when the on-disk index had to
+// be recreated because its mapping changed. It lets the cli reindex every gist
+// without making the index package depend on the action scheduler.
+func SetRebuildHook(hook func()) {
+	rebuildHook.Store(hook)
 }
 
 func Close() {

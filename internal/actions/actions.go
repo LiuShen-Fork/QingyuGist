@@ -13,6 +13,7 @@ import (
 	"github.com/thomiceli/opengist/internal/db"
 	"github.com/thomiceli/opengist/internal/git"
 	"github.com/thomiceli/opengist/internal/index"
+	"github.com/thomiceli/opengist/internal/settings"
 	"github.com/thomiceli/opengist/internal/ssh"
 )
 
@@ -26,6 +27,7 @@ const (
 	SyncGistLanguages
 	DeleteExpiredGists
 	SyncSSHKeys
+	BackfillActivity
 
 	numActions // keep last — sizes the `running` array
 )
@@ -53,6 +55,7 @@ var registry = map[int]action{
 	SyncGistLanguages:  {run: syncGistLanguages},
 	DeleteExpiredGists: {run: deleteExpiredGists, spec: "@every 12h"},
 	SyncSSHKeys:        {run: syncSSHKeys, spec: "@every 72h"},
+	BackfillActivity:   {run: backfillActivity},
 }
 
 func IsRunning(actionType int) bool {
@@ -194,6 +197,8 @@ func indexGists() {
 			log.Error().Err(err).Msgf("Cannot index gist %d", gist.ID)
 		}
 	}
+
+	settings.SetLastIndexRun(time.Now())
 }
 
 func syncGistLanguages() {
@@ -207,6 +212,27 @@ func syncGistLanguages() {
 	for _, gist := range gists {
 		log.Info().Msgf("Syncing languages for gist %d", gist.ID)
 		gist.UpdateLanguages()
+	}
+}
+
+// backfillActivity rebuilds contribution counters from existing gists, so
+// instances upgraded from a version without the heatmap start with their real
+// history instead of an empty grid.
+func backfillActivity() {
+	log.Info().Msg("Backfilling contribution activity...")
+	gists, err := db.GetAllGistsRows()
+	if err != nil {
+		log.Error().Err(err).Msg("Cannot get gists")
+		return
+	}
+	if err := db.ResetAllActivity(); err != nil {
+		log.Error().Err(err).Msg("Cannot reset activity")
+		return
+	}
+	for _, gist := range gists {
+		if err := db.IncrementActivity(gist.UserID, time.Unix(gist.CreatedAt, 0), 1); err != nil {
+			log.Error().Err(err).Msgf("Cannot record activity for gist %d", gist.ID)
+		}
 	}
 }
 

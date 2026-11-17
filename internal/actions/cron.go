@@ -5,6 +5,7 @@ import (
 
 	"github.com/robfig/cron/v3"
 	"github.com/rs/zerolog/log"
+	"github.com/thomiceli/opengist/internal/settings"
 )
 
 const cronDrainTimeout = 10 * time.Second
@@ -27,6 +28,23 @@ func StartCron() (stop func()) {
 	}
 
 	c.Start()
+
+	// The reindex interval is a runtime setting, so it cannot be baked into a
+	// fixed cron spec. Check once an hour whether the configured interval has
+	// elapsed and only then rebuild the index.
+	if _, err := c.AddFunc("@every 1h", func() {
+		interval := settings.ReindexInterval()
+		if interval <= 0 {
+			return
+		}
+		last := settings.LastIndexRun()
+		if !last.IsZero() && time.Since(last) < interval {
+			return
+		}
+		RunOnce(IndexGists)
+	}); err != nil {
+		log.Error().Err(err).Msg("Invalid cron spec for scheduled reindex")
+	}
 
 	return func() {
 		log.Info().Msg("Stopping crons...")
