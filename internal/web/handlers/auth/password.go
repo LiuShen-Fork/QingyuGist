@@ -18,11 +18,13 @@ func Register(ctx *context.Context) error {
 	disableForm := ctx.GetData("DisableLoginForm")
 
 	code := ctx.QueryParam("code")
+	validInvitation := false
 	if code != "" {
 		if invitation, err := db.GetInvitationByCode(code); err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return ctx.ErrorRes(500, "Cannot check for invitation code", err)
 		} else if invitation != nil && invitation.IsUsable() {
 			disableSignup = false
+			validInvitation = true
 			sess := ctx.GetSession()
 			sess.Values[oauthInvitationSessionKey] = invitation.ID
 			ctx.SaveSession(sess)
@@ -32,8 +34,8 @@ func Register(ctx *context.Context) error {
 	ctx.SetData("title", ctx.TrH("auth.new-account"))
 	ctx.SetData("htmlTitle", ctx.TrH("auth.new-account"))
 	// In OAuth-only mode the form stays hidden; the third-party buttons are
-	// the only way in. Invitation codes still unlock the local form.
-	if ctx.GetData("OAuthOnlyRegistration") == true && code == "" {
+	// the only way in. A valid invitation code still unlocks the local form.
+	if ctx.GetData("OAuthOnlyRegistration") == true && !validInvitation {
 		disableForm = true
 	}
 	ctx.SetData("disableForm", disableForm)
