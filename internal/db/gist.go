@@ -26,6 +26,30 @@ const (
 	PrivateVisibility
 )
 
+// ModerationStatus is the state of the asynchronous AI compliance check for a
+// gist that was submitted as public.
+type ModerationStatus int
+
+const (
+	ModerationNone ModerationStatus = iota
+	ModerationPending
+	ModerationApproved
+	ModerationRejected
+)
+
+func (s ModerationStatus) String() string {
+	switch s {
+	case ModerationPending:
+		return "pending"
+	case ModerationApproved:
+		return "approved"
+	case ModerationRejected:
+		return "rejected"
+	default:
+		return "none"
+	}
+}
+
 func (v Visibility) String() string {
 	switch v {
 	case PublicVisibility:
@@ -87,6 +111,13 @@ type Gist struct {
 	UpdatedAt       int64
 	ExpiresAt       int64 // 0: never expires
 	Archived        bool
+
+	// ModerationStatus tracks the asynchronous compliance check that gates
+	// public visibility when AI moderation is enabled.
+	// 0: not moderated / moderation disabled, 1: pending, 2: approved, 3: rejected.
+	ModerationStatus    ModerationStatus
+	ModerationReason    string
+	ModerationCheckedAt int64
 
 	Likes    []User `gorm:"many2many:likes;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Forked   *Gist  `gorm:"foreignKey:ForkedID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
@@ -531,6 +562,34 @@ func CountAllGistsFromUserVisibleTo(fromUserId uint, currentUserId uint, since *
 	var count int64
 	err := applySince(gistsFromUserStatement(fromUserId, currentUserId).Model(&Gist{}), since).Count(&count).Error
 	return count, err
+}
+
+func CountGistsByVisibility(visibility Visibility) (int64, error) {
+	var count int64
+	err := db.Model(&Gist{}).Where("private = ?", visibility).Count(&count).Error
+	return count, err
+}
+
+// SetModerationResult records the outcome of an asynchronous compliance check.
+// When publish is true the gist is made public; otherwise it stays private.
+func (gist *Gist) SetModerationResult(status ModerationStatus, reason string, publish bool, checkedAt int64) error {
+	updates := map[string]any{
+		"moderation_status":     status,
+		"moderation_reason":     reason,
+		"moderation_checked_at": checkedAt,
+	}
+	if publish {
+		updates["private"] = PublicVisibility
+	}
+	return db.Model(&Gist{}).Where("id = ?", gist.ID).Updates(updates).Error
+}
+
+// GetPendingModerationGistIDs returns the IDs of gists whose moderation check
+// is still pending, so they can be resumed after a restart.
+func GetPendingModerationGistIDs() ([]uint, error) {
+	var ids []uint
+	err := db.Model(&Gist{}).Where("moderation_status = ?", ModerationPending).Order("id").Pluck("id", &ids).Error
+	return ids, err
 }
 
 func CountAllGistsOfUser(userID uint, since *time.Time) (int64, error) {

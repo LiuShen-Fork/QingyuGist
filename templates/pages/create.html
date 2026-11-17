@@ -28,7 +28,7 @@
                 {{ if not .c.DisableFileUpload }}
                 <div id="file-upload-zone" class="space-y-3">
                     <label for="file-upload" class="block cursor-pointer">
-                        <div class="border-border hover:border-primary flex flex-col items-center rounded-lg border-2 border-dashed p-6 text-center transition-colors">
+                        <div class="border-border hover:border-primary flex flex-col items-center rounded-xl border-2 border-dashed p-6 text-center transition-colors">
                             <svg class="text-muted-foreground size-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
                             <span class="mt-3 text-sm font-medium">{{ .locale.Tr "gist.new.drop-files" }}</span>
                             <span class="text-muted-foreground mt-1 text-xs">{{ .locale.Tr "gist.new.any-file-type" }}</span>
@@ -42,7 +42,7 @@
 
             <!-- Settings column -->
             <aside class="space-y-4 lg:sticky lg:top-16">
-                <div class="bg-card space-y-4 rounded-lg border p-4">
+                <div class="bg-card space-y-4 rounded-xl border p-4">
                     <div class="space-y-1.5">
                         <label for="title" class="text-xs font-medium">{{ .locale.Tr "gist.new.title" }}</label>
                         <input type="text" name="title" id="title" maxlength="250" value="{{ .dto.Title }}" placeholder="{{ .locale.Tr "gist.new.title" }}" class="input h-9 w-full" />

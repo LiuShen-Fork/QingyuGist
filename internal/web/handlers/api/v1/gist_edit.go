@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/thomiceli/opengist/internal/db"
 	"github.com/thomiceli/opengist/internal/git"
+	"github.com/thomiceli/opengist/internal/moderation"
 	"github.com/thomiceli/opengist/internal/web/context"
 	"github.com/thomiceli/opengist/internal/web/handlers/api/v1/types"
 )
@@ -84,6 +85,10 @@ func CreateGist(ctx *context.Context) error {
 	gist.User = *user
 	gist.NbFiles = len(dto.Files)
 
+	// Public gists may need an asynchronous compliance review before they are
+	// actually published; Gate stores them privately with a pending marker.
+	awaitingModeration := moderation.Gate(gist)
+
 	gist.ExpiresAt = dto.ExpiresAtTimestamp()
 
 	id, err := uuid.NewRandom()
@@ -113,6 +118,9 @@ func CreateGist(ctx *context.Context) error {
 	gist.AddInIndex()
 	gist.UpdateLanguages()
 	_ = gist.UpdatePreviewAndCount(true)
+	if awaitingModeration {
+		moderation.Enqueue(gist.ID)
+	}
 
 	saved, err := db.GetGistByID(strconv.FormatUint(uint64(gist.ID), 10))
 	if err != nil {
@@ -175,8 +183,10 @@ func UpdateGist(ctx *context.Context) error {
 	if req.Description != nil {
 		g.Description = *req.Description
 	}
+	awaitingModeration := false
 	if req.Visibility != nil {
 		g.Private = db.ParseVisibility(*req.Visibility)
+		awaitingModeration = moderation.Gate(g)
 	}
 
 	// File patch: only rebuild the working tree if `files` carried at least
@@ -208,6 +218,9 @@ func UpdateGist(ctx *context.Context) error {
 	}
 	g.UpdateLanguages()
 	_ = g.UpdatePreviewAndCount(true)
+	if awaitingModeration {
+		moderation.Enqueue(g.ID)
+	}
 
 	resp, err := g.ToAPI(apiBaseURL(ctx), "HEAD")
 	if err != nil {

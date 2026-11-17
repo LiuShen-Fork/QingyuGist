@@ -1,17 +1,21 @@
 package gist
 
 import (
+	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/thomiceli/opengist/internal/config"
 	"github.com/thomiceli/opengist/internal/db"
 	"github.com/thomiceli/opengist/internal/git"
 	"github.com/thomiceli/opengist/internal/i18n"
+	"github.com/thomiceli/opengist/internal/moderation"
+	"github.com/thomiceli/opengist/internal/settings"
 	"github.com/thomiceli/opengist/internal/validator"
 	"github.com/thomiceli/opengist/internal/web/context"
 )
@@ -70,7 +74,7 @@ func ProcessCreate(ctx *context.Context) error {
 	// Process uploaded files from UUID arrays, unless file upload is disabled instance-wide
 	fileUUIDs := dto.UploadedFilesUUID
 	fileFilenames := dto.UploadedFilesNames
-	if !config.C.DisableFileUpload && len(fileUUIDs) == len(fileFilenames) {
+	if settings.UploadEnabled() && len(fileUUIDs) == len(fileFilenames) {
 		for i, fileUUID := range fileUUIDs {
 			if !uuidRegex.MatchString(filepath.Base(fileUUID)) {
 				continue
@@ -123,6 +127,32 @@ func ProcessCreate(ctx *context.Context) error {
 	}
 	ctx.SetData("dto", dto)
 
+	// Enforce the per-gist upload budget across both text files and attachments.
+	if settings.UploadEnabled() {
+		var totalBytes int64
+		for _, file := range dto.Files {
+			if file.SourcePath != "" {
+				if info, statErr := os.Stat(file.SourcePath); statErr == nil {
+					totalBytes += info.Size()
+				}
+			} else {
+				totalBytes += int64(len(file.Content))
+			}
+		}
+		if maxTotal := settings.UploadMaxTotalBytes(); maxTotal > 0 && totalBytes > maxTotal {
+			ctx.AddFlash(ctx.Tr("error.upload-total-too-large"), "error")
+			if isCreate {
+				return ctx.HtmlWithCode(http.StatusBadRequest, "create.html")
+			}
+			files, _, err := gist.Files("HEAD", false)
+			if err != nil {
+				return ctx.ErrorRes(http.StatusInternalServerError, "Error fetching files", err)
+			}
+			ctx.SetData("files", files)
+			return ctx.HtmlWithCode(http.StatusBadRequest, "edit.html")
+		}
+	}
+
 	err = ctx.Validate(dto)
 	if err != nil {
 		ctx.AddFlash(validator.ValidationMessages(&err, ctx.GetData("locale").(*i18n.Locale)), "error")
@@ -169,6 +199,10 @@ func ProcessCreate(ctx *context.Context) error {
 		}
 	}
 
+	// A gist submitted as public is held private until the asynchronous AI check
+	// approves it. Everything else is stored as requested.
+	awaitingModeration := isCreate && moderation.Gate(gist)
+
 	if err = gist.InitRepository(); err != nil {
 		return ctx.ErrorRes(500, "Error creating the repository", err)
 	}
@@ -192,6 +226,13 @@ func ProcessCreate(ctx *context.Context) error {
 	if err = gist.UpdatePreviewAndCount(true); err != nil {
 		return ctx.ErrorRes(500, "Error updating preview and count", err)
 	}
+
+	if awaitingModeration {
+		moderation.Enqueue(gist.ID)
+		ctx.AddFlash(ctx.Tr("flash.gist.moderation-pending"), "info")
+	}
+
+	_ = db.IncrementActivity(user.ID, time.Now(), 1)
 
 	return ctx.RedirectTo("/" + user.Username + "/" + gist.Identifier())
 }

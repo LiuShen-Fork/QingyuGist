@@ -4,7 +4,9 @@ import (
 	"strconv"
 
 	"github.com/thomiceli/opengist/internal/db"
+	"github.com/thomiceli/opengist/internal/moderation"
 	"github.com/thomiceli/opengist/internal/render"
+	"github.com/thomiceli/opengist/internal/settings"
 	"github.com/thomiceli/opengist/internal/web/context"
 )
 
@@ -82,12 +84,27 @@ func EditVisibility(ctx *context.Context) error {
 	}
 
 	gist.Private = dto.Private
+
+	// Publishing always goes through moderation when it is enabled, including
+	// visibility changes made after the gist was created.
+	awaitingModeration := false
+	if settings.ModerationEnabled() && dto.Private == db.PublicVisibility && gist.ModerationStatus != db.ModerationApproved {
+		gist.Private = db.PrivateVisibility
+		gist.ModerationStatus = db.ModerationPending
+		awaitingModeration = true
+	}
+
 	if err := gist.UpdateNoTimestamps(); err != nil {
 		return ctx.ErrorRes(500, "Error updating this gist", err)
 	}
 
 	gist.AddInIndex()
 
-	ctx.AddFlash(ctx.Tr("flash.gist.visibility-changed"), "success")
+	if awaitingModeration {
+		moderation.Enqueue(gist.ID)
+		ctx.AddFlash(ctx.Tr("flash.gist.moderation-pending"), "info")
+	} else {
+		ctx.AddFlash(ctx.Tr("flash.gist.visibility-changed"), "success")
+	}
 	return ctx.RedirectTo("/" + gist.User.Username + "/" + gist.Identifier())
 }

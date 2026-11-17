@@ -9,6 +9,18 @@
     </div>
     {{ end }}
 
+    {{ if eq (printf "%s" .gist.ModerationStatus) "pending" }}
+    <div class="alert og-blue" role="status">
+        <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span>{{ .locale.Tr "gist.moderation.pending" }}</span>
+    </div>
+    {{ else if eq (printf "%s" .gist.ModerationStatus) "rejected" }}
+    <div class="alert og-red" role="alert">
+        <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+        <span>{{ .locale.Tr "gist.moderation.rejected" }}{{ if .gist.ModerationReason }} — {{ .gist.ModerationReason }}{{ end }}</span>
+    </div>
+    {{ end }}
+
     {{ if .revision }}{{ if ne .revision "HEAD" }}
     <p class="text-muted-foreground text-xs italic">{{ .locale.Tr "gist.header.revision" }} <span class="revision-text font-mono">{{ .revision }}</span></p>
     {{ end }}{{ end }}
@@ -22,7 +34,7 @@
 
         {{ range $file := .files }}
         {{ $fileslug := slug $file.Filename }}
-        <article class="bg-card overflow-hidden rounded-lg border" data-file="{{ $file.Filename }}">
+        <article class="bg-card overflow-hidden rounded-xl border" data-file="{{ $file.Filename }}">
             <header class="bg-muted/40 flex items-center gap-2 border-b px-4 py-2">
                 <span class="flex min-w-0 flex-auto items-center gap-2 text-sm" id="file-{{ $fileslug }}">
                     <svg class="text-muted-foreground size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
