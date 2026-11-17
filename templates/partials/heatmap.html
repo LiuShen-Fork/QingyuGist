@@ -1,0 +1,51 @@
+{{ define "heatmap" }}
+{{ with .heatmap }}
+<section class="border-border bg-card overflow-hidden rounded-xl border">
+    <div class="flex flex-wrap items-baseline justify-between gap-2 border-b px-4 py-3">
+        <div>
+            <h2 class="text-sm font-semibold">{{ $.locale.Tr "heatmap.title" }}</h2>
+            <p class="text-muted-foreground mt-0.5 text-xs">{{ $.locale.Tr "heatmap.subtitle" }}</p>
+        </div>
+        <p class="text-muted-foreground text-xs">
+            <span class="text-foreground font-semibold">{{ .Total }}</span> {{ $.locale.Tr "heatmap.events" }}
+        </p>
+    </div>
+    <div class="overflow-x-auto p-4">
+        <div class="inline-flex min-w-max gap-2">
+            <div class="heatmap-weekdays" aria-hidden="true">
+                <span>{{ $.locale.Tr "heatmap.day.mon" }}</span>
+                <span></span>
+                <span>{{ $.locale.Tr "heatmap.day.wed" }}</span>
+                <span></span>
+                <span>{{ $.locale.Tr "heatmap.day.fri" }}</span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="flex flex-col gap-1">
+                <div class="relative h-4">
+                    {{ range .Months }}<span class="text-muted-foreground absolute text-[10px] leading-none" style="left: {{ .Left }}px">{{ .Label }}</span>{{ end }}
+                </div>
+                <div class="flex gap-[3px]">
+                    {{ range .Weeks }}
+                    <div class="heatmap-week">
+                        {{ range .Cells }}
+                        <span class="heatmap-cell" data-level="{{ .Level }}" title="{{ .Label }} · {{ .Count }}"></span>
+                        {{ end }}
+                    </div>
+                    {{ end }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-muted-foreground flex items-center justify-end gap-1.5 border-t px-4 py-2 text-[11px]">
+        <span>{{ $.locale.Tr "heatmap.less" }}</span>
+        <span class="heatmap-cell" data-level="0"></span>
+        <span class="heatmap-cell" data-level="1"></span>
+        <span class="heatmap-cell" data-level="2"></span>
+        <span class="heatmap-cell" data-level="3"></span>
+        <span class="heatmap-cell" data-level="4"></span>
+        <span>{{ $.locale.Tr "heatmap.more" }}</span>
+    </div>
+</section>
+{{ end }}
+{{ end }}

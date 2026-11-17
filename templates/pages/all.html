@@ -25,6 +25,8 @@
         {{ end }}
     </header>
 
+    {{ if .heatmap }}{{ template "heatmap" . }}{{ end }}
+
     {{ if .fromUser }}
     <!-- Tabs for a user's gists -->
     <nav class="flex gap-1 border-b" aria-label="Tabs">
@@ -35,9 +37,9 @@
     {{ else if or (eq .mode "all") (eq .mode "all-liked") (eq .mode "all-forked") }}
     <!-- Tabs for the explore "All gists" views -->
     <nav class="flex gap-1 border-b" aria-label="Tabs">
-        <a href="{{ .c.ExternalUrl }}/-/all" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "all" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "header.menu.all" }}</a>
-        <a href="{{ .c.ExternalUrl }}/-/liked" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "all-liked" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.recently-liked" }}</a>
-        <a href="{{ .c.ExternalUrl }}/-/forked" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "all-forked" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.recently-forked" }}</a>
+        <a href="{{ .c.ExternalUrl }}/explore" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "all" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "header.menu.all" }}</a>
+        <a href="{{ .c.ExternalUrl }}/explore/liked" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "all-liked" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.recently-liked" }}</a>
+        <a href="{{ .c.ExternalUrl }}/explore/forked" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "all-forked" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.recently-forked" }}</a>
     </nav>
     {{ end }}
 
@@ -45,7 +47,7 @@
     <!-- Filter / sort toolbar -->
     <div class="flex flex-wrap items-center gap-2">
         {{ if or (eq .mode "fromUser") (eq .mode "all") (eq .mode "topics") }}
-        <form action="{{ .c.ExternalUrl }}/{{ if eq .mode "fromUser" }}{{ .fromUser.Username }}{{ else if eq .mode "topics" }}-/topics/{{ .topic }}{{ else }}-/all{{ end }}" method="GET"
+        <form action="{{ .c.ExternalUrl }}/{{ if eq .mode "fromUser" }}{{ .fromUser.Username }}{{ else if eq .mode "topics" }}-/topics/{{ .topic }}{{ else }}explore{{ end }}" method="GET"
               class="flex flex-1 flex-wrap items-center gap-2"
               data-gist-filter
               data-init-title="{{ .title }}" data-init-visibility="{{ .visibility }}" data-init-language="{{ .language }}" data-init-topics="{{ .topics }}">

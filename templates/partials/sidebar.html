@@ -15,7 +15,7 @@
         <section class="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-2">
         {{ if .settingsHeaderPage }}
             <!-- User settings context -->
-            <a href="{{ .c.ExternalUrl }}/{{ if .userLogged }}{{ .userLogged.Username }}{{ else }}-/all{{ end }}"
+            <a href="{{ .c.ExternalUrl }}/{{ if .userLogged }}{{ .userLogged.Username }}{{ else }}explore{{ end }}"
                class="text-muted-foreground hover:text-sidebar-foreground flex items-center gap-2 rounded-md px-2 py-1 text-sm [&>svg]:size-4">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
                 <span>{{ .locale.Tr "header.menu.my-gists" }}</span>
@@ -186,7 +186,7 @@
                     {{ end }}
 
                     <li>
-                        <a href="{{ .c.ExternalUrl }}/-/all" {{ if or (eq .currentPage "all") (eq .currentPage "recently-liked") (eq .currentPage "recently-forked") }}aria-current="page"{{ end }}
+                        <a href="{{ .c.ExternalUrl }}/explore" {{ if or (eq .currentPage "all") (eq .currentPage "recently-liked") (eq .currentPage "recently-forked") }}aria-current="page"{{ end }}
                            class="flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-sidebar-hover hover:text-sidebar-accent-foreground font-medium aria-[current=page]:bg-sidebar-accent aria-[current=page]:font-medium [&>svg]:size-4">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
                             <span>{{ .locale.Tr "gist.list.all" }}</span>

@@ -106,7 +106,10 @@ func AllGists(ctx *context.Context) error {
 		case "all":
 			ctx.SetData("currentPage", "all")
 			ctx.SetData("htmlTitle", ctx.TrH("gist.list.all"))
-			urlPage = "-/all"
+			urlPage = "explore"
+			if pageInt == 1 {
+				ctx.SetData("heatmap", buildHeatmap(0))
+			}
 
 			if languages, err := db.GetGistLanguages(currentUserId); err != nil {
 				return ctx.ErrorRes(500, "Error fetching languages", err)
@@ -119,12 +122,12 @@ func AllGists(ctx *context.Context) error {
 		case "all-liked":
 			ctx.SetData("currentPage", "recently-liked")
 			ctx.SetData("htmlTitle", ctx.TrH("gist.list.recently-liked"))
-			urlPage = "-/liked"
+			urlPage = "explore/liked"
 			gists, err = db.GetAllGistsLiked(currentUserId, nil, pageInt-1, sort, order, 11, 10)
 		case "all-forked":
 			ctx.SetData("currentPage", "recently-forked")
 			ctx.SetData("htmlTitle", ctx.TrH("gist.list.recently-forked"))
-			urlPage = "-/forked"
+			urlPage = "explore/forked"
 			gists, err = db.GetAllGistsForked(currentUserId, nil, pageInt-1, sort, order, 11, 10)
 		}
 	} else {
@@ -180,6 +183,9 @@ func AllGists(ctx *context.Context) error {
 				return ctx.ErrorRes(500, "Error fetching languages", err)
 			} else {
 				ctx.SetData("languages", languages)
+			}
+			if pageInt == 1 {
+				ctx.SetData("heatmap", buildHeatmap(fromUser.ID))
 			}
 			title, language, visibility, topics := readGistFilters(ctx, pagination)
 			ctx.SetData("htmlTitle", ctx.TrH("gist.list.all-from", fromUserStr))
