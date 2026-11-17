@@ -10,6 +10,7 @@ import (
 type actionView struct {
 	Path     string // POST endpoint suffix under /-/admin-panel, e.g. "sync-fs"
 	LabelKey string // i18n key for the action's label
+	Icon     string // icon key rendered by the template
 	Running  bool   // currently in progress in this instance
 	Periodic bool   // also runs automatically on a schedule
 	Spec     string // raw schedule spec, e.g. "@every 72h"; "" if not periodic
@@ -21,17 +22,18 @@ var adminActions = []struct {
 	Type int
 	Path string
 	Key  string
+	Icon string
 }{
-	{actions.SyncReposFromFS, "sync-fs", "admin.actions.sync-fs"},
-	{actions.SyncReposFromDB, "sync-db", "admin.actions.sync-db"},
-	{actions.GitGcRepos, "gc-repos", "admin.actions.git-gc"},
-	{actions.SyncGistPreviews, "sync-previews", "admin.actions.sync-previews"},
-	{actions.ResetHooks, "reset-hooks", "admin.actions.reset-hooks"},
-	{actions.IndexGists, "index-gists", "admin.actions.index-gists"},
-	{actions.SyncGistLanguages, "sync-languages", "admin.actions.sync-gist-languages"},
-	{actions.DeleteExpiredGists, "delete-expired-gists", "admin.actions.delete-expired-gists"},
-	{actions.SyncSSHKeys, "sync-ssh-keys", "admin.actions.sync-ssh-keys"},
-	{actions.BackfillActivity, "backfill-activity", "admin.actions.backfill-activity"},
+	{actions.SyncReposFromFS, "sync-fs", "admin.actions.sync-fs", "folder"},
+	{actions.SyncReposFromDB, "sync-db", "admin.actions.sync-db", "database"},
+	{actions.GitGcRepos, "gc-repos", "admin.actions.git-gc", "trash"},
+	{actions.SyncGistPreviews, "sync-previews", "admin.actions.sync-previews", "eye"},
+	{actions.ResetHooks, "reset-hooks", "admin.actions.reset-hooks", "link"},
+	{actions.IndexGists, "index-gists", "admin.actions.index-gists", "search"},
+	{actions.SyncGistLanguages, "sync-languages", "admin.actions.sync-gist-languages", "language"},
+	{actions.DeleteExpiredGists, "delete-expired-gists", "admin.actions.delete-expired-gists", "calendar"},
+	{actions.SyncSSHKeys, "sync-ssh-keys", "admin.actions.sync-ssh-keys", "key"},
+	{actions.BackfillActivity, "backfill-activity", "admin.actions.backfill-activity", "activity"},
 }
 
 func AdminActions(ctx *context.Context) error {
@@ -56,6 +58,7 @@ func AdminActions(ctx *context.Context) error {
 		views = append(views, actionView{
 			Path:     a.Path,
 			LabelKey: a.Key,
+			Icon:     a.Icon,
 			Running:  running,
 			Periodic: actions.IsPeriodic(a.Type),
 			Spec:     actions.Spec(a.Type),

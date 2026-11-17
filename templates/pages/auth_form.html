@@ -10,7 +10,7 @@
             {{ if .c.CustomLogo }}
             <img src="{{ custom .c.CustomLogo }}" class="size-9 object-contain" alt="" />
             {{ else }}
-            <img src="{{ asset "img/opengist.svg" }}" class="size-9 brightness-0 invert" alt="" />
+            <img src="{{ asset "img/opengist.svg" }}" class="size-9 invert" alt="" />
             {{ end }}
             <span class="text-base font-semibold tracking-tight">{{ if .SiteName }}{{ .SiteName }}{{ else if .c.CustomName }}{{ .c.CustomName }}{{ else }}Opengist{{ end }}</span>
         </a>

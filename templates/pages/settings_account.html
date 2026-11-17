@@ -14,9 +14,9 @@
         <div class="flex items-center gap-4 p-4">
             <div class="shrink-0">
                 {{ if not (shouldGenerateAvatar .userLogged .DisableGravatar) }}
-                    <img class="size-16 rounded-md border" src="{{ avatarUrl .userLogged .DisableGravatar }}" alt="{{ .userLogged.Username }}" />
+                    <img class="size-16 rounded-full border" src="{{ avatarUrl .userLogged .DisableGravatar }}" alt="{{ .userLogged.Username }}" />
                 {{ else }}
-                    <svg class="size-16 rounded-md border" data-jdenticon-value="{{ .userLogged.Username }}" width="64" height="64"></svg>
+                    <svg class="size-16 rounded-full border" data-jdenticon-value="{{ .userLogged.Username }}" width="64" height="64"></svg>
                 {{ end }}
             </div>
             <div class="flex flex-auto flex-wrap items-center gap-3">

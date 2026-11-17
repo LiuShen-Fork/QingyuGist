@@ -2,16 +2,19 @@ package i18n
 
 import (
 	"fmt"
+	"html/template"
+	"io"
+	"io/fs"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/thomiceli/opengist/internal/i18n/locales"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"golang.org/x/text/language/display"
 	"gopkg.in/yaml.v3"
-	"html/template"
-	"io"
-	"io/fs"
-	"path/filepath"
-	"strings"
 )
 
 var Locales = NewLocaleStore()
@@ -144,4 +147,52 @@ func (l *Locale) Tr(key string, args ...any) template.HTML {
 	}
 
 	return template.HTML(fmt.Sprintf(message, args...))
+}
+
+// TimeAgo renders a Unix timestamp as a localized, approximate relative time
+// ("3 minutes ago", "2 个月前"). Using the request locale keeps dates from
+// falling back to English halfway through an otherwise translated page.
+func (l *Locale) TimeAgo(timestamp int64) template.HTML {
+	return l.timeAgo(time.Unix(timestamp, 0), time.Now())
+}
+
+// TimeAgoStr is the string-timestamp variant used by git revision metadata.
+func (l *Locale) TimeAgoStr(timestamp string) template.HTML {
+	seconds, err := strconv.ParseInt(timestamp, 10, 64)
+	if err != nil {
+		return l.Tr("time.just-now")
+	}
+	return l.TimeAgo(seconds)
+}
+
+func (l *Locale) timeAgo(t, now time.Time) template.HTML {
+	diff := now.Sub(t)
+	if diff < 10*time.Second {
+		return l.Tr("time.just-now")
+	}
+
+	unit := func(key string, value int) template.HTML {
+		if value == 1 {
+			singular := strings.TrimSuffix(key, "s")
+			if message := l.Messages[singular]; message != "" {
+				return template.HTML(message)
+			}
+		}
+		return l.Tr(key, value)
+	}
+
+	switch {
+	case diff < time.Minute:
+		return unit("time.seconds", int(diff/time.Second))
+	case diff < time.Hour:
+		return unit("time.minutes", int(diff/time.Minute))
+	case diff < 24*time.Hour:
+		return unit("time.hours", int(diff/time.Hour))
+	case diff < 30*24*time.Hour:
+		return unit("time.days", int(diff/(24*time.Hour)))
+	case diff < 365*24*time.Hour:
+		return unit("time.months", int(diff/(30*24*time.Hour)))
+	default:
+		return unit("time.years", int(diff/(365*24*time.Hour)))
+	}
 }

@@ -450,7 +450,6 @@ html.title.admin-panel: Admin panel
 # Admin dashboard
 admin.dashboard: Dashboard
 admin.dashboard-subtitle: A live overview of this instance.
-admin.actions: Maintenance actions
 admin.back-to-dashboard: Back to dashboard
 admin.config-description: Stored in the database and applied instantly — no restart or configuration file needed.
 admin.config-save-hint: Every field is validated before anything is written.
@@ -472,11 +471,10 @@ admin.memory: Memory
 admin.goroutines: goroutines
 admin.uptime: uptime
 admin.storage-breakdown: Storage breakdown
-admin.storage-breakdown-description: Disk usage of the data directory, repositories and the search index.
+admin.storage-breakdown-description: Disk used by repositories, attachments and the search index.
 admin.heap: Heap in use
 admin.reserved: Reserved
 admin.runtime: Runtime
-admin.invitations: Invitations
 admin.last-index: Last index run
 admin.save-changes: Save changes
 
@@ -499,9 +497,9 @@ settings.site.description_help: A short sentence used on the sign-in page and in
 settings.site.external_url: External URL
 settings.site.external_url_help: Public base URL used for clone links and OAuth callbacks.
 settings.site.logo: Logo URL
-settings.site.logo_help: Image shown in the sidebar and on the sign-in page.
+settings.site.logo_help: File in the custom directory or an absolute image URL.
 settings.site.favicon: Favicon URL
-settings.site.favicon_help: Icon shown in browser tabs.
+settings.site.favicon_help: File in the custom directory or an absolute image URL.
 settings.site.custom_css: Custom CSS
 settings.site.custom_css_help: Injected into every page after the theme styles.
 settings.site.custom_js: Custom JavaScript
@@ -595,3 +593,48 @@ header.search-placeholder: Search
 header.code-search-placeholder: Search code
 admin.actions.backfill-activity: Rebuild contribution heatmap from existing gists
 flash.admin.backfill-activity: Contribution activity rebuild started
+
+heatmap.month.1: Jan
+heatmap.month.2: Feb
+heatmap.month.3: Mar
+heatmap.month.4: Apr
+heatmap.month.5: May
+heatmap.month.6: Jun
+heatmap.month.7: Jul
+heatmap.month.8: Aug
+heatmap.month.9: Sep
+heatmap.month.10: Oct
+heatmap.month.11: Nov
+heatmap.month.12: Dec
+
+time.just-now: just now
+time.second: 1 second ago
+time.seconds: '%d seconds ago'
+time.minute: 1 minute ago
+time.minutes: '%d minutes ago'
+time.hour: 1 hour ago
+time.hours: '%d hours ago'
+time.day: 1 day ago
+time.days: '%d days ago'
+time.month: 1 month ago
+time.months: '%d months ago'
+time.year: 1 year ago
+time.years: '%d years ago'
+
+admin.users.subtitle: Manage the accounts and permissions on this instance.
+admin.users.all: All users
+admin.users.admin: Admin
+admin.users.empty: No users yet.
+admin.gists.subtitle: Browse and manage every gist, including private ones.
+admin.gists.all: All gists
+admin.gists.empty: No gists yet.
+admin.actions.all: Maintenance tasks
+admin.actions.help: Tasks run in the background; you can leave this page.
+admin.actions.auto: Automatic
+admin.invitations.subtitle: Create invitation codes and control who can sign up.
+admin.invitations.all: All invitations
+admin.invitations.empty: No invitations yet.
+admin.moderation.pending: In review
+admin.moderation.rejected: Rejected
+
+admin.invitations.generate: Generate invitation

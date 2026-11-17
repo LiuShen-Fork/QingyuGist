@@ -38,7 +38,7 @@ type HeatmapData struct {
 type HeatmapMonth struct {
 	Week  int
 	Left  int
-	Label string
+	Month int
 }
 
 const heatmapDays = 371 // 53 weeks, enough to always cover a full year view
@@ -118,7 +118,7 @@ func buildHeatmap(userID uint) *HeatmapData {
 			seen = month
 			if i > 0 {
 				t, _ := time.Parse("2006-01-02", w.Cells[0].Date)
-				data.Months = append(data.Months, HeatmapMonth{Week: i, Left: i * 14, Label: t.Format("Jan")})
+				data.Months = append(data.Months, HeatmapMonth{Week: i, Left: i * 14, Month: int(t.Month())})
 			}
 		}
 	}

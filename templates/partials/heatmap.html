@@ -23,7 +23,7 @@
             </div>
             <div class="flex flex-col gap-1">
                 <div class="relative h-4">
-                    {{ range .Months }}<span class="text-muted-foreground absolute text-[10px] leading-none" style="left: {{ .Left }}px">{{ .Label }}</span>{{ end }}
+                    {{ range .Months }}<span class="text-muted-foreground absolute text-[10px] leading-none" style="left: {{ .Left }}px">{{ $.locale.Tr (printf "heatmap.month.%d" .Month) }}</span>{{ end }}
                 </div>
                 <div class="flex gap-[3px]">
                     {{ range .Weeks }}

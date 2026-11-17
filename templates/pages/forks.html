@@ -9,13 +9,13 @@
             {{ range $gist := .forks }}
             <a href="{{ $.c.ExternalUrl }}/{{ $gist.User.Username }}/{{ $gist.Identifier }}" class="bg-card hover:border-primary flex items-center gap-3 rounded-xl border p-3">
                 {{ if not (shouldGenerateAvatar $gist.User $.DisableGravatar) }}
-                    <img class="size-10 shrink-0 rounded-md border object-cover" src="{{ avatarUrl $gist.User $.DisableGravatar }}" alt="{{ $gist.User.Username }}" />
+                    <img class="size-10 shrink-0 rounded-full border object-cover" src="{{ avatarUrl $gist.User $.DisableGravatar }}" alt="{{ $gist.User.Username }}" />
                 {{ else }}
-                    <svg class="size-10 shrink-0 rounded-md border" data-jdenticon-value="{{ $gist.User.Username }}" width="40" height="40"></svg>
+                    <svg class="size-10 shrink-0 rounded-full border" data-jdenticon-value="{{ $gist.User.Username }}" width="40" height="40"></svg>
                 {{ end }}
                 <div class="min-w-0">
                     <p class="truncate font-medium">{{ $gist.User.Username }}<span class="text-muted-foreground">/{{ $gist.Title }}</span></p>
-                    <p class="text-muted-foreground text-sm">{{ $.locale.Tr "gist.list.forked" }} {{ $gist.CreatedAt | humanTimeDiff }}</p>
+                    <p class="text-muted-foreground text-sm">{{ $.locale.Tr "gist.list.forked" }} {{ $.locale.TimeAgo $gist.CreatedAt }}</p>
                 </div>
             </a>
             {{ end }}

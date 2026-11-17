@@ -54,13 +54,13 @@
                         <td class="px-4 py-2">
                             <a href="{{ $.c.ExternalUrl }}/{{ .Username }}" class="flex items-center gap-3">
                                 {{ if not (shouldGenerateAvatar .User $.DisableGravatar) }}
-                                    <img class="size-11 shrink-0 rounded-md border object-cover" src="{{ avatarUrl .User $.DisableGravatar }}" alt="{{ .Username }}" />
+                                    <img class="size-11 shrink-0 rounded-full border object-cover" src="{{ avatarUrl .User $.DisableGravatar }}" alt="{{ .Username }}" />
                                 {{ else }}
-                                    <svg class="size-11 shrink-0 rounded-md border" data-jdenticon-value="{{ .Username }}" width="44" height="44"></svg>
+                                    <svg class="size-11 shrink-0 rounded-full border" data-jdenticon-value="{{ .Username }}" width="44" height="44"></svg>
                                 {{ end }}
                                 <span class="flex flex-col">
                                     <span class="text-primary dark:text-violet-300 text-base font-medium hover:underline">{{ .Username }}</span>
-                                    <span class="text-muted-foreground text-xs">{{ $.locale.Tr "gist.list.joined" }} {{ .CreatedAt | humanTimeDiff }}</span>
+                                    <span class="text-muted-foreground text-xs">{{ $.locale.Tr "gist.list.joined" }} {{ $.locale.TimeAgo .CreatedAt }}</span>
                                 </span>
                             </a>
                         </td>

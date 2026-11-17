@@ -16,7 +16,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dustin/go-humanize"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
 	"github.com/thomiceli/opengist/internal/config"
@@ -113,7 +112,13 @@ func (s *Server) setFuncMap() {
 			return config.C.ExternalUrl + "/" + context.ManifestEntries[file].Css[0]
 		},
 		"custom": func(file string) string {
-			assetpath, err := url.JoinPath("/", "assets", file)
+			file = strings.TrimSpace(file)
+			// A logo/favicon may point at an external image just as well as a
+			// file dropped into <home>/custom.
+			if strings.HasPrefix(file, "http://") || strings.HasPrefix(file, "https://") || strings.HasPrefix(file, "//") {
+				return file
+			}
+			assetpath, err := url.JoinPath("/", "assets", strings.TrimPrefix(file, "/"))
 			if err != nil {
 				log.Error().Err(err).Msgf("Failed to join path for custom file %s", file)
 			}
@@ -211,18 +216,11 @@ func (s *Server) setFuncMap() {
 			h, _ := strconv.ParseUint(strings.TrimPrefix(hex, "#"), 16, 32)
 			return fmt.Sprintf("%d, %d, %d,", (h>>16)&0xFF, (h>>8)&0xFF, h&0xFF)
 		},
-		"humanTimeDiff": func(t int64) string {
-			return humanize.Time(time.Unix(t, 0))
-		},
-		"humanTimeDiffStr": func(timestamp string) string {
-			t, _ := strconv.ParseInt(timestamp, 10, 64)
-			return humanize.Time(time.Unix(t, 0))
-		},
 		"humanDate": func(t int64) string {
-			return time.Unix(t, 0).Format("02/01/2006 15:04")
+			return time.Unix(t, 0).Format("2006-01-02 15:04")
 		},
 		"humanDateOnly": func(t int64) string {
-			return time.Unix(t, 0).Format("02/01/2006")
+			return time.Unix(t, 0).Format("2006-01-02")
 		},
 		"humanSize":     humanSize,
 		"humanDuration": humanDuration,
@@ -304,7 +302,22 @@ func parseManifest(files fs.FS) (map[string]context.Asset, error) {
 
 // humanSize formats a byte count the way a storage dashboard should read:
 // compact, one decimal at most, and never scientific.
-func humanSize(bytes int64) string {
+func humanSize(value any) string {
+	var bytes int64
+	switch v := value.(type) {
+	case int64:
+		bytes = v
+	case int:
+		bytes = int64(v)
+	case uint64:
+		bytes = int64(v)
+	case uint:
+		bytes = int64(v)
+	case float64:
+		bytes = int64(v)
+	default:
+		return "0 B"
+	}
 	const unit = 1024
 	if bytes < unit {
 		return fmt.Sprintf("%d B", bytes)

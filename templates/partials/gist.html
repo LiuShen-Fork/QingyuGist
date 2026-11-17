@@ -3,9 +3,9 @@
     <header class="flex items-start gap-3 p-4">
         <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}" class="shrink-0">
             {{ if not (shouldGenerateAvatar .gist.User .DisableGravatar) }}
-                <img class="size-9 rounded-md border object-cover" src="{{ avatarUrl .gist.User .DisableGravatar }}" alt="{{ .gist.User.Username }}" />
+                <img class="size-9 rounded-full border object-cover" src="{{ avatarUrl .gist.User .DisableGravatar }}" alt="{{ .gist.User.Username }}" />
             {{ else }}
-                <svg class="size-9 rounded-md border" data-jdenticon-value="{{ .gist.User.Username }}" width="36" height="36"></svg>
+                <svg class="size-9 rounded-full border" data-jdenticon-value="{{ .gist.User.Username }}" width="36" height="36"></svg>
             {{ end }}
         </a>
 
@@ -22,7 +22,7 @@
 
             <div class="text-muted-foreground mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                 <span>
-                    {{ .locale.Tr "gist.list.last-active" }} {{ .gist.UpdatedAt | humanTimeDiff }}
+                    {{ .locale.Tr "gist.list.last-active" }} {{ $.locale.TimeAgo .gist.UpdatedAt }}
                     {{ if .gist.Forked }} • {{ .locale.Tr "gist.list.forked-from" }}
                         <a href="{{ .c.ExternalUrl }}/{{ .gist.Forked.User.Username }}/{{ .gist.Forked.Identifier }}" class="hover:underline">{{ .gist.Forked.User.Username }}/{{ .gist.Forked.Title }}</a>
                     {{ end }}
@@ -52,7 +52,7 @@
     </header>
 
     <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}/{{ .gist.Identifier }}" class="block border-t">
-        <div class="max-h-72 overflow-auto rounded-b-lg">
+        <div class="max-h-72 overflow-auto rounded-b-xl">
             {{ if .gist.PreviewFilename }}
                 {{ if .gist.PreviewMimeType }}
                     {{ if or .gist.PreviewMimeType.IsSVG .gist.PreviewMimeType.IsImage }}

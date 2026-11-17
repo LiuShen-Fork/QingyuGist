@@ -4,9 +4,9 @@
         <header class="flex flex-col gap-2 p-2">
             <a href="{{ .c.ExternalUrl }}/" class="flex items-center gap-2 px-2 py-1.5 font-semibold">
                 {{ if .c.CustomLogo }}
-                    <img src="{{ custom .c.CustomLogo }}" class="size-6 object-cover" alt="Opengist Logo" />
+                    <img src="{{ custom .c.CustomLogo }}" class="size-6 rounded object-contain" alt="{{ if .SiteName }}{{ .SiteName }}{{ else }}Opengist{{ end }}" />
                 {{ else }}
-                    <img src="{{ asset "img/opengist.svg" }}" class="size-6" alt="" />
+                    <img src="{{ asset "img/opengist.svg" }}" class="size-6 dark:invert" alt="" />
                 {{ end }}
                 <span>{{ if .c.CustomName }}{{ .c.CustomName }}{{ else }}Opengist{{ end }}</span>
             </a>
@@ -130,7 +130,7 @@
                         <a href="{{ .c.ExternalUrl }}/-/admin-panel" {{ if eq .adminHeaderPage "index" }}aria-current="page"{{ end }}
                            class="flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-sidebar-hover hover:text-sidebar-accent-foreground font-medium aria-[current=page]:bg-sidebar-accent aria-[current=page]:font-medium [&>svg]:size-4">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                            <span>{{ .locale.Tr "admin.general" }}</span>
+                            <span>{{ .locale.Tr "admin.dashboard" }}</span>
                         </a>
                     </li>
                     <li>

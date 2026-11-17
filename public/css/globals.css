@@ -441,3 +441,13 @@ table.csv-table thead th {
     color: var(--muted-foreground);
     text-align: right;
 }
+
+/* Basecoat keeps closed popovers in the layout with only an opacity/scale
+   transition. Ensure a closed menu can never sit on top of page content while
+   it is waiting to be opened. */
+.dropdown-menu [data-popover][aria-hidden="true"],
+[data-popover][aria-hidden="true"] {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}

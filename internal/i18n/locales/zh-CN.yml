@@ -337,7 +337,6 @@ gist.search.placeholder.unlisted: 未列出的
 # 管理面板
 admin.dashboard: 概览
 admin.dashboard-subtitle: 实例的实时运行状态。
-admin.actions: 维护操作
 admin.back-to-dashboard: 返回概览
 admin.config-description: 配置保存在数据库中并即时生效，无需重启或修改配置文件。
 admin.config-save-hint: 所有字段会先校验，再统一写入。
@@ -359,11 +358,10 @@ admin.memory: 内存
 admin.goroutines: 协程
 admin.uptime: 运行时长
 admin.storage-breakdown: 存储明细
-admin.storage-breakdown-description: 数据目录、仓库与搜索索引的磁盘占用。
+admin.storage-breakdown-description: 仓库、附件与搜索索引占用的磁盘空间。
 admin.heap: 堆内存
 admin.reserved: 已预留
 admin.runtime: 运行环境
-admin.invitations: 邀请码
 admin.last-index: 上次索引时间
 admin.save-changes: 保存更改
 
@@ -386,9 +384,9 @@ settings.site.description_help: 用于登录页和页面元数据的一句话介
 settings.site.external_url: 外部地址
 settings.site.external_url_help: 用于克隆链接与 OAuth 回调的公开基础地址。
 settings.site.logo: Logo 地址
-settings.site.logo_help: 显示在侧边栏和登录页的图片。
+settings.site.logo_help: custom 目录中的文件名，或完整的图片 URL。
 settings.site.favicon: 站点图标地址
-settings.site.favicon_help: 浏览器标签页显示的图标。
+settings.site.favicon_help: custom 目录中的文件名，或完整的图片 URL。
 settings.site.custom_css: 自定义 CSS
 settings.site.custom_css_help: 在主题样式之后注入每个页面。
 settings.site.custom_js: 自定义 JavaScript
@@ -583,3 +581,48 @@ header.search-placeholder: 搜索
 header.code-search-placeholder: 搜索代码
 admin.actions.backfill-activity: 根据现有 Gist 重建贡献热力图
 flash.admin.backfill-activity: 贡献活跃度重建任务已开始
+
+heatmap.month.1: 1月
+heatmap.month.2: 2月
+heatmap.month.3: 3月
+heatmap.month.4: 4月
+heatmap.month.5: 5月
+heatmap.month.6: 6月
+heatmap.month.7: 7月
+heatmap.month.8: 8月
+heatmap.month.9: 9月
+heatmap.month.10: 10月
+heatmap.month.11: 11月
+heatmap.month.12: 12月
+
+time.just-now: 刚刚
+time.second: 1 秒前
+time.seconds: '%d 秒前'
+time.minute: 1 分钟前
+time.minutes: '%d 分钟前'
+time.hour: 1 小时前
+time.hours: '%d 小时前'
+time.day: 1 天前
+time.days: '%d 天前'
+time.month: 1 个月前
+time.months: '%d 个月前'
+time.year: 1 年前
+time.years: '%d 年前'
+
+admin.users.subtitle: 管理实例中的账户与权限。
+admin.users.all: 所有用户
+admin.users.admin: 管理员
+admin.users.empty: 暂无用户。
+admin.gists.subtitle: 浏览并管理所有 Gist，包括私有内容。
+admin.gists.all: 所有 Gist
+admin.gists.empty: 暂无 Gist。
+admin.actions.all: 维护任务
+admin.actions.help: 任务在后台运行，可以放心离开此页面。
+admin.actions.auto: 自动运行
+admin.invitations.subtitle: 生成邀请码，控制可以注册的人。
+admin.invitations.all: 所有邀请
+admin.invitations.empty: 暂无邀请。
+admin.moderation.pending: 审核中
+admin.moderation.rejected: 未通过
+
+admin.invitations.generate: 生成邀请码
