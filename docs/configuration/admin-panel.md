@@ -1,53 +1,79 @@
 # Admin panel
 
-The first user created on your Opengist instance has access to the Admin panel.
+The first user created on an Opengist instance has access to the admin panel.
+Open your user menu and choose **Admin**. The panel is available at
+`/-/admin-panel`.
 
-To access the Admin panel:
+## Dashboard
 
-1. Log in
-2. Click your username in the upper right corner
-3. Select `Admin`
+The dashboard shows the instance at a glance: gist and user counts, repository,
+attachment and search-index disk usage, heap and reserved memory, goroutine
+count, uptime and the last search reindex.
 
-## Usage
+## Actions
 
-### General
+Maintenance tasks run in the background, so it is safe to leave the page while
+one is in progress. Besides the manually triggered actions, the search index is
+rebuilt automatically every `search.reindex-days` days (7 by default) and
+expired gists are deleted on a schedule.
 
-Here you can see some basic information, like Opengist version, alongside some stats.
+**Rebuild the contribution heatmap** backfills activity from existing gists.
+New gists update the heatmap automatically.
 
-You can also start some actions like forcing synchronization of gists,
-starting garbage collection, etc.
+## Configuration
 
-### Users
+Settings changed here are stored in the database and apply without restarting
+the instance. They take precedence over the corresponding values in
+`config.yml`, so the configuration file is optional for these options. Secrets
+are shown masked; leaving a masked value untouched keeps the stored secret.
 
-Here you can see your users and delete them.
+### Site
 
-### Gists
+- Site name and description used in the interface, page titles and metadata.
+- External URL, used for generated links.
+- Logo and favicon. Enter a file name from `<opengist-home>/custom/`, or a full
+  `http(s)://` URL.
+- Custom CSS and JavaScript injected into every page.
 
-Here you can see all the gists and some basic information about them. You also have an option
-to delete them.
+### Authentication
 
+- Registration mode: open, OAuth-only, or closed. OAuth-only hides the local
+  registration form while keeping sign-in and invitation links available.
+- Require login, allow individual gists without login, disable the login form
+  (for OAuth-only instances), and disable Gravatar.
 
-### Invitations
+### Uploads
 
-Here you can create invitation links with some options like limiting the number of signed up
-users or setting an expiration date.
+- Enable or disable file uploads.
+- Maximum size per file and total size per gist.
+- Allow or block media files.
+- Blocked file extensions (comma-separated). The default list blocks common
+  executable and archive formats.
 
-> [!Note]
-> Invitation links override the `Disable signup` option but not the `Disable login form` option.
->
-> Users will see only the OAuth providers when `Disable login form` is enabled.
+### Search
 
-### Configuration
+- Reindex interval in days. The index is checked hourly and rebuilt when the
+  interval has elapsed.
+- Use **Actions → Rebuild search index** to force a rebuild after a manual data
+  import.
 
-Here you can change a limited number of settings without restarting the instance.
+### Security
 
-- Disable signup
-    - Forbid the creation of new accounts.
-- Require login
-    - Enforce users to be logged in to see gists.
-- Allow individual gists without login
-    - Allow individual gists to be viewed and downloaded without login, while requiring login for discovering gists.
-- Disable login form
-    - Forbid logging in via the login form to force using OAuth providers instead.
-- Disable Gravatar
-    - Disable the usage of Gravatar as an avatar provider.
+- CORS: allow or deny cross-origin requests, choose allowed origins
+  (comma-separated, `*` for any), and whether credentials are allowed.
+
+### Moderation
+
+When enabled, a newly published public gist is made private and marked
+*pending* while it is reviewed asynchronously by an OpenAI-compatible chat
+completions endpoint. Approved gists become public; rejected gists stay private.
+Private gists are not reviewed.
+
+- API endpoint, API key and model.
+- Review prompt and request timeout.
+- **Fail closed** keeps gists private if the moderation service is unavailable.
+
+### Git and API
+
+- Default branch for new repositories.
+- Enable or disable the HTTP API.
