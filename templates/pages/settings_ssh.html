@@ -7,7 +7,7 @@
 
     <div class="space-y-6">
         <!-- Add key -->
-        <section class="bg-card h-fit rounded-lg border">
+        <section class="bg-card h-fit rounded-xl border">
             <div class="space-y-1 border-b px-4 py-3">
                 <h2 class="font-semibold">{{ .locale.Tr "settings.add-ssh-key" }}</h2>
                 <p class="text-muted-foreground text-sm">{{ .locale.Tr "settings.add-ssh-key-help" }}</p>
@@ -32,7 +32,7 @@
         <div class="space-y-3">
             {{ if .sshKeys }}
             {{ range $key := .sshKeys }}
-            <section class="bg-card rounded-lg border p-4">
+            <section class="bg-card rounded-xl border p-4">
                 <div class="flex items-start gap-3">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-muted-foreground mt-0.5 size-8 shrink-0" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg>
                     <div class="min-w-0 flex-auto space-y-1">
@@ -55,7 +55,7 @@
             </section>
             {{ end }}
             {{ else }}
-            <div class="text-muted-foreground flex h-full min-h-32 items-center justify-center rounded-lg border border-dashed p-6 text-sm">
+            <div class="text-muted-foreground flex h-full min-h-32 items-center justify-center rounded-xl border border-dashed p-6 text-sm">
                 {{ .locale.Tr "settings.add-ssh-key-help" }}
             </div>
             {{ end }}

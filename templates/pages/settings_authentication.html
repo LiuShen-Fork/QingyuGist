@@ -7,7 +7,7 @@
 
     {{ if not .disableForm }}
     <!-- Password -->
-    <section class="bg-card rounded-lg border">
+    <section class="bg-card rounded-xl border">
         <div class="space-y-1 border-b px-4 py-3">
             <h2 class="font-semibold">{{ if .hasPassword }}{{ .locale.Tr "settings.change-password" }}{{ else }}{{ .locale.Tr "settings.create-password" }}{{ end }}</h2>
             <p class="text-muted-foreground text-sm">{{ if .hasPassword }}{{ .locale.Tr "settings.change-password-help" }}{{ else }}{{ .locale.Tr "settings.create-password-help" }}{{ end }}</p>
@@ -27,7 +27,7 @@
     {{ end }}
 
     <!-- TOTP -->
-    <section class="bg-card rounded-lg border">
+    <section class="bg-card rounded-xl border">
         <div class="flex flex-wrap items-start justify-between gap-4 p-4">
             <div class="min-w-0 space-y-1">
                 <h2 class="flex items-center gap-2 font-semibold">
@@ -55,7 +55,7 @@
     </section>
 
     <!-- Passkeys -->
-    <section class="bg-card rounded-lg border">
+    <section class="bg-card rounded-xl border">
         <div class="space-y-1 border-b px-4 py-3">
             <h2 class="font-semibold">{{ .locale.Tr "auth.mfa.passkeys" }}</h2>
             <p class="text-muted-foreground text-sm">{{ .locale.Tr "auth.mfa.passkeys-help" }}</p>
@@ -100,7 +100,7 @@
 
     {{ if or .githubOauth .gitlabOauth .giteaOauth .oidcOauth }}
     <!-- Linked accounts -->
-    <section class="bg-card rounded-lg border">
+    <section class="bg-card rounded-xl border">
         <div class="border-b px-4 py-3">
             <h2 class="font-semibold">{{ .locale.Tr "settings.link-accounts" }}</h2>
         </div>

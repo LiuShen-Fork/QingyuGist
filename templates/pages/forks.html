@@ -7,7 +7,7 @@
     {{ if ne (len .forks) 0 }}
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {{ range $gist := .forks }}
-            <a href="{{ $.c.ExternalUrl }}/{{ $gist.User.Username }}/{{ $gist.Identifier }}" class="bg-card hover:border-primary flex items-center gap-3 rounded-lg border p-3">
+            <a href="{{ $.c.ExternalUrl }}/{{ $gist.User.Username }}/{{ $gist.Identifier }}" class="bg-card hover:border-primary flex items-center gap-3 rounded-xl border p-3">
                 {{ if not (shouldGenerateAvatar $gist.User $.DisableGravatar) }}
                     <img class="size-10 shrink-0 rounded-md border object-cover" src="{{ avatarUrl $gist.User $.DisableGravatar }}" alt="{{ $gist.User.Username }}" />
                 {{ else }}

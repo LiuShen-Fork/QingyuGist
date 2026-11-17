@@ -1,5 +1,5 @@
 {{ define "_editor" }}
-<div class="editor bg-card overflow-hidden rounded-lg border"{{ if .Binary }} data-binary-original-name="{{ .Filename }}"{{ end }}
+<div class="editor bg-card overflow-hidden rounded-xl border"{{ if .Binary }} data-binary-original-name="{{ .Filename }}"{{ end }}
      _="on drop(dataTransfer) call event.preventDefault() then set the value of the first <input.form-filename/> in me to dataTransfer.files[0].name">
     <div class="bg-muted/40 flex items-center gap-2 border-b p-2">
         <div class="flex min-w-0 flex-auto">

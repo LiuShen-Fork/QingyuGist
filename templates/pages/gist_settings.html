@@ -9,7 +9,7 @@
 
     {{ if not .gist.Archived }}
     <!-- Metadata -->
-    <section class="bg-card rounded-lg border">
+    <section class="bg-card rounded-xl border">
         <form method="post" action="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}/{{ .gist.Identifier }}/metadata" class="space-y-4 p-4">
             {{ .csrfHtml }}
             <div class="space-y-1.5">
@@ -39,7 +39,7 @@
     {{ end }}
 
     <!-- Visibility -->
-    <section class="bg-card rounded-lg border">
+    <section class="bg-card rounded-xl border">
         <div class="flex flex-wrap items-start justify-between gap-4 p-4">
             <div class="min-w-0 space-y-1">
                 <h2 class="font-semibold">{{ .locale.Tr "gist.search.placeholder.visibility" }}</h2>
@@ -58,7 +58,7 @@
     </section>
 
     <!-- Archive -->
-    <section class="bg-card rounded-lg border">
+    <section class="bg-card rounded-xl border">
         <div class="flex flex-wrap items-start justify-between gap-4 p-4">
             <div class="min-w-0 space-y-1">
                 <h2 class="flex items-center gap-2 font-semibold">
@@ -78,7 +78,7 @@
     </section>
 
     <!-- Danger zone -->
-    <section class="border-destructive/40 overflow-hidden rounded-lg border">
+    <section class="border-destructive/40 overflow-hidden rounded-xl border">
         <div class="border-destructive/30 og-red border-b px-4 py-2">
             <h2 class="text-sm font-semibold">{{ .locale.Tr "gist.settings.danger-zone" }}</h2>
         </div>
