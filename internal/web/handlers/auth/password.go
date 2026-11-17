@@ -31,9 +31,15 @@ func Register(ctx *context.Context) error {
 
 	ctx.SetData("title", ctx.TrH("auth.new-account"))
 	ctx.SetData("htmlTitle", ctx.TrH("auth.new-account"))
+	// In OAuth-only mode the form stays hidden; the third-party buttons are
+	// the only way in. Invitation codes still unlock the local form.
+	if ctx.GetData("OAuthOnlyRegistration") == true && code == "" {
+		disableForm = true
+	}
 	ctx.SetData("disableForm", disableForm)
 	ctx.SetData("disableSignup", disableSignup)
 	ctx.SetData("isLoginPage", false)
+	ctx.SetData("authPage", true)
 	return ctx.Html("auth_form.html")
 }
 
@@ -56,6 +62,10 @@ func ProcessRegister(ctx *context.Context) error {
 		return ctx.ErrorRes(403, ctx.Tr("error.signup-disabled-form"), nil)
 	}
 
+	if ctx.GetData("OAuthOnlyRegistration") == true && invitation.ID == 0 {
+		return ctx.ErrorRes(403, ctx.Tr("error.signup-oauth-only"), nil)
+	}
+
 	ctx.SetData("title", ctx.TrH("auth.new-account"))
 	ctx.SetData("htmlTitle", ctx.TrH("auth.new-account"))
 
@@ -68,11 +78,15 @@ func ProcessRegister(ctx *context.Context) error {
 
 	if err := ctx.Validate(dto); err != nil {
 		ctx.AddFlash(validator.ValidationMessages(&err, ctx.GetData("locale").(*i18n.Locale)), "error")
+		ctx.SetData("isLoginPage", false)
+		ctx.SetData("authPage", true)
 		return ctx.Html("auth_form.html")
 	}
 
 	if exists, err := db.UserExists(dto.Username); err != nil || exists {
 		ctx.AddFlash(ctx.Tr("flash.auth.username-exists"), "error")
+		ctx.SetData("isLoginPage", false)
+		ctx.SetData("authPage", true)
 		return ctx.Html("auth_form.html")
 	}
 
@@ -111,6 +125,7 @@ func Login(ctx *context.Context) error {
 	ctx.SetData("htmlTitle", ctx.TrH("auth.login"))
 	ctx.SetData("disableForm", ctx.GetData("DisableLoginForm"))
 	ctx.SetData("isLoginPage", true)
+	ctx.SetData("authPage", true)
 	return ctx.Html("auth_form.html")
 }
 
@@ -162,5 +177,5 @@ func ProcessLogin(ctx *context.Context) error {
 func Logout(ctx *context.Context) error {
 	ctx.DeleteSession()
 	ctx.DeleteCsrfCookie()
-	return ctx.RedirectTo("/-/all")
+	return ctx.RedirectTo("/explore")
 }
