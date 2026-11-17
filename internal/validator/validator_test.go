@@ -25,6 +25,7 @@ func TestReservedUsernames(t *testing.T) {
 
 	for _, name := range []string{
 		"assets",
+		"explore",
 		"init",
 		"healthcheck",
 		"preview",
