@@ -215,6 +215,9 @@ func adminConfigData(ctx *context.Context, values map[string]string) {
 	ctx.SetData("settingSections", sections)
 	ctx.SetData("settingValues", values)
 	ctx.SetData("secretPlaceholder", settings.SecretPlaceholder)
+	if links, err := settings.ParseSiteLinks(values[settings.KeySiteLinks]); err == nil {
+		ctx.SetData("SiteLinks", links)
+	}
 
 	ctx.SetData("dbtype", db.DatabaseInfo.Type.String())
 	ctx.SetData("dbname", db.DatabaseInfo.Database)

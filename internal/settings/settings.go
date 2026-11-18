@@ -12,6 +12,7 @@
 package settings
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"strconv"
@@ -19,6 +20,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"unicode/utf8"
 
 	"github.com/rs/zerolog/log"
 	"github.com/thomiceli/opengist/internal/config"
@@ -76,6 +78,8 @@ const (
 	KeySiteFavicon     = "site.favicon"
 	KeySiteCustomCSS   = "site.custom-css"
 	KeySiteCustomJS    = "site.custom-js"
+	KeySiteRepository  = "site.repository-url"
+	KeySiteLinks       = "site.links"
 
 	KeyRegistrationMode       = "auth.registration-mode"
 	KeyRequireLogin           = "auth.require-login"
@@ -112,6 +116,10 @@ const (
 	RegistrationModeOAuthOnly = "oauth-only"
 	RegistrationModeClosed    = "closed"
 )
+
+// DefaultRepositoryURL is the project this instance is built from. It is shown
+// as a source-code icon in the public sidebar and can be changed per instance.
+const DefaultRepositoryURL = "https://github.com/LiuShen-Fork/Qingyu-Gist"
 
 // DefaultModerationPrompt is used when the administrator has not customised it.
 const DefaultModerationPrompt = `You are the content moderation system of a self-hosted code snippet site.
@@ -159,6 +167,8 @@ var definitions = []Definition{
 	{Key: KeySiteFavicon, Kind: KindString, Category: CategorySite, Label: "settings.site.favicon", Help: "settings.site.favicon_help", Placeholder: "favicon.png", Max: 300},
 	{Key: KeySiteCustomCSS, Kind: KindText, Category: CategorySite, Label: "settings.site.custom_css", Help: "settings.site.custom_css_help", Rows: 6},
 	{Key: KeySiteCustomJS, Kind: KindText, Category: CategorySite, Label: "settings.site.custom_js", Help: "settings.site.custom_js_help", Rows: 6},
+	{Key: KeySiteRepository, Kind: KindURL, Default: DefaultRepositoryURL, Category: CategorySite, Label: "settings.site.repository_url", Help: "settings.site.repository_url_help", Placeholder: DefaultRepositoryURL, Max: 300},
+	{Key: KeySiteLinks, Kind: KindText, Category: CategorySite, Label: "settings.site.links", Help: "settings.site.links_help", Placeholder: "[]", Rows: 4},
 
 	// Authentication & registration
 	{Key: KeyRegistrationMode, Kind: KindEnum, Category: CategoryAuth, Default: RegistrationModeOpen, Label: "settings.auth.registration_mode", Help: "settings.auth.registration_mode_help", Options: []Option{
@@ -463,6 +473,11 @@ func validateDefinition(d Definition, value string) error {
 	if d.Max > 0 && len(value) > d.Max {
 		return fmt.Errorf("%s: value is too long (max %d)", d.Key, d.Max)
 	}
+	if d.Key == KeySiteLinks {
+		if _, err := parseSiteLinks(value); err != nil {
+			return err
+		}
+	}
 	switch d.Kind {
 	case KindBool:
 		if value != "0" && value != "1" {
@@ -611,6 +626,105 @@ func SiteName() string {
 }
 
 func SiteDescription() string { return strings.TrimSpace(Get(KeySiteDescription)) }
+
+func SiteRepositoryURL() string { return strings.TrimSpace(Get(KeySiteRepository)) }
+
+// SiteLink is an administrator-defined link shown at the bottom of the sidebar.
+type SiteLink struct {
+	Label string `json:"label"`
+	URL   string `json:"url"`
+	Icon  string `json:"icon"`
+}
+
+var siteLinkIcons = []string{
+	"link", "home", "globe", "github", "gitlab", "gitea", "mail",
+	"rss", "code", "book", "user", "x", "mastodon", "telegram",
+}
+
+// SiteLinkIcons lists the icon names accepted by the link editor and rendered
+// by templates/partials/site_icons.html.
+func SiteLinkIcons() []string { return append([]string(nil), siteLinkIcons...) }
+
+func validSiteLinkIcon(icon string) bool {
+	for _, name := range siteLinkIcons {
+		if name == icon {
+			return true
+		}
+	}
+	return false
+}
+
+func parseSiteLinks(raw string) ([]SiteLink, error) {
+	raw = strings.TrimSpace(raw)
+	if raw == "" || raw == "[]" || raw == "null" {
+		return nil, nil
+	}
+	var items []SiteLink
+	if err := json.Unmarshal([]byte(raw), &items); err != nil {
+		return nil, fmt.Errorf("%s: expected a JSON list of links", KeySiteLinks)
+	}
+	if len(items) > 12 {
+		return nil, fmt.Errorf("%s: at most 12 links are allowed", KeySiteLinks)
+	}
+	out := make([]SiteLink, 0, len(items))
+	for _, item := range items {
+		item.Label = strings.TrimSpace(item.Label)
+		item.URL = strings.TrimSpace(item.URL)
+		item.Icon = strings.ToLower(strings.TrimSpace(item.Icon))
+		if item.Label == "" || item.URL == "" {
+			return nil, fmt.Errorf("%s: every link needs a label and a URL", KeySiteLinks)
+		}
+		if utf8.RuneCountInString(item.Label) > 40 {
+			return nil, fmt.Errorf("%s: link labels are limited to 40 characters", KeySiteLinks)
+		}
+		if len(item.URL) > 500 || !validSiteLinkURL(item.URL) {
+			return nil, fmt.Errorf("%s: %q is not a valid link", KeySiteLinks, item.URL)
+		}
+		if item.Icon == "" {
+			item.Icon = "link"
+		}
+		if !validSiteLinkIcon(item.Icon) {
+			item.Icon = "link"
+		}
+		out = append(out, item)
+	}
+	return out, nil
+}
+
+func validSiteLinkURL(value string) bool {
+	if strings.HasPrefix(value, "/") && !strings.HasPrefix(value, "//") {
+		return true
+	}
+	u, err := url.Parse(value)
+	if err != nil || u.Scheme == "" {
+		return false
+	}
+	switch u.Scheme {
+	case "http", "https":
+		return u.Host != ""
+	case "mailto":
+		return u.Opaque != "" || u.Path != ""
+	}
+	return false
+}
+
+// ParseSiteLinks decodes and validates the JSON value used by the sidebar link
+// editor. It is exported so the admin form can render the submitted value again
+// after a validation error.
+func ParseSiteLinks(raw string) ([]SiteLink, error) {
+	return parseSiteLinks(raw)
+}
+
+// SiteLinks returns the configured footer links, skipping a malformed value
+// rather than breaking every page for a bad manual edit.
+func SiteLinks() []SiteLink {
+	links, err := parseSiteLinks(Get(KeySiteLinks))
+	if err != nil {
+		log.Warn().Err(err).Msg("Ignoring malformed site link configuration")
+		return nil
+	}
+	return links
+}
 
 func CustomCSS() string { return Get(KeySiteCustomCSS) }
 func CustomJS() string  { return Get(KeySiteCustomJS) }

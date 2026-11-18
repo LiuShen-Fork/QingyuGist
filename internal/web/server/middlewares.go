@@ -443,6 +443,9 @@ func loadSettings(ctx *context.Context) error {
 	ctx.SetData("SiteDescription", settings.SiteDescription())
 	ctx.SetData("CustomCSS", template.CSS(settings.CustomCSS()))
 	ctx.SetData("CustomJS", template.JS(settings.CustomJS()))
+	ctx.SetData("SiteRepositoryURL", settings.SiteRepositoryURL())
+	ctx.SetData("SiteLinks", settings.SiteLinks())
+	ctx.SetData("SiteLinkIcons", settings.SiteLinkIcons())
 	ctx.SetData("ModerationEnabled", settings.ModerationEnabled())
 	ctx.SetData("settings", settings.Snapshot())
 	return nil
