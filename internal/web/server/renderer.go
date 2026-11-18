@@ -16,16 +16,16 @@ import (
 	"strings"
 	"time"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/index"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers"
+	"github.com/LiuShen-Fork/Qingyu-Gist/public"
+	"github.com/LiuShen-Fork/Qingyu-Gist/templates"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/index"
-	"github.com/thomiceli/opengist/internal/validator"
-	"github.com/thomiceli/opengist/internal/web/context"
-	"github.com/thomiceli/opengist/internal/web/handlers"
-	"github.com/thomiceli/opengist/public"
-	"github.com/thomiceli/opengist/templates"
 )
 
 type Template struct {

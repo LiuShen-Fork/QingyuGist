@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/web/handlers/api/v1/types"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/api/v1/types"
 )
 
 // ToSimpleAPI returns the public simple-user shape used inside gist responses
 // and by the public user-lookup endpoints. It carries no private fields (no
-// email). Fields whose underlying feature doesn't exist in Opengist
+// email). Fields whose underlying feature doesn't exist in QingyuGist
 // (followers, repos, ...) are still populated with the spec-shaped URLs so
 // clients can parse cleanly.
 func (u *User) ToSimpleAPI() types.SimpleUser {

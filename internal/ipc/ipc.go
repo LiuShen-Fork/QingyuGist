@@ -1,5 +1,5 @@
-// Package ipc is the client side of Opengist's internal API: the small HTTP
-// surface that short-lived subprocesses Opengist spawns of itself (Git hooks,
+// Package ipc is the client side of QingyuGist's internal API: the small HTTP
+// surface that short-lived subprocesses QingyuGist spawns of itself (Git hooks,
 // and the SSH shim) use to talk to the long-running daemon.
 //
 // Subprocesses do not open the database. Instead they call the running daemon —
@@ -25,12 +25,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/thomiceli/opengist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
 )
 
 // AuthHeader carries the internal API token on requests from subprocesses to
 // the daemon.
-const AuthHeader = "X-Opengist-Internal"
+const AuthHeader = "X-QingyuGist-Internal"
 
 // Token derives the shared secret used to authenticate internal API calls. It
 // is derived from — not equal to — the session SecretKey, so the raw session
@@ -38,7 +38,7 @@ const AuthHeader = "X-Opengist-Internal"
 // same value because they load the same SecretKey.
 func Token() string {
 	mac := hmac.New(sha256.New, config.SecretKey)
-	mac.Write([]byte("opengist-internal-api"))
+	mac.Write([]byte("qingyugist-internal-api"))
 	return hex.EncodeToString(mac.Sum(nil))
 }
 
@@ -85,7 +85,7 @@ func post(path string, reqBody, respBody any) error {
 
 	resp, err := httpClient.Do(httpReq)
 	if err != nil {
-		return fmt.Errorf("could not reach the Opengist server's internal API (is it running?): %w", err)
+		return fmt.Errorf("could not reach the QingyuGist server's internal API (is it running?): %w", err)
 	}
 	defer resp.Body.Close()
 

@@ -7,11 +7,11 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/web/context"
 )
 
 const (

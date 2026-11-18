@@ -5,10 +5,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/api/v1/types"
+	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/web/handlers/api/v1/types"
-	webtest "github.com/thomiceli/opengist/internal/web/test"
 )
 
 // forkAs has `forker` fork the gist at /{parentUser}/{parentIdent} via the

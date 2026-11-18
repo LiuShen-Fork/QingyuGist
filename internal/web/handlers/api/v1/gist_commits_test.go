@@ -5,10 +5,10 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/api/v1/types"
+	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/web/handlers/api/v1/types"
-	webtest "github.com/thomiceli/opengist/internal/web/test"
 )
 
 // makeCommits creates a public gist and patches its file `count-1` times so
@@ -105,7 +105,7 @@ func TestListCommits_Shape(t *testing.T) {
 }
 
 // TestListCommits_UserResolutionByEmail verifies that when the gist author's
-// email matches a registered Opengist user, the commit's `user` field is
+// email matches a registered QingyuGist user, the commit's `user` field is
 // populated with that account (not just the raw author info).
 func TestListCommits_UserResolutionByEmail(t *testing.T) {
 	s := webtest.Setup(t)

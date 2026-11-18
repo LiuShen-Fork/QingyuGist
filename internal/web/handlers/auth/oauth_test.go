@@ -11,11 +11,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
 	"github.com/oauth2-proxy/mockoidc"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/web/test"
 )
 
 type oidcUser struct {

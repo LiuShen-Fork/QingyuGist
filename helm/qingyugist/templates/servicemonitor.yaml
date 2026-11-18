@@ -2,10 +2,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "opengist.fullname" . }}
+  name: {{ include "qingyugist.fullname" . }}
   namespace: {{ .Values.namespace | default .Release.Namespace }}
   labels:
-    {{- include "opengist.labels" . | nindent 4 }}
+    {{- include "qingyugist.labels" . | nindent 4 }}
     {{- with .Values.service.metrics.serviceMonitor.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -36,6 +36,6 @@ spec:
       - {{ .Values.namespace | default .Release.Namespace }}
   selector:
     matchLabels:
-      {{- include "opengist.selectorLabels" . | nindent 6 }}
+      {{- include "qingyugist.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: metrics
 {{- end }}

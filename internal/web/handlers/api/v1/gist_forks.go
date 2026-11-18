@@ -9,9 +9,9 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/web/context"
-	"github.com/thomiceli/opengist/internal/web/handlers/api/v1/types"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/api/v1/types"
 )
 
 // ListForkedGists handles GET /api/gists/forked.

@@ -1,16 +1,16 @@
 ---
-description: Opengist is a self-hosted pastebin powered by Git. Snippets are stored in Git repositories and managed via standard Git commands or the web interface.
+description: QingyuGist is a self-hosted pastebin powered by Git. Snippets are stored in Git repositories and managed via standard Git commands or the web interface.
 ---
 
-# Opengist
+# QingyuGist
 
-<img height="108px" src="https://raw.githubusercontent.com/thomiceli/opengist/master/public/img/opengist.svg" alt="Opengist" align="right" />
+<img height="108px" src="https://raw.githubusercontent.com/LiuShen-Fork/Qingyu-Gist/master/public/img/qingyugist.svg" alt="QingyuGist" align="right" />
 
-Opengist is a **self-hosted** pastebin **powered by Git**. All snippets are stored in a Git repository and can be
+QingyuGist is a **self-hosted** pastebin **powered by Git**. All snippets are stored in a Git repository and can be
 read and/or modified using standard Git commands, or with the web interface. 
 It is similiar to [GitHub Gist](https://gist.github.com/), but open-source and could be self-hosted.
 
-Written in [Go](https://go.dev), Opengist aims to be fast and easy to deploy.
+Written in [Go](https://go.dev), QingyuGist aims to be fast and easy to deploy.
 
 
 ## Features
@@ -43,7 +43,7 @@ Written in [Go](https://go.dev), Opengist aims to be fast and easy to deploy.
 
 ## System requirements
 
-[Git](https://git-scm.com/download) is obviously required to run Opengist, as it's the main feature of the app.
+[Git](https://git-scm.com/download) is obviously required to run QingyuGist, as it's the main feature of the app.
 Version **2.28** or later is recommended as the app has not been tested with older Git versions and some features would not work.
 
 [OpenSSH](https://www.openssh.com/) suite if you wish to use Git over SSH.

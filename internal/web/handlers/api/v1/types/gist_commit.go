@@ -20,7 +20,7 @@ type CommitChangeStatus struct {
 
 // GistCommit is one entry in the GET /gists/:id/commits response.
 //   - `author` always carries the raw git author name + email.
-//   - `user` is the Opengist account whose email matches; null when no
+//   - `user` is the QingyuGist account whose email matches; null when no
 //     account matches the commit's email.
 //   - `change_status` is the shortstat for the commit.
 type GistCommit struct {

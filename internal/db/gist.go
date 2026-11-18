@@ -8,13 +8,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/index"
 	"github.com/alecthomas/chroma/v2"
 	"github.com/alecthomas/chroma/v2/lexers"
 	"github.com/dustin/go-humanize"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/index"
 	"gorm.io/gorm"
 )
 
@@ -846,7 +846,7 @@ func (gist *Gist) FileNames(revision string) ([]string, error) {
 	return git.GetFilesOfRepository(gist.User.Username, gist.Uuid, revision)
 }
 
-// GistCommit pairs a raw git commit with the Opengist account whose email
+// GistCommit pairs a raw git commit with the QingyuGist account whose email
 // matches the commit's AuthorEmail (when one exists). The git.Commit pointer
 // is embedded so callers/templates can read AuthorName, Hash, Timestamp,
 // Files, etc. directly. User is nil when no account matches - callers can
@@ -858,7 +858,7 @@ type GistCommit struct {
 
 // Log returns the gist's commit history starting from `revision` (pass
 // "HEAD" for the full history or a SHA to walk from a specific commit
-// downward), with each commit's author resolved to an Opengist user via a
+// downward), with each commit's author resolved to a QingyuGist user via a
 // single bulk email lookup. Lookup is case-insensitive on both sides -
 // matches the historical web behavior even when the DB stores mixed-case
 // emails. `skip` is the number of commits to skip from the top of the walk

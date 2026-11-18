@@ -1,10 +1,10 @@
 .PHONY: all all_crosscompile install build_frontend build_backend build build_crosscompile build_webdist package_webdist build_docker build_dev_docker run_dev_docker watch_frontend watch_backend watch clean clean_docker check_changes go_mod fmt test check-tr update_js_deps update_go_deps
 
 # Specify the name of your Go binary output
-BINARY_NAME := opengist
+BINARY_NAME := qingyugist
 GIT_TAG := $(shell git describe --tags)
 VERSION := $(patsubst v%,%,$(GIT_TAG))
-VERSION_PKG := github.com/thomiceli/opengist/internal/config.OpengistVersion
+VERSION_PKG := github.com/LiuShen-Fork/Qingyu-Gist/internal/config.QingyuGistVersion
 TEST_DB_TYPE ?= sqlite
 
 all: clean install build
@@ -22,7 +22,7 @@ build_frontend:
 	npx vite -c public/vite.config.js build
 
 build_backend:
-	@echo "Building Opengist binary..."
+	@echo "Building QingyuGist binary..."
 	go build -tags fs_embed -ldflags "-X $(VERSION_PKG)=$(GIT_TAG)" -o $(BINARY_NAME) .
 
 build: build_frontend build_backend
@@ -55,15 +55,15 @@ build_dev_docker:
 	docker build -t $(BINARY_NAME)-dev:latest --target dev .
 
 run_dev_docker:
-	docker run -v .:/opengist -v /opengist/node_modules -p 6157:6157 -p 16157:16157 -p 2222:2222 -v $(HOME)/.opengist-dev:/root/.opengist --rm $(BINARY_NAME)-dev:latest
+	docker run -v .:/qingyugist -v /qingyugist/node_modules -p 6157:6157 -p 16157:16157 -p 2222:2222 -v $(HOME)/.qingyugist-dev:/root/.qingyugist --rm $(BINARY_NAME)-dev:latest
 
 watch_frontend:
 	@echo "Building frontend assets..."
 	npx vite -c public/vite.config.js --port 16157 --host
 
 watch_backend:
-	@echo "Building Opengist binary..."
-	OG_DEV=1 npx nodemon --watch '**/*' -e html,yml,go,js --signal SIGTERM --exec 'go run -ldflags "-X $(VERSION_PKG)=$(GIT_TAG)" . --config config.yml'
+	@echo "Building QingyuGist binary..."
+	QYG_DEV=1 npx nodemon --watch '**/*' -e html,yml,go,js --signal SIGTERM --exec 'go run -ldflags "-X $(VERSION_PKG)=$(GIT_TAG)" . --config config.yml'
 
 watch:
 	@sh ./scripts/watch.sh
@@ -89,7 +89,7 @@ fmt:
 	@go fmt ./...
 
 test:
-	@OPENGIST_TEST_DB=$(TEST_DB_TYPE) go test ./... -p 1
+	@QINGYUGIST_TEST_DB=$(TEST_DB_TYPE) go test ./... -p 1
 
 check-tr:
 	@bash ./scripts/check-translations.sh

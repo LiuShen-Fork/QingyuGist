@@ -1,11 +1,11 @@
 # Seed a user account (CLI)
 
-When deploying Opengist in an automated way (Ansible, Terraform, a bootstrap script, …), you usually want an administrator account to exist right after installation, without having to go through the web setup form. The `admin create-user` command does exactly that.
+When deploying QingyuGist in an automated way (Ansible, Terraform, a bootstrap script, …), you usually want an administrator account to exist right after installation, without having to go through the web setup form. The `admin create-user` command does exactly that.
 
 ## Usage
 
 ```bash
-./opengist admin create-user [options]
+./qingyugist admin create-user [options]
 ```
 
 | Option             | Description                                                                                          |
@@ -21,14 +21,14 @@ All inputs are flags (including the username). Flags may be given in any order.
 ## Seeding an admin
 
 ```bash
-$ ./opengist admin create-user --username admin --password 's3cret!' --admin --email admin@example.com
+$ ./qingyugist admin create-user --username admin --password 's3cret!' --admin --email admin@example.com
 User admin has been created with administrator privileges.
 ```
 
 Reading the password from stdin is recommended for automation, so it never appears in the process list or your playbook:
 
 ```bash
-$ printf '%s' "$OPENGIST_ADMIN_PASSWORD" | ./opengist admin create-user --username admin --password-stdin --admin
+$ printf '%s' "$QYG_ADMIN_PASSWORD" | ./qingyugist admin create-user --username admin --password-stdin --admin
 User admin has been created with administrator privileges.
 ```
 
@@ -37,7 +37,7 @@ User admin has been created with administrator privileges.
 The command is idempotent: if the user already exists it does nothing and exits successfully (`0`). This makes it safe to run repeatedly from a provisioning playbook.
 
 ```bash
-$ ./opengist admin create-user --username admin --password 's3cret!' --admin
+$ ./qingyugist admin create-user --username admin --password 's3cret!' --admin
 User admin already exists; nothing to do.
 ```
 
@@ -48,13 +48,13 @@ User admin already exists; nothing to do.
 ## Ansible example
 
 ```yaml
-- name: Ensure the Opengist admin user exists
+- name: Ensure the QingyuGist admin user exists
   shell: |
-    printf '%s' '{{ opengist_admin_password }}' | \
-    {{ opengist_binary }} admin create-user \
-      --username {{ opengist_admin_user }} \
+    printf '%s' '{{ qingyugist_admin_password }}' | \
+    {{ qingyugist_binary }} admin create-user \
+      --username {{ qingyugist_admin_user }} \
       --password-stdin \
-      {% if opengist_admin_email %}--email {{ opengist_admin_email }}{% endif %} \
+      {% if qingyugist_admin_email %}--email {{ qingyugist_admin_email }}{% endif %} \
       --admin
   register: seed
   changed_when: "'has been created' in seed.stdout"

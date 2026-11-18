@@ -45,7 +45,7 @@ func setupMeiliIndexer(t *testing.T) (Indexer, func()) {
 	zerolog.SetGlobalLevel(zerolog.Disabled)
 	t.Helper()
 
-	host := os.Getenv("OG_TEST_MEILI_HOST")
+	host := os.Getenv("QYG_TEST_MEILI_HOST")
 	if host == "" {
 		host = "http://localhost:47700"
 	}

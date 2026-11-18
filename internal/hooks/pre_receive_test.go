@@ -29,7 +29,7 @@ func TestGetSymlinkFilesRecursive(t *testing.T) {
 	}
 	require.NoError(t, exec.Command("git", "add", "--all").Run())
 	require.NoError(t, exec.Command(
-		"git", "-c", "user.name=Opengist", "-c", "user.email=opengist@example.com",
+		"git", "-c", "user.name=QingyuGist", "-c", "user.email=qingyugist@example.com",
 		"commit", "--quiet", "-m", "test",
 	).Run())
 

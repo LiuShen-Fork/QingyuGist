@@ -6,10 +6,10 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/auth"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
 	"gorm.io/gorm"
 )
 

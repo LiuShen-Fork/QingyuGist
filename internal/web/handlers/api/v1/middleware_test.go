@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/db"
-	webtest "github.com/thomiceli/opengist/internal/web/test"
 )
 
 // apiError mirrors the JSON error envelope produced by context.HTTPError:

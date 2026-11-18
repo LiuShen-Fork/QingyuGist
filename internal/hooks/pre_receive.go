@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/thomiceli/opengist/internal/ipc"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/ipc"
 )
 
 // PreReceive is the client side of the pre-receive hook. It runs in the
@@ -77,7 +77,7 @@ func PreReceive(in io.Reader, out, er io.Writer) error {
 
 // RunPreReceive is the server side of the pre-receive hook. It runs inside the
 // daemon and decides whether a push may proceed, given the changed files the
-// subprocess computed (one raw `git log` output per ref). Opengist gists are
+// subprocess computed (one raw `git log` output per ref). QingyuGist gists are
 // flat, so pushing files inside directories is rejected.
 func RunPreReceive(changedFilesPerRef []string) (bool, string) {
 	var disallowedFiles []string

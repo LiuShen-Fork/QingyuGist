@@ -3,9 +3,9 @@ package gist
 import (
 	"strings"
 
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/web/context"
-	"github.com/thomiceli/opengist/internal/web/handlers"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers"
 )
 
 // Users lists all users for the explore "Users" page, each with their avatar,

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-// auto migration for newer versions of Opengist
+// auto migration for newer versions of QingyuGist
 func migrateConfig() error {
 	configMigrations := []struct {
 		Version string
@@ -27,7 +27,7 @@ func migrateConfig() error {
 
 func v1_8_0() error {
 	homeDir := GetHomeDir()
-	moveFile(filepath.Join(filepath.Join(homeDir, "sessions"), "session-auth.key"), filepath.Join(homeDir, "opengist-secret.key"))
+	moveFile(filepath.Join(filepath.Join(homeDir, "sessions"), "session-auth.key"), filepath.Join(homeDir, "qingyugist-secret.key"))
 	return nil
 }
 

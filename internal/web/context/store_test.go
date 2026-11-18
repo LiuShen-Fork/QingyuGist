@@ -4,9 +4,9 @@ import (
 	"io"
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
 	"github.com/gorilla/sessions"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/config"
 )
 
 func TestHardenCookieSecureFollowsExternalUrl(t *testing.T) {
@@ -27,7 +27,7 @@ func TestHardenCookieSecureFollowsExternalUrl(t *testing.T) {
 
 			// The flash store is a cookie store, whose default Options already set
 			// Secure; a plain-HTTP deployment has to clear it.
-			cookieOpts := sessions.NewCookieStore([]byte("opengist")).Options
+			cookieOpts := sessions.NewCookieStore([]byte("qingyugist")).Options
 			hardenCookie(cookieOpts)
 			require.Equal(t, tt.secure, cookieOpts.Secure)
 

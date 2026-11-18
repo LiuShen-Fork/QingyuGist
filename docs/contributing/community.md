@@ -1,10 +1,10 @@
 # Community
 
-The following is a list of resources made by happy users of Opengist. Feel free to make a PR add your own!
+The following is a list of resources made by happy users of QingyuGist. Feel free to make a PR add your own!
 
-- [Aetherinox/opengist-debian](https://github.com/Aetherinox/opengist-debian) - A Debian package for Opengist
-- [How to Install Opengist on Your Synology NAS](https://mariushosting.com/how-to-install-opengist-on-your-synology-nas/) - A guide to install Opengist on a Synology NAS
-- [Proxmox VE Helper-Script](https://community-scripts.github.io/ProxmoxVE/scripts?id=opengist) - A script to install Opengist on Proxmox VE
-- [MASH playbook](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/docs/services/opengist.md) - An Ansible playbook that installs Opengist as a Docker container, alongside other self-hosted services
-- [Opengist Viewer](https://gistviewer.l3x.in/) - A minimal, fully client-side viewer for HTML gists hosted on Opengist
-- [Pi share Opengist](https://www.npmjs.com/package/@alexanderfortin/pi-share-opengist) - A [Pi coding agent](https://pi.dev) extension to export sessions to Opengist
+- [Aetherinox/qingyugist-debian](https://github.com/Aetherinox/qingyugist-debian) - A Debian package for QingyuGist
+- [How to Install QingyuGist on Your Synology NAS](https://mariushosting.com/how-to-install-qingyugist-on-your-synology-nas/) - A guide to install QingyuGist on a Synology NAS
+- [Proxmox VE Helper-Script](https://community-scripts.github.io/ProxmoxVE/scripts?id=qingyugist) - A script to install QingyuGist on Proxmox VE
+- [MASH playbook](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/docs/services/qingyugist.md) - An Ansible playbook that installs QingyuGist as a Docker container, alongside other self-hosted services
+- [QingyuGist Viewer](https://gistviewer.l3x.in/) - A minimal, fully client-side viewer for HTML gists hosted on QingyuGist
+- [Pi share QingyuGist](https://www.npmjs.com/package/@alexanderfortin/pi-share-qingyugist) - A [Pi coding agent](https://pi.dev) extension to export sessions to QingyuGist

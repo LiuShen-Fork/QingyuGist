@@ -5,8 +5,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 )
 
 // reCommitSHA matches a partial or full git SHA-1 - hex only, 4–40 chars.

@@ -1,9 +1,9 @@
 package metrics
 
 import (
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	"github.com/thomiceli/opengist/internal/db"
 )
 
 var (
@@ -21,21 +21,21 @@ func initMetrics() {
 
 	countUsersGauge = promauto.NewGauge(
 		prometheus.GaugeOpts{
-			Name: "opengist_users_total",
+			Name: "qingyugist_users_total",
 			Help: "Total number of users",
 		},
 	)
 
 	countGistsGauge = promauto.NewGauge(
 		prometheus.GaugeOpts{
-			Name: "opengist_gists_total",
+			Name: "qingyugist_gists_total",
 			Help: "Total number of gists",
 		},
 	)
 
 	countSSHKeysGauge = promauto.NewGauge(
 		prometheus.GaugeOpts{
-			Name: "opengist_ssh_keys_total",
+			Name: "qingyugist_ssh_keys_total",
 			Help: "Total number of SSH keys",
 		},
 	)

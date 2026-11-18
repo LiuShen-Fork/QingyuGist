@@ -7,15 +7,15 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/password"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/index"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/auth/password"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/index"
 	"github.com/urfave/cli/v2"
 )
 
 // runCreateUser runs `admin create-user` against an isolated, temporary
-// Opengist home so the command's own initialize() connects to a throwaway
+// QingyuGist home so the command's own initialize() connects to a throwaway
 // SQLite database. It returns whatever error the command produced.
 func runCreateUser(t *testing.T, args ...string) error {
 	t.Helper()
@@ -23,8 +23,8 @@ func runCreateUser(t *testing.T, args ...string) error {
 	home := t.TempDir()
 	// InitLog (called by initialize) creates a "log" subdir under home.
 	require.NoError(t, os.MkdirAll(filepath.Join(home, "log"), 0755))
-	t.Setenv("OG_OPENGIST_HOME", home)
-	t.Setenv("OG_LOG_OUTPUT", "stdout")
+	t.Setenv("QYG_HOME", home)
+	t.Setenv("QYG_LOG_OUTPUT", "stdout")
 
 	t.Cleanup(func() {
 		index.Close()
@@ -32,14 +32,14 @@ func runCreateUser(t *testing.T, args ...string) error {
 	})
 
 	app := &cli.App{
-		Name: "opengist",
+		Name: "qingyugist",
 		Commands: []*cli.Command{
 			{Name: "start", Action: func(*cli.Context) error { return nil }},
 			{Name: "admin", Subcommands: []*cli.Command{&CmdAdminCreateUser}},
 		},
 		DefaultCommand: "start",
 	}
-	return app.Run(append([]string{"opengist", "admin", "create-user"}, args...))
+	return app.Run(append([]string{"qingyugist", "admin", "create-user"}, args...))
 }
 
 func TestCmdAdminCreateUser_BasicAdmin(t *testing.T) {
@@ -97,8 +97,8 @@ func TestCmdAdminCreateUser_FlagsInAnyOrder(t *testing.T) {
 func TestCmdAdminCreateUser_ReRunIsNoOp(t *testing.T) {
 	home := t.TempDir()
 	require.NoError(t, os.MkdirAll(filepath.Join(home, "log"), 0755))
-	t.Setenv("OG_OPENGIST_HOME", home)
-	t.Setenv("OG_LOG_OUTPUT", "stdout")
+	t.Setenv("QYG_HOME", home)
+	t.Setenv("QYG_LOG_OUTPUT", "stdout")
 	t.Cleanup(func() {
 		index.Close()
 		_ = db.Close()
@@ -106,14 +106,14 @@ func TestCmdAdminCreateUser_ReRunIsNoOp(t *testing.T) {
 
 	run := func() error {
 		app := &cli.App{
-			Name: "opengist",
+			Name: "qingyugist",
 			Commands: []*cli.Command{
 				{Name: "start", Action: func(*cli.Context) error { return nil }},
 				{Name: "admin", Subcommands: []*cli.Command{&CmdAdminCreateUser}},
 			},
 			DefaultCommand: "start",
 		}
-		return app.Run([]string{"opengist", "admin", "create-user", "--username", "seed", "--password", "pw", "--admin"})
+		return app.Run([]string{"qingyugist", "admin", "create-user", "--username", "seed", "--password", "pw", "--admin"})
 	}
 
 	require.NoError(t, run(), "first run should create the user")

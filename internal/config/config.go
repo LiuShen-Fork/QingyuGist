@@ -13,14 +13,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/thomiceli/opengist/internal/session"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/session"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
 )
 
-var OpengistVersion = ""
+var QingyuGistVersion = ""
 
 var C *config
 
@@ -29,7 +29,7 @@ var SecretKey []byte
 // SSH server modes: the canonical values of ssh.git-enabled. The legacy
 // booleans are still accepted (true → builtin, false → disabled).
 const (
-	SshServerBuiltin  = "builtin"  // Opengist's embedded SSH server
+	SshServerBuiltin  = "builtin"  // QingyuGist's embedded SSH server
 	SshServerHost     = "host"     // delegate to the host's OpenSSH
 	SshServerDisabled = "disabled" // no SSH git access
 )
@@ -37,84 +37,87 @@ const (
 // Not using nested structs because the library
 // doesn't support dot notation in this case sadly
 type config struct {
-	SecretKey string `yaml:"secret-key" env:"OG_SECRET_KEY"`
+	SecretKey string `yaml:"secret-key" env:"QYG_SECRET_KEY"`
 
-	LogLevel     string `yaml:"log-level" env:"OG_LOG_LEVEL"`
-	LogOutput    string `yaml:"log-output" env:"OG_LOG_OUTPUT"`
-	LogPath      string `yaml:"log-path" env:"OG_LOG_PATH"`
-	ExternalUrl  string `yaml:"external-url" env:"OG_EXTERNAL_URL"`
-	OpengistHome string `yaml:"opengist-home" env:"OG_OPENGIST_HOME"`
+	LogLevel       string `yaml:"log-level" env:"QYG_LOG_LEVEL"`
+	LogOutput      string `yaml:"log-output" env:"QYG_LOG_OUTPUT"`
+	LogPath        string `yaml:"log-path" env:"QYG_LOG_PATH"`
+	ExternalUrl    string `yaml:"external-url" env:"QYG_EXTERNAL_URL"`
+	QingyuGistHome string `yaml:"qingyugist-home" env:"QYG_HOME"`
+	// LegacyHome accepts the pre-fork YAML key so an existing config.yml keeps
+	// pointing at the original data directory during upgrades.
+	LegacyHome string `yaml:"opengist-home"`
 
-	DBUri      string `yaml:"db-uri" env:"OG_DB_URI"`
-	DBFilename string `yaml:"db-filename" env:"OG_DB_FILENAME"` // deprecated
+	DBUri      string `yaml:"db-uri" env:"QYG_DB_URI"`
+	DBFilename string `yaml:"db-filename" env:"QYG_DB_FILENAME"` // deprecated
 
-	IndexEnabled  bool   `yaml:"index.enabled" env:"OG_INDEX_ENABLED"` // deprecated
-	Index         string `yaml:"index" env:"OG_INDEX"`
-	BleveDirname  string `yaml:"index.dirname" env:"OG_INDEX_DIRNAME"` // deprecated
-	MeiliHost     string `yaml:"index.meili.host" env:"OG_MEILI_HOST"`
-	MeiliAPIKey   string `yaml:"index.meili.api-key" env:"OG_MEILI_API_KEY"`
-	SearchDefault string `yaml:"search.default" env:"OG_SEARCH_DEFAULT"`
+	IndexEnabled  bool   `yaml:"index.enabled" env:"QYG_INDEX_ENABLED"` // deprecated
+	Index         string `yaml:"index" env:"QYG_INDEX"`
+	BleveDirname  string `yaml:"index.dirname" env:"QYG_INDEX_DIRNAME"` // deprecated
+	MeiliHost     string `yaml:"index.meili.host" env:"QYG_MEILI_HOST"`
+	MeiliAPIKey   string `yaml:"index.meili.api-key" env:"QYG_MEILI_API_KEY"`
+	SearchDefault string `yaml:"search.default" env:"QYG_SEARCH_DEFAULT"`
 
-	GitDefaultBranch string `yaml:"git.default-branch" env:"OG_GIT_DEFAULT_BRANCH"`
+	GitDefaultBranch string `yaml:"git.default-branch" env:"QYG_GIT_DEFAULT_BRANCH"`
 
-	SqliteJournalMode string `yaml:"sqlite.journal-mode" env:"OG_SQLITE_JOURNAL_MODE"`
+	SqliteJournalMode string `yaml:"sqlite.journal-mode" env:"QYG_SQLITE_JOURNAL_MODE"`
 
-	HttpHost string `yaml:"http.host" env:"OG_HTTP_HOST"`
-	HttpPort string `yaml:"http.port" env:"OG_HTTP_PORT"`
-	HttpGit  bool   `yaml:"http.git-enabled" env:"OG_HTTP_GIT_ENABLED"`
+	HttpHost string `yaml:"http.host" env:"QYG_HTTP_HOST"`
+	HttpPort string `yaml:"http.port" env:"QYG_HTTP_PORT"`
+	HttpGit  bool   `yaml:"http.git-enabled" env:"QYG_HTTP_GIT_ENABLED"`
 
-	ApiEnabled bool `yaml:"api.enabled" env:"OG_API_ENABLED"`
+	ApiEnabled bool `yaml:"api.enabled" env:"QYG_API_ENABLED"`
 
-	DisableFileUpload bool `yaml:"disable-file-upload" env:"OG_DISABLE_FILE_UPLOAD"`
+	DisableFileUpload bool `yaml:"disable-file-upload" env:"QYG_DISABLE_FILE_UPLOAD"`
 
-	UnixSocketPermissions string `yaml:"unix-socket-permissions" env:"OG_UNIX_SOCKET_PERMISSIONS"`
+	UnixSocketPermissions string `yaml:"unix-socket-permissions" env:"QYG_UNIX_SOCKET_PERMISSIONS"`
 
-	SshGit                string `yaml:"ssh.git-enabled" env:"OG_SSH_GIT_ENABLED"` // builtin | host | disabled (true → builtin, false → disabled)
-	SshAuthorizedKeysFile string `yaml:"ssh.authorized-keys-file" env:"OG_SSH_AUTHORIZED_KEYS_FILE"`
-	SshHost               string `yaml:"ssh.host" env:"OG_SSH_HOST"`
-	SshPort               string `yaml:"ssh.port" env:"OG_SSH_PORT"`
-	SshExternalDomain     string `yaml:"ssh.external-domain" env:"OG_SSH_EXTERNAL_DOMAIN"`
-	SshUsername           string `yaml:"ssh.username" env:"OG_SSH_USERNAME"`
+	SshGit                string `yaml:"ssh.git-enabled" env:"QYG_SSH_GIT_ENABLED"` // builtin | host | disabled (true → builtin, false → disabled)
+	SshAuthorizedKeysFile string `yaml:"ssh.authorized-keys-file" env:"QYG_SSH_AUTHORIZED_KEYS_FILE"`
+	SshHost               string `yaml:"ssh.host" env:"QYG_SSH_HOST"`
+	SshPort               string `yaml:"ssh.port" env:"QYG_SSH_PORT"`
+	SshExternalDomain     string `yaml:"ssh.external-domain" env:"QYG_SSH_EXTERNAL_DOMAIN"`
+	SshUsername           string `yaml:"ssh.username" env:"QYG_SSH_USERNAME"`
 
-	GithubClientKey string `yaml:"github.client-key" env:"OG_GITHUB_CLIENT_KEY"`
-	GithubSecret    string `yaml:"github.secret" env:"OG_GITHUB_SECRET"`
+	GithubClientKey string `yaml:"github.client-key" env:"QYG_GITHUB_CLIENT_KEY"`
+	GithubSecret    string `yaml:"github.secret" env:"QYG_GITHUB_SECRET"`
 
-	GitlabClientKey string `yaml:"gitlab.client-key" env:"OG_GITLAB_CLIENT_KEY"`
-	GitlabSecret    string `yaml:"gitlab.secret" env:"OG_GITLAB_SECRET"`
-	GitlabUrl       string `yaml:"gitlab.url" env:"OG_GITLAB_URL"`
-	GitlabName      string `yaml:"gitlab.name" env:"OG_GITLAB_NAME"`
+	GitlabClientKey string `yaml:"gitlab.client-key" env:"QYG_GITLAB_CLIENT_KEY"`
+	GitlabSecret    string `yaml:"gitlab.secret" env:"QYG_GITLAB_SECRET"`
+	GitlabUrl       string `yaml:"gitlab.url" env:"QYG_GITLAB_URL"`
+	GitlabName      string `yaml:"gitlab.name" env:"QYG_GITLAB_NAME"`
 
-	GiteaClientKey string `yaml:"gitea.client-key" env:"OG_GITEA_CLIENT_KEY"`
-	GiteaSecret    string `yaml:"gitea.secret" env:"OG_GITEA_SECRET"`
-	GiteaUrl       string `yaml:"gitea.url" env:"OG_GITEA_URL"`
-	GiteaName      string `yaml:"gitea.name" env:"OG_GITEA_NAME"`
+	GiteaClientKey string `yaml:"gitea.client-key" env:"QYG_GITEA_CLIENT_KEY"`
+	GiteaSecret    string `yaml:"gitea.secret" env:"QYG_GITEA_SECRET"`
+	GiteaUrl       string `yaml:"gitea.url" env:"QYG_GITEA_URL"`
+	GiteaName      string `yaml:"gitea.name" env:"QYG_GITEA_NAME"`
 
-	OIDCProviderName   string `yaml:"oidc.provider-name" env:"OG_OIDC_PROVIDER_NAME"`
-	OIDCClientKey      string `yaml:"oidc.client-key" env:"OG_OIDC_CLIENT_KEY"`
-	OIDCSecret         string `yaml:"oidc.secret" env:"OG_OIDC_SECRET"`
-	OIDCDiscoveryUrl   string `yaml:"oidc.discovery-url" env:"OG_OIDC_DISCOVERY_URL"`
-	OIDCGroupClaimName string `yaml:"oidc.group-claim-name" env:"OG_OIDC_GROUP_CLAIM_NAME"`
-	OIDCAdminGroup     string `yaml:"oidc.admin-group" env:"OG_OIDC_ADMIN_GROUP"`
+	OIDCProviderName   string `yaml:"oidc.provider-name" env:"QYG_OIDC_PROVIDER_NAME"`
+	OIDCClientKey      string `yaml:"oidc.client-key" env:"QYG_OIDC_CLIENT_KEY"`
+	OIDCSecret         string `yaml:"oidc.secret" env:"QYG_OIDC_SECRET"`
+	OIDCDiscoveryUrl   string `yaml:"oidc.discovery-url" env:"QYG_OIDC_DISCOVERY_URL"`
+	OIDCGroupClaimName string `yaml:"oidc.group-claim-name" env:"QYG_OIDC_GROUP_CLAIM_NAME"`
+	OIDCAdminGroup     string `yaml:"oidc.admin-group" env:"QYG_OIDC_ADMIN_GROUP"`
 
-	MetricsEnabled bool   `yaml:"metrics.enabled" env:"OG_METRICS_ENABLED"`
-	MetricsHost    string `yaml:"metrics.host" env:"OG_METRICS_HOST"`
-	MetricsPort    string `yaml:"metrics.port" env:"OG_METRICS_PORT"`
+	MetricsEnabled bool   `yaml:"metrics.enabled" env:"QYG_METRICS_ENABLED"`
+	MetricsHost    string `yaml:"metrics.host" env:"QYG_METRICS_HOST"`
+	MetricsPort    string `yaml:"metrics.port" env:"QYG_METRICS_PORT"`
 
-	LDAPUrl             string `yaml:"ldap.url" env:"OG_LDAP_URL"`
-	LDAPBindDn          string `yaml:"ldap.bind-dn" env:"OG_LDAP_BIND_DN"`
-	LDAPBindCredentials string `yaml:"ldap.bind-credentials" env:"OG_LDAP_BIND_CREDENTIALS"`
-	LDAPSearchBase      string `yaml:"ldap.search-base" env:"OG_LDAP_SEARCH_BASE"`
-	LDAPSearchFilter    string `yaml:"ldap.search-filter" env:"OG_LDAP_SEARCH_FILTER"`
+	LDAPUrl             string `yaml:"ldap.url" env:"QYG_LDAP_URL"`
+	LDAPBindDn          string `yaml:"ldap.bind-dn" env:"QYG_LDAP_BIND_DN"`
+	LDAPBindCredentials string `yaml:"ldap.bind-credentials" env:"QYG_LDAP_BIND_CREDENTIALS"`
+	LDAPSearchBase      string `yaml:"ldap.search-base" env:"QYG_LDAP_SEARCH_BASE"`
+	LDAPSearchFilter    string `yaml:"ldap.search-filter" env:"QYG_LDAP_SEARCH_FILTER"`
 
-	CustomName    string       `yaml:"custom.name" env:"OG_CUSTOM_NAME"`
-	CustomLogo    string       `yaml:"custom.logo" env:"OG_CUSTOM_LOGO"`
-	CustomFavicon string       `yaml:"custom.favicon" env:"OG_CUSTOM_FAVICON"`
-	StaticLinks   []StaticLink `yaml:"custom.static-links" env:"OG_CUSTOM_STATIC_LINK"`
+	CustomName    string       `yaml:"custom.name" env:"QYG_CUSTOM_NAME"`
+	CustomLogo    string       `yaml:"custom.logo" env:"QYG_CUSTOM_LOGO"`
+	CustomFavicon string       `yaml:"custom.favicon" env:"QYG_CUSTOM_FAVICON"`
+	StaticLinks   []StaticLink `yaml:"custom.static-links" env:"QYG_CUSTOM_STATIC_LINK"`
 }
 
 type StaticLink struct {
-	Name string `yaml:"name" env:"OG_CUSTOM_STATIC_LINK_#_NAME"`
-	Path string `yaml:"path" env:"OG_CUSTOM_STATIC_LINK_#_PATH"`
+	Name string `yaml:"name" env:"QYG_CUSTOM_STATIC_LINK_#_NAME"`
+	Path string `yaml:"path" env:"QYG_CUSTOM_STATIC_LINK_#_PATH"`
 }
 
 // SshEnabled reports whether SSH git access is offered in any form.
@@ -122,12 +125,12 @@ func (c *config) SshEnabled() bool {
 	return c.SshGit == SshServerBuiltin || c.SshGit == SshServerHost
 }
 
-// SshBuiltin reports whether Opengist runs its own embedded SSH server.
+// SshBuiltin reports whether QingyuGist runs its own embedded SSH server.
 func (c *config) SshBuiltin() bool {
 	return c.SshGit == SshServerBuiltin
 }
 
-// SshManagesAuthorizedKeys reports whether Opengist maintains an authorized_keys
+// SshManagesAuthorizedKeys reports whether QingyuGist maintains an authorized_keys
 // file: host mode with a configured file path.
 func (c *config) SshManagesAuthorizedKeys() bool {
 	return c.SshGit == SshServerHost && c.SshAuthorizedKeysFile != ""
@@ -140,8 +143,8 @@ func configWithDefaults() (*config, error) {
 
 	c.LogLevel = "warn"
 	c.LogOutput = "stdout,file"
-	c.OpengistHome = ""
-	c.DBUri = "opengist.db"
+	c.QingyuGistHome = ""
+	c.DBUri = "qingyugist.db"
 	c.Index = "bleve"
 	c.SearchDefault = "content"
 
@@ -191,13 +194,24 @@ func InitConfig(configPath string, out io.Writer) error {
 	// was provided into a canonical mode.
 	c.SshGit = normalizeSshGitMode(c.SshGit)
 
-	if c.OpengistHome == "" {
+	if c.QingyuGistHome == "" && c.LegacyHome != "" {
+		c.QingyuGistHome = c.LegacyHome
+	}
+
+	if c.QingyuGistHome == "" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			return fmt.Errorf("opengist home directory is not set and current user home directory could not be determined; please specify the opengist home directory manually via the configuration")
+			return fmt.Errorf("qingyugist home directory is not set and current user home directory could not be determined; please specify the qingyugist home directory manually via the configuration")
 		}
 
-		c.OpengistHome = filepath.Join(homeDir, ".opengist")
+		c.QingyuGistHome = filepath.Join(homeDir, ".qingyugist")
+		if !pathExists(c.QingyuGistHome) {
+			legacyHome := filepath.Join(homeDir, "."+legacyName)
+			if pathExists(legacyHome) {
+				c.QingyuGistHome = legacyHome
+				_, _ = fmt.Fprintf(out, "Using existing data directory %s; move it to %s when convenient.\n", legacyHome, filepath.Join(homeDir, ".qingyugist"))
+			}
+		}
 	}
 
 	if err = checks(c); err != nil {
@@ -210,13 +224,16 @@ func InitConfig(configPath string, out io.Writer) error {
 		c.LogPath = filepath.Join(GetHomeDir(), "log")
 	}
 
+	migrateLegacyData(out)
+
 	if err = migrateConfig(); err != nil {
 		return err
 	}
 
-	if err = os.Setenv("OG_OPENGIST_HOME_INTERNAL", GetHomeDir()); err != nil {
+	if err = os.Setenv("QYG_HOME_INTERNAL", GetHomeDir()); err != nil {
 		return err
 	}
+	ExportLegacyEnv()
 	return nil
 }
 
@@ -262,7 +279,7 @@ func InitLog() {
 			logWriters = append(logWriters, consoleWriter)
 			defer func() { log.Debug().Msg("Logging to stdout") }()
 		case "file":
-			file, err := os.OpenFile(filepath.Join(C.LogPath, "opengist.log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			file, err := os.OpenFile(filepath.Join(C.LogPath, "qingyugist.log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			if err != nil {
 				panic(err)
 			}
@@ -311,13 +328,13 @@ func CheckGitVersion(version string) (bool, error) {
 }
 
 func GetHomeDir() string {
-	absolutePath, _ := filepath.Abs(C.OpengistHome)
+	absolutePath, _ := filepath.Abs(C.QingyuGistHome)
 	return filepath.Clean(absolutePath)
 }
 
 func SetupSecretKey() {
 	if C.SecretKey == "" {
-		path := filepath.Join(GetHomeDir(), "opengist-secret.key")
+		path := filepath.Join(GetHomeDir(), "qingyugist-secret.key")
 		SecretKey, _ = session.GenerateSecretKey(path)
 	} else {
 		SecretKey = []byte(C.SecretKey)
@@ -362,7 +379,10 @@ func loadConfigFromEnv(c *config, out io.Writer) error {
 			continue
 		}
 
-		envValue := os.Getenv(strings.ToUpper(tag))
+		envValue, present := envLookup(strings.ToUpper(tag))
+		if !present {
+			envValue = ""
+		}
 		if envValue == "" && v.Field(i).Kind() != reflect.Slice {
 			continue
 		}
@@ -391,7 +411,7 @@ func loadConfigFromEnv(c *config, out io.Writer) error {
 					for j := 0; j < elemValue.NumField() && allFieldsPresent; j++ {
 						elemField := elemValue.Type().Field(j)
 						envName := fmt.Sprintf("%s%d_%s", prefix, index, strings.ToUpper(elemField.Name))
-						envValue, present := os.LookupEnv(envName)
+						envValue, present := envLookup(envName)
 
 						if !present {
 							allFieldsPresent = false

@@ -8,6 +8,7 @@ import (
 	"strings"
 	"sync/atomic"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
 	"github.com/blevesearch/bleve/v2"
 	"github.com/blevesearch/bleve/v2/analysis/analyzer/custom"
 	"github.com/blevesearch/bleve/v2/analysis/lang/cjk"
@@ -18,7 +19,6 @@ import (
 	"github.com/blevesearch/bleve/v2/analysis/tokenizer/unicode"
 	"github.com/blevesearch/bleve/v2/search/query"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
 )
 
 // bleveMappingVersion is bumped whenever the analyzer or field mapping changes

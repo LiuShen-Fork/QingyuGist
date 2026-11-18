@@ -9,7 +9,7 @@ curl http://localhost:6157/healthcheck
 ```
 
 ```json
-{"database":"ok","opengist":"ok","time":"2024-01-04T05:18:33+01:00"}
+{"database":"ok","qingyugist":"ok","time":"2024-01-04T05:18:33+01:00"}
 ```
 
 ## `HEAD /healthcheck`

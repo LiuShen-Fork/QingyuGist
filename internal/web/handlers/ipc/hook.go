@@ -1,4 +1,4 @@
-// Package ipc implements the daemon side of Opengist's internal API:
+// Package ipc implements the daemon side of QingyuGist's internal API:
 // endpoints called by short-lived subprocesses (Git hooks, the SSH shim) so the
 // DB and index work happens in the long-running server with its warm
 // connection pool, instead of being opened fresh on every invocation.
@@ -10,11 +10,11 @@ package ipc
 import (
 	"net/http"
 
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/hooks"
-	"github.com/thomiceli/opengist/internal/ipc"
-	"github.com/thomiceli/opengist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/hooks"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/ipc"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 )
 
 // PreReceive handles a pre-receive event forwarded by the hook subprocess and

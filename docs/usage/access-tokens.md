@@ -18,9 +18,9 @@ Replace `<token>` with your actual access token in the following examples.
 ```shell
 # Access raw content of a private gist, latest revision for "file.txt". Note: this URL is obtained from the "Raw" button on the gist page.
 curl -H "Authorization: Token <token>" \
- http://opengist.example.com/user/gist/raw/HEAD/file.txt
+ http://qingyugist.example.com/user/gist/raw/HEAD/file.txt
 
 # Access the JSON representation of a private gist. See "Gist as JSON" documentation for more details.
 curl -H "Authorization: Token <token>" \
- http://opengist.example.com/user/gist.json
+ http://qingyugist.example.com/user/gist.json
 ```

@@ -5,8 +5,8 @@ import (
 	"io"
 	"testing"
 
+	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
 	"github.com/stretchr/testify/require"
-	webtest "github.com/thomiceli/opengist/internal/web/test"
 )
 
 func TestHealthcheck(t *testing.T) {
@@ -23,7 +23,7 @@ func TestHealthcheck(t *testing.T) {
 		err = json.Unmarshal(body, &result)
 		require.NoError(t, err)
 
-		require.Equal(t, "ok", result["opengist"])
+		require.Equal(t, "ok", result["qingyugist"])
 		require.Equal(t, "ok", result["database"])
 		require.NotEmpty(t, result["time"])
 	})

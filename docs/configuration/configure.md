@@ -1,8 +1,8 @@
 # Configuration
 
-Opengist provides flexible configuration options through either a YAML file and/or environment variables.
+QingyuGist provides flexible configuration options through either a YAML file and/or environment variables.
 You would only need to specify the configuration options you want to change — for any config option left untouched, 
-Opengist will simply apply the default values.
+QingyuGist will simply apply the default values.
 
 The [configuration cheat sheet](cheat-sheet.md) lists all available configuration options.
 
@@ -15,7 +15,7 @@ to your YAML file.
 Usage with Docker Compose :
 ```yml
 services:
-  opengist:
+  qingyugist:
     # ...
     volumes:
     # ...
@@ -24,10 +24,10 @@ services:
 
 Usage via command line :
 ```shell
-./opengist --config /path/to/config.yml
+./qingyugist --config /path/to/config.yml
 ```
 
-You can start by copying and/or modifying the provided [config.yml](https://github.com/thomiceli/opengist/blob/master/config.yml) file.
+You can start by copying and/or modifying the provided [config.yml](https://github.com/LiuShen-Fork/Qingyu-Gist/blob/master/config.yml) file.
 
 
 ## Configuration via Environment Variables
@@ -35,16 +35,16 @@ You can start by copying and/or modifying the provided [config.yml](https://gith
 Usage with Docker Compose :
 ```yml
 services:
-  opengist:
+  qingyugist:
     # ...
     environment:
-      OG_LOG_LEVEL: "info"
+      QYG_LQYG_LEVEL: "info"
       # etc.
 ```
 
 Usage via command line :
 ```shell
-OG_LOG_LEVEL=info ./opengist
+QYG_LQYG_LEVEL=info ./qingyugist
 ```
 
 ### Using Docker Compose secrets
@@ -53,20 +53,20 @@ You can use Docker Compose secrets to not expose sensitive information in your c
 
 ```dotenv
 # file secrets.env
-OG_GITLAB_CLIENT_KEY=your_gitlab_client_key
-OG_GITLAB_SECRET=your_gitlab_secret_key
+QYG_GITLAB_CLIENT_KEY=your_gitlab_client_key
+QYG_GITLAB_SECRET=your_gitlab_secret_key
 ```
 
 And then use it in your compose file :
 
 ```yml
 services:
-  opengist:
+  qingyugist:
     # ...
     secrets:
-      - opengist_secrets
+      - qingyugist_secrets
 
 secrets:
-  opengist_secrets:
+  qingyugist_secrets:
     file: ./secrets.env
 ```

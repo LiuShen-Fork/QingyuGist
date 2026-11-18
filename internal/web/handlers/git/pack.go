@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 )
 
 func uploadPack(ctx *context.Context) error {
@@ -58,8 +58,8 @@ func pack(ctx *context.Context, serviceType string) error {
 	cmd.Stdout = ctx.Response().Writer
 	cmd.Stderr = &stderr
 	cmd.Env = os.Environ()
-	cmd.Env = append(cmd.Env, "OPENGIST_REPOSITORY_URL_INTERNAL="+git.RepositoryUrl(ctx, gist.User.Username, gist.Identifier()))
-	cmd.Env = append(cmd.Env, "OPENGIST_REPOSITORY_ID="+strconv.Itoa(int(gist.ID)))
+	cmd.Env = append(cmd.Env, "QINGYUGIST_REPOSITORY_URL_INTERNAL="+git.RepositoryUrl(ctx, gist.User.Username, gist.Identifier()))
+	cmd.Env = append(cmd.Env, "QINGYUGIST_REPOSITORY_ID="+strconv.Itoa(int(gist.ID)))
 
 	if err = cmd.Run(); err != nil {
 		return ctx.ErrorRes(500, "Cannot run git "+serviceType+" ; "+stderr.String(), err)

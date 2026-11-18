@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/db"
-	webtest "github.com/thomiceli/opengist/internal/web/test"
 )
 
 func TestMetrics(t *testing.T) {
@@ -53,19 +53,19 @@ func TestMetrics(t *testing.T) {
 	var sshKeysTotal float64
 
 	for _, line := range lines {
-		if strings.HasPrefix(line, "opengist_users_total") {
+		if strings.HasPrefix(line, "qingyugist_users_total") {
 			parts := strings.Fields(line)
 			if len(parts) == 2 {
 				usersTotal, err = strconv.ParseFloat(parts[1], 64)
 				assert.NoError(t, err)
 			}
-		} else if strings.HasPrefix(line, "opengist_gists_total") {
+		} else if strings.HasPrefix(line, "qingyugist_gists_total") {
 			parts := strings.Fields(line)
 			if len(parts) == 2 {
 				gistsTotal, err = strconv.ParseFloat(parts[1], 64)
 				assert.NoError(t, err)
 			}
-		} else if strings.HasPrefix(line, "opengist_ssh_keys_total") {
+		} else if strings.HasPrefix(line, "qingyugist_ssh_keys_total") {
 			parts := strings.Fields(line)
 			if len(parts) == 2 {
 				sshKeysTotal, err = strconv.ParseFloat(parts[1], 64)
@@ -74,7 +74,7 @@ func TestMetrics(t *testing.T) {
 		}
 	}
 
-	assert.Equal(t, 1.0, usersTotal, "opengist_users_total should be 1")
-	assert.Equal(t, 1.0, gistsTotal, "opengist_gists_total should be 1")
-	assert.Equal(t, 1.0, sshKeysTotal, "opengist_ssh_keys_total should be 1")
+	assert.Equal(t, 1.0, usersTotal, "qingyugist_users_total should be 1")
+	assert.Equal(t, 1.0, gistsTotal, "qingyugist_gists_total should be 1")
+	assert.Equal(t, 1.0, sshKeysTotal, "qingyugist_ssh_keys_total should be 1")
 }

@@ -1,13 +1,13 @@
 package v1
 
 import (
-	"github.com/thomiceli/opengist/internal/web/context"
-	"github.com/thomiceli/opengist/internal/web/handlers/api/v1/types"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/api/v1/types"
 )
 
 // ListCommits handles GET /api/gists/:uuid/commits.
 // Each commit's author is
-// resolved to an Opengist user via db.Gist.Log's bulk email lookup (see
+// resolved to a QingyuGist user via db.Gist.Log's bulk email lookup (see
 // db.GistCommit) so the API and the web revisions page share the same
 // resolution. The per-commit shape comes from db.GistCommit.ToAPI, which
 // also powers the 10-most-recent embed in the gist-detail response.

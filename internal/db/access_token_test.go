@@ -3,8 +3,8 @@ package db_test
 import (
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/db"
 )
 
 func TestAccessTokenScopeUser(t *testing.T) {

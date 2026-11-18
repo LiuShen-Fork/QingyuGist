@@ -7,12 +7,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/moderation"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/api/v1/types"
 	"github.com/google/uuid"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/moderation"
-	"github.com/thomiceli/opengist/internal/web/context"
-	"github.com/thomiceli/opengist/internal/web/handlers/api/v1/types"
 )
 
 // strOrEmpty dereferences an optional string field, returning "" when nil.
@@ -149,7 +149,7 @@ func CreateGist(ctx *context.Context) error {
 //
 // Keys in the `files` map that don't match any current filename are treated
 // as new files; their `content` is required. `title` and `visibility` are
-// Opengist extensions - supplying them updates those fields, omission leaves
+// QingyuGist extensions - supplying them updates those fields, omission leaves
 // them alone. Returns the full updated gist on success; 422 on validation
 // failure, 404 if the caller can't see the gist.
 func UpdateGist(ctx *context.Context) error {

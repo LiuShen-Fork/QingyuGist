@@ -1,4 +1,4 @@
-module github.com/thomiceli/opengist
+module github.com/LiuShen-Fork/Qingyu-Gist
 
 go 1.27.2
 

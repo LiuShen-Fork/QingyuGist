@@ -23,9 +23,9 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
 )
 
 // Kind is the value type of a setting.

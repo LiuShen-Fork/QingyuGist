@@ -2,9 +2,9 @@ package webauthn
 
 import (
 	"encoding/binary"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
-	"github.com/thomiceli/opengist/internal/db"
 )
 
 type user struct {

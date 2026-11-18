@@ -5,8 +5,8 @@ import (
 	"mime"
 	"net/http"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 	"github.com/labstack/echo/v4"
-	"github.com/thomiceli/opengist/internal/web/context"
 )
 
 const maxFormSize = 10 << 20

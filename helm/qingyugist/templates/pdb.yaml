@@ -2,13 +2,13 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "opengist.fullname" . }}
+  name: {{ include "qingyugist.fullname" . }}
   namespace: {{ .Values.namespace | default .Release.Namespace }}
   labels:
-    {{- include "opengist.labels" . | nindent 4 }}
+    {{- include "qingyugist.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      {{- include "opengist.selectorLabels" . | nindent 6 }}
+      {{- include "qingyugist.selectorLabels" . | nindent 6 }}
   {{- toYaml .Values.podDisruptionBudget | nindent 2 }}
 {{- end -}}

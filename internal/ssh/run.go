@@ -5,9 +5,9 @@ import (
 	"crypto/rand"
 	"encoding/pem"
 	"errors"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
 	"golang.org/x/crypto/ssh"
 	"gorm.io/gorm"
 	"io"
@@ -101,7 +101,7 @@ func handleConnexion(channels <-chan ssh.NewChannel, key string, ip string) {
 				case "env":
 
 				case "shell":
-					_, _ = ch.Write([]byte("Successfully connected to Opengist SSH server.\r\n"))
+					_, _ = ch.Write([]byte("Successfully connected to QingyuGist SSH server.\r\n"))
 					_, _ = ch.SendRequest("exit-status", false, []byte{0, 0, 0, 0})
 					return
 				case "exec":
@@ -112,7 +112,7 @@ func handleConnexion(channels <-chan ssh.NewChannel, key string, ip string) {
 					}
 
 					if err = RunGitCommand(ch, ch, ch, payloadCmd, key, ip); err != nil {
-						_, _ = ch.Stderr().Write([]byte("Opengist: " + err.Error() + "\r\n"))
+						_, _ = ch.Stderr().Write([]byte("QingyuGist: " + err.Error() + "\r\n"))
 					}
 					_, _ = ch.SendRequest("exit-status", false, []byte{0, 0, 0, 0})
 					return
@@ -129,7 +129,8 @@ func setupHostKey() (ssh.Signer, error) {
 		return nil, err
 	}
 
-	keyPath := filepath.Join(dir, "opengist-ed25519")
+	keyPath := filepath.Join(dir, "qingyugist-ed25519")
+	_ = config.MigrateLegacyFile(keyPath, filepath.Join(dir, config.LegacyExecutableName+"-ed25519"))
 	if _, err := os.Stat(keyPath); errors.Is(err, os.ErrNotExist) {
 		if err = generateHostKey(keyPath); err != nil {
 			return nil, err

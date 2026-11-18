@@ -1,6 +1,6 @@
 # Metrics
 
-Opengist offers built-in support for Prometheus metrics to help you monitor the performance and usage of your instance. These metrics provide insights into application health, user activity, and database statistics.
+QingyuGist offers built-in support for Prometheus metrics to help you monitor the performance and usage of your instance. These metrics provide insights into application health, user activity, and database statistics.
 
 ## Enabling metrics
 
@@ -13,7 +13,7 @@ metrics.enabled: true
 Alternatively, you can use the environment variable:
 
 ```bash
-OG_METRICS_ENABLED=true
+QYG_METRICS_ENABLED=true
 ```
 
 Once enabled, metrics are available on a separate server at `http://0.0.0.0:6158/metrics` by default.
@@ -24,9 +24,9 @@ The metrics server runs on a separate port from the main application. By default
 
 | Config Key     | Environment Variable | Default     | Description                                    |
 |----------------|---------------------|-------------|------------------------------------------------|
-| metrics.enabled | OG_METRICS_ENABLED  | `false`     | Enable or disable the metrics server           |
-| metrics.host    | OG_METRICS_HOST     | `0.0.0.0`   | The host on which the metrics server binds     |
-| metrics.port    | OG_METRICS_PORT     | `6158`      | The port on which the metrics server listens   |
+| metrics.enabled | QYG_METRICS_ENABLED  | `false`     | Enable or disable the metrics server           |
+| metrics.host    | QYG_METRICS_HOST     | `0.0.0.0`   | The host on which the metrics server binds     |
+| metrics.port    | QYG_METRICS_PORT     | `6158`      | The port on which the metrics server listens   |
 
 Example configuration:
 
@@ -38,17 +38,17 @@ metrics.port: 6158
 
 ## Available metrics
 
-### Opengist-specific metrics
+### QingyuGist-specific metrics
 
 | Metric Name | Type | Description |
 |-------------|------|-------------|
-| `opengist_users_total` | Gauge | Total number of registered users |
-| `opengist_gists_total` | Gauge | Total number of gists in the system |
-| `opengist_ssh_keys_total` | Gauge | Total number of SSH keys added by users |
+| `qingyugist_users_total` | Gauge | Total number of registered users |
+| `qingyugist_gists_total` | Gauge | Total number of gists in the system |
+| `qingyugist_ssh_keys_total` | Gauge | Total number of SSH keys added by users |
 
 ### Standard HTTP metrics
 
-In addition to the Opengist-specific metrics, standard Prometheus HTTP metrics are also available through the Echo Prometheus middleware. These include request durations, request counts, and request/response sizes.
+In addition to the QingyuGist-specific metrics, standard Prometheus HTTP metrics are also available through the Echo Prometheus middleware. These include request durations, request counts, and request/response sizes.
 
 These standard metrics follow the Prometheus naming convention and include labels for HTTP method, status code, and handler path.
 

@@ -9,13 +9,13 @@ Add these labels to your `docker-compose.yml` file:
 
 ```yml
 labels:
-  - traefik.http.routers.opengist.rule=Host(`opengist.example.com`) # Change to your subdomain
-  # Uncomment the line below if you run Opengist in a subdirectory
-  # - traefik.http.routers.app1.rule=PathPrefix(`/opengist{regex:$$|/.*}`) # Change opentist in the regex to yuor subdirectory name
-  - traefik.http.routers.opengist.entrypoints=websecure # Change to the name of your 443 port entrypoint
-  - traefik.http.routers.opengist.tls.certresolver=lets-encrypt # Change to certresolver's name
-  - traefik.http.routers.opengist.service=opengist
-  - traefik.http.services.opengist.loadBalancer.server.port=6157
+  - traefik.http.routers.qingyugist.rule=Host(`qingyugist.example.com`) # Change to your subdomain
+  # Uncomment the line below if you run QingyuGist in a subdirectory
+  # - traefik.http.routers.app1.rule=PathPrefix(`/qingyugist{regex:$$|/.*}`) # Change opentist in the regex to yuor subdirectory name
+  - traefik.http.routers.qingyugist.entrypoints=websecure # Change to the name of your 443 port entrypoint
+  - traefik.http.routers.qingyugist.tls.certresolver=lets-encrypt # Change to certresolver's name
+  - traefik.http.routers.qingyugist.service=qingyugist
+  - traefik.http.services.qingyugist.loadBalancer.server.port=6157
 ```
 </details>
 <details>
@@ -28,17 +28,17 @@ labels:
 ```yml
 http:
   routers:
-    opengist:
+    qingyugist:
       entrypoints: websecure
-      rule: Host(`opengist.example.com`) # Comment this line and uncomment the line below if using a subpath
-      # rule: PathPrefix(`/opengist{regex:$$|/.*}`) # Change opentist in the regex to yuor subdirectory name
+      rule: Host(`qingyugist.example.com`) # Comment this line and uncomment the line below if using a subpath
+      # rule: PathPrefix(`/qingyugist{regex:$$|/.*}`) # Change opentist in the regex to yuor subdirectory name
       # middlewares:
-      #   - opengist-fail2ban
-      service: opengist
+      #   - qingyugist-fail2ban
+      service: qingyugist
       tls:
         certresolver: lets-encrypt
   services:
-    opengist:
+    qingyugist:
       loadbalancer:
         servers:
           - url: "http://<server-address>:6157"

@@ -8,12 +8,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/thomiceli/opengist/internal/ipc"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/ipc"
 	"github.com/urfave/cli/v2"
 )
 
 // CmdShell is the forced command sshd runs after a key matches (it is embedded
-// in the authorized_keys line as `opengist shell <keyID>`). It authorizes the
+// in the authorized_keys line as `qingyugist shell <keyID>`). It authorizes the
 // requested git command against the daemon over the IPC API, then runs the git
 // pack command locally, streaming the protocol over stdin/stdout. stdout carries
 // the git protocol, so nothing else is written there.
@@ -27,7 +27,7 @@ var CmdShell = cli.Command{
 
 		code, err := runShell(ctx)
 		if err != nil {
-			fmt.Fprintln(os.Stderr, "Opengist: "+err.Error())
+			fmt.Fprintln(os.Stderr, "QingyuGist: "+err.Error())
 			os.Exit(1)
 		}
 		os.Exit(code)
@@ -46,7 +46,7 @@ func runShell(ctx *cli.Context) (int, error) {
 
 	originalCmd := os.Getenv("SSH_ORIGINAL_COMMAND")
 	if originalCmd == "" {
-		fmt.Fprintln(os.Stderr, "Hi! You've successfully authenticated to Opengist, but Opengist does not provide shell access.")
+		fmt.Fprintln(os.Stderr, "Hi! You've successfully authenticated to QingyuGist, but QingyuGist does not provide shell access.")
 		return 0, nil
 	}
 
@@ -63,11 +63,11 @@ func runShell(ctx *cli.Context) (int, error) {
 	}
 
 	// Data plane stays local: run the authorized git pack command against the
-	// repo on disk. OPENGIST_REPOSITORY_ID lets the post-receive hook update the
+	// repo on disk. QINGYUGIST_REPOSITORY_ID lets the post-receive hook update the
 	// gist over the IPC API, the same way the HTTP push path does.
 	cmd := exec.Command("git", resp.Verb, resp.RepoPath)
 	cmd.Dir = resp.RepoPath
-	cmd.Env = append(os.Environ(), "OPENGIST_REPOSITORY_ID="+resp.GistID)
+	cmd.Env = append(os.Environ(), "QINGYUGIST_REPOSITORY_ID="+resp.GistID)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

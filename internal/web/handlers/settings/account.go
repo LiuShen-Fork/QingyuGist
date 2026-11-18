@@ -8,13 +8,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/i18n"
-	opengistssh "github.com/thomiceli/opengist/internal/ssh"
-	"github.com/thomiceli/opengist/internal/validator"
-	"github.com/thomiceli/opengist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
+	qingyugistssh "github.com/LiuShen-Fork/Qingyu-Gist/internal/ssh"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 )
 
 func EmailProcess(ctx *context.Context) error {
@@ -46,7 +46,7 @@ func AccountDeleteProcess(ctx *context.Context) error {
 	if err := user.Delete(); err != nil {
 		return ctx.ErrorRes(500, "Cannot delete this user", err)
 	}
-	opengistssh.SyncAuthorizedKeysLogged()
+	qingyugistssh.SyncAuthorizedKeysLogged()
 
 	return ctx.RedirectTo("/explore")
 }

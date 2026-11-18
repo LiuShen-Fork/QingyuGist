@@ -1,39 +1,39 @@
 # Run with Systemd
 
-For non-Docker users, you could run Opengist as a systemd service.
+For non-Docker users, you could run QingyuGist as a systemd service.
 
 ## As root
-On Unix distributions with systemd, place the Opengist binary like:
+On Unix distributions with systemd, place the QingyuGist binary like:
 
 ```shell
-sudo cp opengist /usr/local/bin
-sudo mkdir -p /var/lib/opengist
-sudo cp config.yml /etc/opengist
+sudo cp qingyugist /usr/local/bin
+sudo mkdir -p /var/lib/qingyugist
+sudo cp config.yml /etc/qingyugist
 ```
 
-Edit the Opengist home directory configuration in `/etc/opengist/config.yml` like:
+Edit the QingyuGist home directory configuration in `/etc/qingyugist/config.yml` like:
 ```shell
-opengist-home: /var/lib/opengist
+qingyugist-home: /var/lib/qingyugist
 ```
 
-Create a new user to run Opengist:
+Create a new user to run QingyuGist:
 ```shell
-sudo useradd --system opengist
-sudo mkdir -p /var/lib/opengist
-sudo chown -R opengist:opengist /var/lib/opengist
+sudo useradd --system qingyugist
+sudo mkdir -p /var/lib/qingyugist
+sudo chown -R qingyugist:qingyugist /var/lib/qingyugist
 ```
 
-Then create a service file at `/etc/systemd/system/opengist.service`:
+Then create a service file at `/etc/systemd/system/qingyugist.service`:
 ```ini
 [Unit]
-Description=opengist Server
+Description=qingyugist Server
 After=network.target
 
 [Service]
 Type=simple
-User=opengist
-Group=opengist
-ExecStart=opengist --config /etc/opengist/config.yml
+User=qingyugist
+Group=qingyugist
+ExecStart=qingyugist --config /etc/qingyugist/config.yml
 Restart=on-failure
 
 [Install]
@@ -43,8 +43,8 @@ WantedBy=multi-user.target
 Finally, start the service:
 ```shell
 systemctl daemon-reload
-systemctl enable --now opengist
-systemctl status opengist
+systemctl enable --now qingyugist
+systemctl status qingyugist
 ```
 
 ----
@@ -53,7 +53,7 @@ systemctl status opengist
 **NOTE: This was tested on Ubuntu 20.04 and newer. For other distros, please check the respective documentation**  
 
 #### For the purpose of this documentation, we will assume that:
-- You've followed the instructions on how to run opengist [from source](https://github.com/thomiceli/opengist?tab=readme-ov-file#from-source)
+- You've followed the instructions on how to run qingyugist [from source](https://github.com/LiuShen-Fork/Qingyu-Gist?tab=readme-ov-file#from-source)
 - Your shell user is named `pastebin`
 - All commands are being executed as the `pastebin` user
 
@@ -69,15 +69,15 @@ Create the user systemd folder:
 mkdir -p /home/pastebin/.config/systemd/user
 ```
 
-Then create a service file at `/home/pastebin/.config/systemd/user/opengist.service`:
+Then create a service file at `/home/pastebin/.config/systemd/user/qingyugist.service`:
 ```ini
 [Unit]
-Description=opengist Server
+Description=qingyugist Server
 After=network.target
 
 [Service]
 Type=simple
-ExecStart=/home/pastebin/opengist/opengist --config /home/pastebin/opengist/config.yml
+ExecStart=/home/pastebin/qingyugist/qingyugist --config /home/pastebin/qingyugist/config.yml
 Restart=on-failure
 
 [Install]
@@ -87,6 +87,6 @@ WantedBy=default.target
 Finally, start the service:
 ```shell
 systemctl --user daemon-reload
-systemctl --user enable --now opengist
-systemctl --user status opengist
+systemctl --user enable --now qingyugist
+systemctl --user status qingyugist
 ```

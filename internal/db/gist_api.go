@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/thomiceli/opengist/internal/render/lang"
-	"github.com/thomiceli/opengist/internal/web/handlers/api/v1/types"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/render/lang"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/api/v1/types"
 )
 
 // ToAPISimple returns the v1 API list-shape representation of the gist. baseURL is

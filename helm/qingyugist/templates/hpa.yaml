@@ -2,10 +2,10 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "opengist.fullname" . }}
+  name: {{ include "qingyugist.fullname" . }}
   namespace: {{ .Values.namespace | default .Release.Namespace }}
   labels:
-    {{- include "opengist.labels" . | nindent 4 }}
+    {{- include "qingyugist.labels" . | nindent 4 }}
   {{- with .Values.autoscaling.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -14,7 +14,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "opengist.fullname" . }}
+    name: {{ include "qingyugist.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

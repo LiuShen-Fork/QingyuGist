@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 )
 
 // Healthcheck reports service health. A GET request returns the status as JSON;
@@ -29,8 +29,8 @@ func Healthcheck(ctx *context.Context) error {
 	}
 
 	return ctx.JSON(httpStatus, map[string]interface{}{
-		"opengist": "ok",
-		"database": dbOk,
-		"time":     time.Now().Format(time.RFC3339),
+		"qingyugist": "ok",
+		"database":   dbOk,
+		"time":       time.Now().Format(time.RFC3339),
 	})
 }

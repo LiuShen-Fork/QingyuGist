@@ -1,4 +1,4 @@
-# Run Opengist in development mode
+# Run QingyuGist in development mode
 
 ## With Docker
 
@@ -6,8 +6,8 @@ Assuming you have [Make](https://linux.die.net/man/1/make) installed,
 
 ```shell
 # Clone the repository
-git clone git@github.com:thomiceli/opengist.git
-cd opengist
+git clone git@github.com:LiuShen-Fork/Qingyu-Gist.git
+cd qingyugist
 
 # Build the development image
 make build_dev_docker
@@ -19,7 +19,7 @@ Now you can run the development image with the following command:
 make run_dev_docker
 ```
 
-Opengist is now running on port 6157, you can browse http://localhost:6157
+QingyuGist is now running on port 6157, you can browse http://localhost:6157
 
 ## As a binary
 
@@ -30,10 +30,10 @@ Requirements:
 * [Make](https://linux.die.net/man/1/make) (optional, but easier)
 
 ```shell
-git clone git@github.com:thomiceli/opengist.git
-cd opengist
+git clone git@github.com:LiuShen-Fork/Qingyu-Gist.git
+cd qingyugist
 make install
 make watch
 ```
 
-Opengist is now running on port 6157, you can browse http://localhost:6157
+QingyuGist is now running on port 6157, you can browse http://localhost:6157

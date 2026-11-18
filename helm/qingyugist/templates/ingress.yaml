@@ -2,10 +2,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "opengist.fullname" . }}
+  name: {{ include "qingyugist.fullname" . }}
   namespace: {{ .Values.namespace | default .Release.Namespace }}
   labels:
-    {{- include "opengist.labels" . | nindent 4 }}
+    {{- include "qingyugist.labels" . | nindent 4 }}
     {{- if .Values.ingress.labels }}
     {{- toYaml .Values.service.http.labels  | nindent 4 }}
     {{- end }}
@@ -39,7 +39,7 @@ spec:
             {{- end }}
             backend:
               service:
-                name: {{ include "opengist.fullname" $ }}-http
+                name: {{ include "qingyugist.fullname" $ }}-http
                 port:
                   number: {{ $.Values.service.http.port }}
           {{- end }}

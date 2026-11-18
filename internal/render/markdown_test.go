@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
 	"golang.org/x/net/html"
 )
 

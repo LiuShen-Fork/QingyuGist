@@ -197,9 +197,9 @@ settings.ssh-key-last-used: Last used
 settings.ssh-key-exists: SSH key already exists
 settings.change-username: Change username
 settings.create-password: Create password
-settings.create-password-help: Create your password to login to Opengist via HTTP
+settings.create-password-help: Create your password to login to QingyuGist via HTTP
 settings.change-password: Change password
-settings.change-password-help: Change your password to login to Opengist via HTTP
+settings.change-password-help: Change your password to login to QingyuGist via HTTP
 settings.password-label-title: Password
 settings.header.account: Account settings
 settings.header.mfa: MFA
@@ -263,7 +263,7 @@ auth.oauth.complete-registration-button: Create account
 auth.oauth.signing-in-with: Signing in with %s
 auth.oauth.cancel: Cancel
 auth.oauth.existing-account: Existing account?
-auth.oauth.already-have-account: If you already have an Opengist account, login first and link your %s account from your settings.
+auth.oauth.already-have-account: If you already have a QingyuGist account, login first and link your %s account from your settings.
 auth.mfa: Multi-factor authentication
 auth.mfa.passkey: Passkey
 auth.mfa.passkeys: Passkeys
@@ -470,7 +470,7 @@ admin.search-index: Search index
 admin.index-engine: Index engine
 admin.disabled: Disabled
 admin.external-url: External URL
-admin.opengist-home: Data directory
+admin.qingyugist-home: Data directory
 admin.public: public
 admin.private: private
 admin.storage: Storage
@@ -662,7 +662,7 @@ sidebar.gists: Gists
 sidebar.explore: Explore
 settings.link-oidc-account: Link OpenID account
 settings.unlink-oidc-account: Unlink OpenID account
-settings.unlink-oauth-confirm: Are you sure you want to unlink your %s account? You may lose access to Opengist if it is your only way to log in.
+settings.unlink-oauth-confirm: Are you sure you want to unlink your %s account? You may lose access to QingyuGist if it is your only way to log in.
 settings.site.repository_url: Source repository
 settings.site.repository_url_help: Linked from the QingyuGist item in the site footer. Leave empty to hide it.
 settings.site.links: Footer links

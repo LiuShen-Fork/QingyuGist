@@ -1,11 +1,11 @@
 package settings
 
 import (
-	passwordpkg "github.com/thomiceli/opengist/internal/auth/password"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/i18n"
-	"github.com/thomiceli/opengist/internal/validator"
-	"github.com/thomiceli/opengist/internal/web/context"
+	passwordpkg "github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/password"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 	"strconv"
 )
 

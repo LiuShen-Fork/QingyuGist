@@ -3,9 +3,9 @@ package gist_test
 import (
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/db"
-	webtest "github.com/thomiceli/opengist/internal/web/test"
 )
 
 func TestLike(t *testing.T) {

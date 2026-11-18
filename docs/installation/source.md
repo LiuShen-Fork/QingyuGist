@@ -7,13 +7,13 @@ Requirements:
 * [Make](https://linux.die.net/man/1/make) (optional, but easier)
 
 ```shell
-git clone https://github.com/thomiceli/opengist
-cd opengist
+git clone https://github.com/LiuShen-Fork/Qingyu-Gist
+cd qingyugist
 
 git checkout v1.15.3
 
 make
-./opengist
+./qingyugist
 ```
 
-Opengist is now running on port 6157, you can browse http://localhost:6157
+QingyuGist is now running on port 6157, you can browse http://localhost:6157

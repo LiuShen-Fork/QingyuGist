@@ -11,9 +11,9 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/config"
-	webtest "github.com/thomiceli/opengist/internal/web/test"
 )
 
 func createMultipartRequest(t *testing.T, uri, fieldName, fileName, content string) *http.Request {

@@ -7,7 +7,7 @@ import (
 )
 
 // ActionLock is a DB-backed lease used to single-flight an action across
-// multiple Opengist instances sharing the same database. Each lock is one row
+// multiple QingyuGist instances sharing the same database. Each lock is one row
 // keyed by Action (the action's identifier); LockedUntil holds the Unix
 // timestamp the current lease expires at (0 = free).
 type ActionLock struct {

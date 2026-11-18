@@ -3,11 +3,11 @@ package cli
 import (
 	"io"
 
-	"github.com/thomiceli/opengist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
 	"github.com/urfave/cli/v2"
 )
 
-// subprocessInit initializes Opengist for short-lived processes that Opengist
+// subprocessInit initializes QingyuGist for short-lived processes that QingyuGist
 // spawns of itself (Git hooks, the SSH `keys`/`shell` commands). It is the
 // shared contract for every self-invoked subcommand:
 //

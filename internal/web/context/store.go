@@ -6,10 +6,10 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/session"
 	"github.com/gorilla/sessions"
 	"github.com/markbates/goth/gothic"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/session"
 )
 
 var gothicStoreOnce sync.Once
@@ -24,7 +24,7 @@ type Store struct {
 func NewStore(sessionsPath string) *Store {
 	s := &Store{sessionsPath: sessionsPath}
 
-	s.flashStore = sessions.NewCookieStore([]byte("opengist"))
+	s.flashStore = sessions.NewCookieStore([]byte("qingyugist"))
 	hardenCookie(s.flashStore.Options)
 	encryptKey, _ := session.GenerateSecretKey(filepath.Join(s.sessionsPath, "session-encrypt.key"))
 	s.UserStore = sessions.NewFilesystemStore(s.sessionsPath, config.SecretKey, encryptKey)

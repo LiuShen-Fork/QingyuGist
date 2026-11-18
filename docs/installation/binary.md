@@ -1,14 +1,14 @@
 # Install from binary
 
-Download the archive for your system from the release page [here](https://github.com/thomiceli/opengist/releases/latest), and extract it.
+Download the archive for your system from the release page [here](https://github.com/LiuShen-Fork/Qingyu-Gist/releases/latest), and extract it.
 
 ```shell
 # example for linux amd64
-wget https://github.com/thomiceli/opengist/releases/download/v1.15.3/opengist1.15.3-linux-amd64.tar.gz
+wget https://github.com/LiuShen-Fork/Qingyu-Gist/releases/download/v1.15.3/qingyugist1.15.3-linux-amd64.tar.gz
 
-tar xzvf opengist1.15.3-linux-amd64.tar.gz
-cd opengist
-chmod +x opengist
-./opengist # with or without `--config config.yml`
+tar xzvf qingyugist1.15.3-linux-amd64.tar.gz
+cd qingyugist
+chmod +x qingyugist
+./qingyugist # with or without `--config config.yml`
 ```
 

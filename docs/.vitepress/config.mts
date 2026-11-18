@@ -6,7 +6,7 @@ import {listOperations, listSchemas, readSpecRaw} from './openapi'
 // Go source tree so it never drifts. Dev via middleware, build via asset emit.
 let isSsrBuild = false
 const openapiRawPlugin = {
-    name: 'opengist:openapi-raw',
+    name: 'qingyugist:openapi-raw',
     configResolved(c: any) {
         isSsrBuild = !!c.build?.ssr
     },
@@ -62,7 +62,7 @@ const docsSidebar = [
     },
     {
         text: 'Configuration', base: '/docs/configuration', items: [
-            {text: 'Configure Opengist', link: '/configure'},
+            {text: 'Configure QingyuGist', link: '/configure'},
             {text: 'Databases', items: [
                 {text: 'SQLite', link: '/databases/sqlite'},
                 {text: 'PostgreSQL', link: '/databases/postgresql'},
@@ -113,26 +113,26 @@ const docsSidebar = [
 ]
 
 // https://vitepress.dev/reference/site-config
-const hostname = 'https://opengist.io'
-const ogImage = `${hostname}/opengist-demo.png`
+const hostname = 'https://qingyugist.io'
+const ogImage = `${hostname}/qingyugist-demo.png`
 
 export default defineConfig({
-    title: "Opengist",
-    description: "Documentation for Opengist — a self-hosted pastebin powered by Git.",
+    title: "QingyuGist",
+    description: "Documentation for QingyuGist — a self-hosted pastebin powered by Git.",
     lang: 'en-US',
     sitemap: {
         hostname,
     },
     markdown: {
         config(md) {
-            // Strip the "See here how to update Opengist." note that appears
+            // Strip the "See here how to update QingyuGist." note that appears
             // under each version in the embedded CHANGELOG (source stays intact).
             md.core.ruler.push('strip_changelog_update_note', (state) => {
                 const t = state.tokens
                 for (let i = t.length - 1; i >= 0; i--) {
                     if (
                         t[i].type === 'inline' &&
-                        /See here how to .*update.* Opengist\./i.test(t[i].content) &&
+                        /See here how to .*update.* QingyuGist\./i.test(t[i].content) &&
                         t[i - 1]?.type === 'paragraph_open'
                     ) {
                         t.splice(i - 1, 3)
@@ -158,7 +158,7 @@ export default defineConfig({
                 if (!silent) {
                     const open = state.push('link_open', 'a', 1)
                     open.attrs = [
-                        ['href', `https://github.com/thomiceli/opengist/pull/${num}`],
+                        ['href', `https://github.com/LiuShen-Fork/Qingyu-Gist/pull/${num}`],
                         ['target', '_blank'],
                         ['rel', 'noreferrer'],
                     ]
@@ -181,22 +181,22 @@ export default defineConfig({
     },
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
-        logo: 'https://raw.githubusercontent.com/thomiceli/opengist/master/public/img/opengist.svg',
+        logo: 'https://raw.githubusercontent.com/LiuShen-Fork/Qingyu-Gist/master/public/img/qingyugist.svg',
         logoLink: '/',
         nav: [
             { text: 'Docs', link: '/docs', activeMatch: '^/docs' },
             {
                 text: 'Resources',
                 items: [
-                    { text: 'Demo', link: 'https://demo.opengist.io' },
-                    { text: 'Translate', link: 'https://tr.opengist.io' },
+                    { text: 'Demo', link: 'https://demo.qingyugist.io' },
+                    { text: 'Translate', link: 'https://tr.qingyugist.io' },
                 ]
             },
             {
                 text: 'v1.15.3',
                 items: [
                     { text: 'Changelog', link: '/changelog' },
-                    { text: 'Releases', link: 'https://github.com/thomiceli/opengist/releases' },
+                    { text: 'Releases', link: 'https://github.com/LiuShen-Fork/Qingyu-Gist/releases' },
                 ]
             }
         ],
@@ -212,11 +212,11 @@ export default defineConfig({
         },
 
         socialLinks: [
-            {icon: 'github', link: 'https://github.com/thomiceli/opengist'},
+            {icon: 'github', link: 'https://github.com/LiuShen-Fork/Qingyu-Gist'},
             {icon: 'discord', link: 'https://discord.gg/9Pm3X5scZT'}
         ],
         editLink: {
-            pattern: 'https://github.com/thomiceli/opengist/edit/master/docs/:path'
+            pattern: 'https://github.com/LiuShen-Fork/Qingyu-Gist/edit/master/docs/:path'
         },
         // @ts-ignore
         lastUpdated: true,
@@ -228,7 +228,7 @@ export default defineConfig({
         // Site-wide Open Graph / Twitter Card defaults (per-page values are
         // refined in transformPageData below).
         ['meta', {property: 'og:type', content: 'website'}],
-        ['meta', {property: 'og:site_name', content: 'Opengist'}],
+        ['meta', {property: 'og:site_name', content: 'QingyuGist'}],
         ['meta', {property: 'og:image', content: ogImage}],
         ['meta', {name: 'twitter:card', content: 'summary_large_image'}],
         ['meta', {name: 'twitter:image', content: ogImage}],
@@ -245,12 +245,12 @@ export default defineConfig({
         const path = out.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '.html')
         const url = `${hostname}/${path}`
 
-        const base = pageData.title || 'Opengist'
-        const title = base.includes('Opengist') ? base : `${base} | Opengist`
+        const base = pageData.title || 'QingyuGist'
+        const title = base.includes('QingyuGist') ? base : `${base} | QingyuGist`
         const description =
             pageData.description ||
             pageData.frontmatter.description ||
-            'Documentation for Opengist — a self-hosted pastebin powered by Git.'
+            'Documentation for QingyuGist — a self-hosted pastebin powered by Git.'
 
         pageData.frontmatter.head ??= []
         pageData.frontmatter.head.push(

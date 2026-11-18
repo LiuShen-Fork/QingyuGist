@@ -7,12 +7,12 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/i18n"
 )
 
 type dataKey string

@@ -8,15 +8,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/thomiceli/opengist/internal/actions"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/index"
-	"github.com/thomiceli/opengist/internal/settings"
-	opengistssh "github.com/thomiceli/opengist/internal/ssh"
-	"github.com/thomiceli/opengist/internal/web/context"
-	"github.com/thomiceli/opengist/internal/web/handlers"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/actions"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/index"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/settings"
+	qingyugistssh "github.com/LiuShen-Fork/Qingyu-Gist/internal/ssh"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers"
 )
 
 var processStart = time.Now()
@@ -25,7 +25,7 @@ func AdminIndex(ctx *context.Context) error {
 	ctx.SetData("htmlTitle", ctx.TrH("admin.admin_panel"))
 	ctx.SetData("adminHeaderPage", "index")
 
-	ctx.SetData("opengistVersion", config.OpengistVersion)
+	ctx.SetData("qingyugistVersion", config.QingyuGistVersion)
 	ctx.SetData("goVersion", runtime.Version())
 	gitVersion, err := git.GetGitVersion()
 	if err != nil {
@@ -61,7 +61,7 @@ func AdminIndex(ctx *context.Context) error {
 	home := config.GetHomeDir()
 	storageRepos := dirSize(filepath.Join(home, "repos"))
 	storageUploads := dirSize(filepath.Join(home, "uploads"))
-	storageIndex := dirSize(filepath.Join(home, "opengist.index"))
+	storageIndex := dirSize(filepath.Join(home, "qingyugist.index"))
 	ctx.SetData("storageRepos", storageRepos)
 	ctx.SetData("storageUploads", storageUploads)
 	ctx.SetData("storageIndex", storageIndex)
@@ -155,7 +155,7 @@ func AdminUserDelete(ctx *context.Context) error {
 	if err := user.Delete(); err != nil {
 		return ctx.ErrorRes(500, "Cannot delete this user", err)
 	}
-	opengistssh.SyncAuthorizedKeysLogged()
+	qingyugistssh.SyncAuthorizedKeysLogged()
 
 	ctx.AddFlash(ctx.Tr("flash.admin.user-deleted"), "success")
 	return ctx.RedirectTo("/admin/users")

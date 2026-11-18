@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
 )
 
 var (
@@ -507,7 +507,7 @@ func CommitRepository(gistTmpId string, authorName string, authorEmail string) e
 		"commit",
 		"--allow-empty",
 		"-m",
-		"Opengist commit",
+		"QingyuGist commit",
 		"--author",
 		fmt.Sprintf("%s <%s>", authorName, authorEmail),
 	)
@@ -657,7 +657,7 @@ func CreateDotGitFiles(user string, gist string) error {
 	}
 	defer f1.Close()
 
-	if os.Getenv("OPENGIST_SKIP_GIT_HOOKS") != "1" {
+	if os.Getenv("QINGYUGIST_SKIP_GIT_HOOKS") != "1" {
 		for _, hook := range []string{"pre-receive", "post-receive"} {
 			if err = createDotGitHookFile(repositoryPath, hook, fmt.Sprintf(hookTemplate, hook)); err != nil {
 				return err
@@ -748,5 +748,5 @@ func convertURLToOctal(name string) string {
 }
 
 const hookTemplate = `#!/bin/sh
-"$OG_OPENGIST_HOME_INTERNAL/symlinks/opengist" --config=$OG_OPENGIST_HOME_INTERNAL/symlinks/config.yml hook %s
+"$QYG_HOME_INTERNAL/symlinks/qingyugist" --config=$QYG_HOME_INTERNAL/symlinks/config.yml hook %s
 `

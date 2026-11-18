@@ -1,9 +1,9 @@
-## Kubernetes workload configuration for Opengist
+## Kubernetes workload configuration for QingyuGist
 nameOverride: ""
 fullnameOverride: ""
 namespace: ""
 
-## Opengist YAML Application Config. See more at https://opengist.io/docs/configuration/cheat-sheet.html
+## QingyuGist YAML Application Config. See more at https://qingyugist.io/docs/configuration/cheat-sheet.html
 ## This will create a Kubernetes secret with the key `config.yml` containing the YAML configuration mounted in the pod.
 config:
   log-level: "warn"
@@ -16,7 +16,7 @@ configExistingSecret: ""
 
 ## Define the image repository and tag to use.
 image:
-  repository: ghcr.io/thomiceli/opengist
+  repository: ghcr.io/liushen-fork/qingyugist
   pullPolicy: Always
   tag: "1.15.3"
   digest: ""
@@ -106,7 +106,7 @@ service:
     loadBalancerSourceRanges: []
     externalTrafficPolicy:
 
-  # A metrics K8S service on port 6158 is created when the Opengist config metrics.enabled: true
+  # A metrics K8S service on port 6158 is created when the QingyuGist config metrics.enabled: true
   metrics:
     type: ClusterIP
     clusterIP:
@@ -126,7 +126,7 @@ service:
       relabelings: []
       metricRelabelings: []
 
-## HTTP Ingress for Opengist
+## HTTP Ingress for QingyuGist
 ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
   enabled: false
@@ -136,23 +136,23 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
   hosts:
-    - host: opengist.example.com
+    - host: qingyugist.example.com
       paths:
         - path: /
           pathType: Prefix
   tls: []
-    # - secretName: opengist-tls
+    # - secretName: qingyugist-tls
     #   hosts:
-    #     - opengist.example.com
+    #     - qingyugist.example.com
 
-## Service Account for Opengist pods
+## Service Account for QingyuGist pods
 ## ref: https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:
   create: true
   annotations: {}
   name: ""
 
-## Persistent storage for /opengist data directory
+## Persistent storage for /qingyugist data directory
 ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
 persistence:
   enabled: true
@@ -185,7 +185,7 @@ persistence:
   ##   - Chart will NOT create a PVC
   ##   - StatefulSet mounts this claim directly (no volumeClaimTemplates)
   ##   - Must be RWX for replicaCount > 1
-  ## Example: existingClaim: "opengist-shared-rwx"
+  ## Example: existingClaim: "qingyugist-shared-rwx"
   existingClaim: ""
 
   ## Common persistence parameters (apply to perReplica mode OR as defaults for create.*)
@@ -267,7 +267,7 @@ deployment:
   ## ref: https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables
   envFromSecrets: []
   # - name: OG_OIDC_SECRET
-  #   secretName: opengist-oidc-client-secret
+  #   secretName: qingyugist-oidc-client-secret
   #   secretKey: client_secret
   terminationGracePeriodSeconds: 60
   labels: {}
@@ -286,9 +286,9 @@ postgresql:
   global:
     postgresql:
       auth:
-        username: opengist
-        password: opengist
-        database: opengist
+        username: qingyugist
+        password: qingyugist
+        database: qingyugist
       service:
         ports:
           postgresql: 5432

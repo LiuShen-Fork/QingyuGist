@@ -9,12 +9,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/thomiceli/opengist/internal/validator"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/i18n"
 )
 
 type Server struct {
@@ -73,7 +73,7 @@ func (s *Server) startHTTP() {
 func (s *Server) startUnixSocket() {
 	socketPath := config.C.HttpHost
 	if socketPath == "" {
-		socketPath = "/tmp/opengist.sock"
+		socketPath = "/tmp/qingyugist.sock"
 	}
 
 	if dir := filepath.Dir(socketPath); dir != "." {

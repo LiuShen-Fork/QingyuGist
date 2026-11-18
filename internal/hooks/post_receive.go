@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/ipc"
-	validatorpkg "github.com/thomiceli/opengist/internal/validator"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/ipc"
+	validatorpkg "github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
 )
 
 // PostReceive is the client side of the post-receive hook. It runs in the
@@ -23,7 +23,7 @@ import (
 // internal API (which holds the warm database connection and the index), and
 // prints back whatever message the daemon produced. It opens no database.
 func PostReceive(in io.Reader, out, er io.Writer) error {
-	gistID := os.Getenv("OPENGIST_REPOSITORY_ID")
+	gistID := os.Getenv("QINGYUGIST_REPOSITORY_ID")
 	if gistID == "" {
 		// No gist id is set on the SSH push path, which performs the gist update
 		// in-process instead. Nothing for this hook to forward.
@@ -44,7 +44,7 @@ func PostReceive(in io.Reader, out, er io.Writer) error {
 
 	resp, err := ipc.HookPostReceive(&ipc.HookPostReceiveRequest{
 		GistID:      gistID,
-		GistURL:     os.Getenv("OPENGIST_REPOSITORY_URL_INTERNAL"),
+		GistURL:     os.Getenv("QINGYUGIST_REPOSITORY_URL_INTERNAL"),
 		References:  refs,
 		PushOptions: pushOptions(),
 	})

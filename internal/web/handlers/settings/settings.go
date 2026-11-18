@@ -1,9 +1,9 @@
 package settings
 
 import (
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/validator"
-	"github.com/thomiceli/opengist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 )
 
 func UserAccount(ctx *context.Context) error {

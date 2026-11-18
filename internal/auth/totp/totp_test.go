@@ -21,35 +21,35 @@ func TestGenerateQRCode(t *testing.T) {
 		{
 			name:     "basic generation with nil secret",
 			username: "testuser",
-			siteUrl:  "opengist.io",
+			siteUrl:  "qingyugist.io",
 			secret:   nil,
 			wantErr:  false,
 		},
 		{
 			name:     "basic generation with provided secret",
 			username: "testuser",
-			siteUrl:  "opengist.io",
+			siteUrl:  "qingyugist.io",
 			secret:   []byte("1234567890123456"),
 			wantErr:  false,
 		},
 		{
 			name:     "username with special characters",
 			username: "test.user",
-			siteUrl:  "opengist.io",
+			siteUrl:  "qingyugist.io",
 			secret:   nil,
 			wantErr:  false,
 		},
 		{
 			name:     "site URL with protocol and port",
 			username: "testuser",
-			siteUrl:  "https://opengist.io:6157",
+			siteUrl:  "https://qingyugist.io:6157",
 			secret:   nil,
 			wantErr:  false,
 		},
 		{
 			name:     "empty username",
 			username: "",
-			siteUrl:  "opengist.io",
+			siteUrl:  "qingyugist.io",
 			secret:   nil,
 			wantErr:  true,
 		},
@@ -114,7 +114,7 @@ func TestGenerateQRCode(t *testing.T) {
 
 func TestGenerateQRCode_SecretUniqueness(t *testing.T) {
 	username := "testuser"
-	siteUrl := "opengist.io"
+	siteUrl := "qingyugist.io"
 	iterations := 10
 
 	secrets := make(map[string]bool)
@@ -143,7 +143,7 @@ func TestGenerateQRCode_SecretUniqueness(t *testing.T) {
 
 func TestGenerateQRCode_WithProvidedSecret(t *testing.T) {
 	username := "testuser"
-	siteUrl := "opengist.io"
+	siteUrl := "qingyugist.io"
 	providedSecret := []byte("mysecret12345678")
 
 	// Generate QR code multiple times with the same secret
@@ -173,7 +173,7 @@ func TestGenerateQRCode_WithProvidedSecret(t *testing.T) {
 
 func TestGenerateQRCode_ConcurrentGeneration(t *testing.T) {
 	username := "testuser"
-	siteUrl := "opengist.io"
+	siteUrl := "qingyugist.io"
 	concurrency := 10
 
 	type result struct {
@@ -214,13 +214,13 @@ func TestGenerateQRCode_ConcurrentGeneration(t *testing.T) {
 
 func TestValidate(t *testing.T) {
 	// Generate a valid secret for testing
-	_, _, secret, err := GenerateQRCode("testuser", "opengist.io", nil)
+	_, _, secret, err := GenerateQRCode("testuser", "qingyugist.io", nil)
 	if err != nil {
 		t.Fatalf("Failed to generate secret: %v", err)
 	}
 
 	// Convert secret bytes to base32 string for TOTP
-	secretStr, _, _, err := GenerateQRCode("testuser", "opengist.io", secret)
+	secretStr, _, _, err := GenerateQRCode("testuser", "qingyugist.io", secret)
 	if err != nil {
 		t.Fatalf("Failed to generate secret string: %v", err)
 	}
@@ -299,7 +299,7 @@ func TestValidate(t *testing.T) {
 
 func TestValidate_TimeDrift(t *testing.T) {
 	// Generate a valid secret
-	secretStr, _, _, err := GenerateQRCode("testuser", "opengist.io", nil)
+	secretStr, _, _, err := GenerateQRCode("testuser", "qingyugist.io", nil)
 	if err != nil {
 		t.Fatalf("Failed to generate secret: %v", err)
 	}
@@ -331,7 +331,7 @@ func TestValidate_TimeDrift(t *testing.T) {
 
 func TestValidate_ExpiredPasscode(t *testing.T) {
 	// Generate a valid secret
-	secretStr, _, _, err := GenerateQRCode("testuser", "opengist.io", nil)
+	secretStr, _, _, err := GenerateQRCode("testuser", "qingyugist.io", nil)
 	if err != nil {
 		t.Fatalf("Failed to generate secret: %v", err)
 	}
@@ -359,17 +359,17 @@ func TestValidate_RoundTrip(t *testing.T) {
 		{
 			name:     "basic round trip",
 			username: "testuser",
-			siteUrl:  "opengist.io",
+			siteUrl:  "qingyugist.io",
 		},
 		{
 			name:     "round trip with dot in username",
 			username: "test.user",
-			siteUrl:  "opengist.io",
+			siteUrl:  "qingyugist.io",
 		},
 		{
 			name:     "round trip with hyphen in username",
 			username: "test-user",
-			siteUrl:  "opengist.io",
+			siteUrl:  "qingyugist.io",
 		},
 	}
 
@@ -407,7 +407,7 @@ func TestValidate_RoundTrip(t *testing.T) {
 func TestGenerateSecret(t *testing.T) {
 	// Test the internal generateSecret function behavior through GenerateQRCode
 	for i := 0; i < 10; i++ {
-		_, _, secret, err := GenerateQRCode("testuser", "opengist.io", nil)
+		_, _, secret, err := GenerateQRCode("testuser", "qingyugist.io", nil)
 		if err != nil {
 			t.Fatalf("Iteration %d: generateSecret() failed: %v", i, err)
 		}

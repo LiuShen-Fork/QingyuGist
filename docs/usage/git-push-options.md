@@ -1,13 +1,13 @@
 # Push Options
 
-Opengist has support for a few [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt). 
+QingyuGist has support for a few [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt).
 
 These options are passed to `git push` command and can be used to change the metadata of a gist.
 
 ## Set URL
 
 ```shell
-git push -o url=mygist # Will set the URL to https://opengist.example.com/user/mygist
+git push -o url=mygist # Will set the URL to https://qingyugist.example.com/user/mygist
 ```
 
 ## Change title
@@ -44,6 +44,6 @@ Only applies when creating a gist. The value is either a preset
 (RFC3339, e.g. `2026-01-02T15:04:05Z`).
 
 ```shell
-git push -o expire=1day 
+git push -o expire=1day
 git push -o expire=2026-01-02T15:04:05Z
 ```

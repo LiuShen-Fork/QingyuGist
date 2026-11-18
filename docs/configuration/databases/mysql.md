@@ -7,13 +7,13 @@ To use MySQL/MariaDB as the database backend, you need to set the database URI c
 #### YAML
 ```yaml
 # Example
-db-uri: mysql://root:passwd@localhost:3306/opengist_db
+db-uri: mysql://root:passwd@localhost:3306/qingyugist_db
 ```
 
 #### Environment variable
 ```sh
 # Example
-OG_DB_URI=mysql://root:passwd@localhost:3306/opengist_db
+QYG_DB_URI=mysql://root:passwd@localhost:3306/qingyugist_db
 ```
 
 ### Unix socket
@@ -24,15 +24,15 @@ To connect through a Unix socket instead of TCP, omit the host/port and set the 
 
 ```yaml
 # Example
-db-uri: mysql://root:passwd@/opengist_db?socket=/var/run/mysqld/mysqld.sock
+db-uri: mysql://root:passwd@/qingyugist_db?socket=/var/run/mysqld/mysqld.sock
 ```
 
 ### Docker Compose
 ```yml
 services:
-  opengist:
-    image: ghcr.io/thomiceli/opengist:1
-    container_name: opengist
+  qingyugist:
+    image: ghcr.io/liushen-fork/qingyugist:1
+    container_name: qingyugist
     restart: unless-stopped
     depends_on:
       - mysql
@@ -40,19 +40,19 @@ services:
       - "6157:6157"
       - "2222:2222"
     volumes:
-      - "$HOME/.opengist:/opengist"
+      - "$HOME/.qingyugist:/qingyugist"
     environment:
-      OG_DB_URI: mysql://opengist:secret@mysql:3306/opengist_db
+      QYG_DB_URI: mysql://qingyugist:secret@mysql:3306/qingyugist_db
       # other configuration options
 
   mysql:
     image: mysql:8.4
     restart: unless-stopped
     volumes:
-      - "./opengist-database:/var/lib/mysql"
+      - "./qingyugist-database:/var/lib/mysql"
     environment:
-      MYSQL_USER: opengist
+      MYSQL_USER: qingyugist
       MYSQL_PASSWORD: secret
-      MYSQL_DATABASE: opengist_db
+      MYSQL_DATABASE: qingyugist_db
       MYSQL_ROOT_PASSWORD: rootsecret
 ```

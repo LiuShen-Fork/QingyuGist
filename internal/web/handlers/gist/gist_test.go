@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/db"
-	webtest "github.com/thomiceli/opengist/internal/web/test"
 )
 
 func TestGistIndex(t *testing.T) {
@@ -140,7 +140,7 @@ func TestGistSocialMetaTags(t *testing.T) {
 		assert.Contains(t, html, `property="og:description"`)
 		assert.Contains(t, html, `property="og:type" content="article"`)
 		assert.Contains(t, html, `property="og:url"`)
-		assert.Contains(t, html, `property="og:site_name" content="Opengist"`)
+		assert.Contains(t, html, `property="og:site_name" content="QingyuGist"`)
 		assert.Contains(t, html, `property="og:image"`)
 
 		// Twitter Card tags
@@ -219,7 +219,7 @@ func TestGistJson(t *testing.T) {
 		require.Equal(t, gist.Uuid, result["uuid"])
 		require.Equal(t, gist.Title, result["title"])
 		require.Equal(t, "public", result["visibility"])
-		require.Equal(t, []interface{}{"hello", "opengist"}, result["topics"])
+		require.Equal(t, []interface{}{"hello", "qingyugist"}, result["topics"])
 		require.Equal(t, []interface{}{
 			map[string]interface{}{
 				"content":    "hello world",

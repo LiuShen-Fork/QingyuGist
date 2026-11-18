@@ -4,8 +4,8 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/git"
 )
 
 type RenderedFile interface {

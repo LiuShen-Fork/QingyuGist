@@ -3,10 +3,10 @@ package v1_test
 import (
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/api/v1/types"
+	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/web/handlers/api/v1/types"
-	webtest "github.com/thomiceli/opengist/internal/web/test"
 )
 
 // userGistsFixture stands up the env shared by the ListUserGists visibility

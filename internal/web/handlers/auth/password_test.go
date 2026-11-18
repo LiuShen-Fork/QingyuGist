@@ -4,10 +4,10 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/db"
-	webtest "github.com/thomiceli/opengist/internal/web/test"
 )
 
 func TestRegisterPage(t *testing.T) {

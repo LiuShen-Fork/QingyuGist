@@ -23,7 +23,7 @@ The `custom.static-links` configuration is still supported for existing
 instances and for links that point at custom HTML files. These links use a
 generic link icon.
 
-If you have a legal information file `legal.html` in the `$opengist-home/custom`
+If you have a legal information file `legal.html` in the `$qingyugist-home/custom`
 directory, and also wish to add a link to a Gitea instance, set the links as
 follows:
 
@@ -38,16 +38,16 @@ custom.static-links:
 
 #### Environment variable
 ```sh
-OG_CUSTOM_STATIC_LINK_0_NAME="Legal Notices" \
-OG_CUSTOM_STATIC_LINK_0_PATH=legal.html \
-OG_CUSTOM_STATIC_LINK_1_NAME=Gitea \
-OG_CUSTOM_STATIC_LINK_1_PATH=https://gitea.com \
-./opengist
+QYG_CUSTOM_STATIC_LINK_0_NAME="Legal Notices" \
+QYG_CUSTOM_STATIC_LINK_0_PATH=legal.html \
+QYG_CUSTOM_STATIC_LINK_1_NAME=Gitea \
+QYG_CUSTOM_STATIC_LINK_1_PATH=https://gitea.com \
+./qingyugist
 ```
 
 ## Templating custom HTML pages
 
-In the start and end of the custom HTML files, you can use the syntax to include the header and footer of the Opengist instance:
+In the start and end of the custom HTML files, you can use the syntax to include the header and footer of the QingyuGist instance:
 
 ```html
 {{ template "header" . }}
@@ -79,4 +79,4 @@ If you want your custom page to integrate well into the existing theme, you can 
 {{ template "footer" . }}
 ```
 
-You can adjust above as needed. Opengist uses TailwindCSS classes.
+You can adjust above as needed. QingyuGist uses TailwindCSS classes.

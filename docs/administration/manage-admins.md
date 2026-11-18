@@ -1,11 +1,11 @@
 # Manage admins
 
-You can add and remove Opengist admins from the CLI.
+You can add and remove QingyuGist admins from the CLI.
 
 ```bash
-./opengist admin toggle-admin <username>
+./qingyugist admin toggle-admin <username>
 ```
 ```bash
-$ ./opengist admin toggle-admin thomas
+$ ./qingyugist admin toggle-admin thomas
 User thomas admin set to true
 ```

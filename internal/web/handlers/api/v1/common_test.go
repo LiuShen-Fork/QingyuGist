@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/api/v1/types"
+	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/web/handlers/api/v1/types"
-	webtest "github.com/thomiceli/opengist/internal/web/test"
 )
 
 // setupPaginationEnv stands up a server with `count` public gists owned by

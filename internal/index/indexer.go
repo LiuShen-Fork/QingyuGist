@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"sync/atomic"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
 )
 
 var atomicIndexer atomic.Pointer[Indexer]
@@ -59,9 +59,9 @@ func NewIndexer(idxType IndexerType) {
 
 	switch idxType {
 	case Bleve:
-		idx = NewBleveIndexer(filepath.Join(config.GetHomeDir(), "opengist.index"))
+		idx = NewBleveIndexer(filepath.Join(config.GetHomeDir(), "qingyugist.index"))
 	case Meilisearch:
-		idx = NewMeiliIndexer(config.C.MeiliHost, config.C.MeiliAPIKey, "opengist")
+		idx = NewMeiliIndexer(config.C.MeiliHost, config.C.MeiliAPIKey, "qingyugist")
 	default:
 		log.Warn().Msgf("Failed to create indexer, unknown indexer type: %s", idxType)
 		return

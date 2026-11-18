@@ -8,13 +8,13 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/index"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/settings"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/ssh"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/index"
-	"github.com/thomiceli/opengist/internal/settings"
-	"github.com/thomiceli/opengist/internal/ssh"
 )
 
 const (

@@ -3,9 +3,9 @@ package actions
 import (
 	"time"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/settings"
 	"github.com/robfig/cron/v3"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/settings"
 )
 
 const cronDrainTimeout = 10 * time.Second

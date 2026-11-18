@@ -7,13 +7,13 @@ To use PostgreSQL as the database backend, you need to set the database URI conf
 #### YAML
 ```yaml
 # Example
-db-uri: postgres://postgres:passwd@localhost:5432/opengist_db
+db-uri: postgres://postgres:passwd@localhost:5432/qingyugist_db
 ```
 
 #### Environment variable
 ```sh
 # Example
-OG_DB_URI=postgres://postgres:passwd@localhost:5432/opengist_db
+QYG_DB_URI=postgres://postgres:passwd@localhost:5432/qingyugist_db
 ```
 
 ### Unix socket
@@ -24,15 +24,15 @@ To connect through a Unix socket instead of TCP, omit the host/port and set the 
 
 ```yaml
 # Example
-db-uri: postgres://postgres:passwd@/opengist_db?socket=/var/run/postgresql
+db-uri: postgres://postgres:passwd@/qingyugist_db?socket=/var/run/postgresql
 ```
 
 ### Docker Compose
 ```yml
 services:
-  opengist:
-    image: ghcr.io/thomiceli/opengist:1
-    container_name: opengist
+  qingyugist:
+    image: ghcr.io/liushen-fork/qingyugist:1
+    container_name: qingyugist
     restart: unless-stopped
     depends_on:
       - postgres
@@ -40,18 +40,18 @@ services:
       - "6157:6157"
       - "2222:2222"
     volumes:
-      - "$HOME/.opengist:/opengist"
+      - "$HOME/.qingyugist:/qingyugist"
     environment:
-      OG_DB_URI: postgres://opengist:secret@postgres:5432/opengist_db
+      QYG_DB_URI: postgres://qingyugist:secret@postgres:5432/qingyugist_db
       # other configuration options
 
   postgres:
     image: postgres:16.4
     restart: unless-stopped
     volumes:
-      - "./opengist-database:/var/lib/postgresql/data"
+      - "./qingyugist-database:/var/lib/postgresql/data"
     environment:
-      POSTGRES_USER: opengist
+      POSTGRES_USER: qingyugist
       POSTGRES_PASSWORD: secret
-      POSTGRES_DB: opengist_db
+      POSTGRES_DB: qingyugist_db
 ```

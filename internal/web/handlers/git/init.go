@@ -3,10 +3,10 @@ package git
 import (
 	"strings"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/web/context"
 )
 
 type initKind int

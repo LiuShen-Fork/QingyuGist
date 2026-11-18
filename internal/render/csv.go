@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/thomiceli/opengist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
 )
 
 type CSVFile struct {

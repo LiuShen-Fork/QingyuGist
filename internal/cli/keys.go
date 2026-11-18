@@ -5,15 +5,15 @@ import (
 	"os"
 	"strings"
 
-	"github.com/thomiceli/opengist/internal/ipc"
-	"github.com/thomiceli/opengist/internal/ssh"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/ipc"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/ssh"
 	"github.com/urfave/cli/v2"
 )
 
 // CmdKeys is sshd's AuthorizedKeysCommand entry point. For each public key a
 // client offers, sshd runs it with the key type and content; if the key is
 // known, it prints the matching authorized_keys line (a forced command that
-// hands the connection to `opengist shell`).
+// hands the connection to `qingyugist shell`).
 //
 // stdout is parsed by sshd as authorized_keys, so this command writes ONLY the
 // key line there — never logs or errors (those go to stderr). The default log
@@ -22,8 +22,8 @@ import (
 // Configure sshd with, e.g. (--config is a global flag, so it precedes the
 // subcommand):
 //
-//	AuthorizedKeysCommand /usr/local/bin/opengist --config /etc/opengist/config.yml keys -t %t -k %k
-//	AuthorizedKeysCommandUser opengist
+//	AuthorizedKeysCommand /usr/local/bin/qingyugist --config /etc/qingyugist/config.yml keys -t %t -k %k
+//	AuthorizedKeysCommandUser qingyugist
 var CmdKeys = cli.Command{
 	Name:   "keys",
 	Usage:  "Print the authorized_keys line for an SSH key (sshd AuthorizedKeysCommand)",
@@ -46,7 +46,7 @@ var CmdKeys = cli.Command{
 		resp, err := ipc.LookupSSHKey(pubKey)
 		if err != nil {
 			// Never write to stdout on error: emit no key and report on stderr.
-			fmt.Fprintln(os.Stderr, "opengist keys: failed to look up SSH key: "+err.Error())
+			fmt.Fprintln(os.Stderr, "qingyugist keys: failed to look up SSH key: "+err.Error())
 			return nil
 		}
 		if !resp.Found {
@@ -55,7 +55,7 @@ var CmdKeys = cli.Command{
 
 		exe, err := os.Executable()
 		if err != nil {
-			fmt.Fprintln(os.Stderr, "opengist keys: failed to resolve executable path: "+err.Error())
+			fmt.Fprintln(os.Stderr, "qingyugist keys: failed to resolve executable path: "+err.Error())
 			return nil
 		}
 

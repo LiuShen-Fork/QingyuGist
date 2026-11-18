@@ -3,7 +3,7 @@ package gist
 import (
 	"time"
 
-	"github.com/thomiceli/opengist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
 )
 
 // HeatmapCell is one day in a contribution heatmap.

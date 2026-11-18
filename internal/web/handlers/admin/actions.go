@@ -1,9 +1,9 @@
 package admin
 
 import (
-	"github.com/thomiceli/opengist/internal/actions"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/actions"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 )
 
 // actionView is the template model for a single row on the admin actions page.
@@ -45,7 +45,7 @@ func AdminActions(ctx *context.Context) error {
 	views := make([]actionView, 0, len(adminActions))
 	anyRunning := false
 	for _, a := range adminActions {
-		// The authorized_keys action is only relevant when Opengist manages the file.
+		// The authorized_keys action is only relevant when QingyuGist manages the file.
 		if a.Type == actions.SyncSSHKeys && !manageSSHKeys {
 			continue
 		}

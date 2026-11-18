@@ -6,15 +6,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
 	"github.com/go-playground/validator/v10"
-	"github.com/thomiceli/opengist/internal/i18n"
 )
 
-type OpengistValidator struct {
+type QingyuGistValidator struct {
 	v *validator.Validate
 }
 
-func NewValidator() *OpengistValidator {
+func NewValidator() *QingyuGistValidator {
 	v := validator.New()
 	_ = v.RegisterValidation("notreserved", validateReservedKeywords)
 	_ = v.RegisterValidation("alphanumdash", validateAlphaNumDash)
@@ -24,18 +24,18 @@ func NewValidator() *OpengistValidator {
 	_ = v.RegisterValidation("gisttopics", validateGistTopics)
 	_ = v.RegisterValidation("expirationdate", validateExpirationDate)
 	_ = v.RegisterValidation("themecolor", validateThemeColor)
-	return &OpengistValidator{v}
+	return &QingyuGistValidator{v}
 }
 
 var ThemeColors = []string{
 	"red", "amber", "emerald", "sky", "indigo", "purple", "neutral",
 }
 
-func (cv *OpengistValidator) Validate(i interface{}) error {
+func (cv *QingyuGistValidator) Validate(i interface{}) error {
 	return cv.v.Struct(i)
 }
 
-func (cv *OpengistValidator) Var(field interface{}, tag string) error {
+func (cv *QingyuGistValidator) Var(field interface{}, tag string) error {
 	return cv.v.Var(field, tag)
 }
 

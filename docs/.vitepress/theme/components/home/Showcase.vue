@@ -17,14 +17,14 @@ const { isDark } = useData()
       <img
         v-show="!isDark"
         class="og-showcase__img"
-        :src="withBase('/opengist-demo.png')"
-        alt="Opengist web interface"
+        :src="withBase('/qingyugist-demo.png')"
+        alt="QingyuGist web interface"
       />
       <img
         v-show="isDark"
         class="og-showcase__img"
-        :src="withBase('/opengist-demo-dark.png')"
-        alt="Opengist web interface"
+        :src="withBase('/qingyugist-demo-dark.png')"
+        alt="QingyuGist web interface"
       />
     </div>
   </section>

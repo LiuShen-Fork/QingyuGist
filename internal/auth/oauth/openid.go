@@ -5,13 +5,13 @@ import (
 	"errors"
 	"slices"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/openidConnect"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/web/context"
 )
 
 type OIDCProvider struct {

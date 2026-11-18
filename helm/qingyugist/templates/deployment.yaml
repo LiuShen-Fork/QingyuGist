@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "opengist.fullname" . }}
+  name: {{ include "qingyugist.fullname" . }}
   namespace: {{ .Values.namespace | default .Release.Namespace }}
   labels:
-    {{- include "opengist.labels" . | nindent 4 }}
+    {{- include "qingyugist.labels" . | nindent 4 }}
     {{- if .Values.deployment.labels }}
     {{- toYaml .Values.deployment.labels | nindent 4 }}
     {{- end }}
@@ -19,7 +19,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "opengist.selectorLabels" . | nindent 6 }}
+      {{- include "qingyugist.selectorLabels" . | nindent 6 }}
   {{- with .Values.strategy }}
   strategy:
     {{- toYaml . | nindent 4 }}
@@ -32,7 +32,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "opengist.labels" . | nindent 8 }}
+        {{- include "qingyugist.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -44,7 +44,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "opengist.serviceAccountName" . }}
+      serviceAccountName: {{ include "qingyugist.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
@@ -109,26 +109,26 @@ spec:
             - name: config-volume
               mountPath: /config.yml
               subPath: config.yml
-            - name: opengist-data
-              mountPath: /opengist
+            - name: qingyugist-data
+              mountPath: /qingyugist
           {{- if gt (len .Values.extraVolumeMounts) 0 }}
             {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
           {{- end }}
       volumes:
-        - name: opengist-data
+        - name: qingyugist-data
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             {{- if .Values.persistence.existingClaim }}
             claimName: {{ .Values.persistence.existingClaim }}
             {{- else }}
-            claimName: {{ include "opengist.fullname" . }}-data
+            claimName: {{ include "qingyugist.fullname" . }}-data
             {{- end }}
           {{- else }}
           emptyDir: {}
           {{- end }}
         - name: config-secret
           secret:
-            secretName: {{ include "opengist.secretName" . }}
+            secretName: {{ include "qingyugist.secretName" . }}
             defaultMode: 511
         - name: config-volume
           emptyDir: {}

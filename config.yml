@@ -1,6 +1,6 @@
-# Learn more about Opengist configuration here:
-# https://github.com/thomiceli/opengist/blob/master/docs/configuration/configure.md
-# https://github.com/thomiceli/opengist/blob/master/docs/configuration/cheat-sheet.md
+# Learn more about QingyuGist configuration here:
+# https://github.com/LiuShen-Fork/Qingyu-Gist/blob/master/docs/configuration/configure.md
+# https://github.com/LiuShen-Fork/Qingyu-Gist/blob/master/docs/configuration/cheat-sheet.md
 
 # Set the log level to one of the following: debug, info, warn, error, fatal. Default: warn
 log-level: warn
@@ -8,23 +8,23 @@ log-level: warn
 # Set the log output to one or more of the following: `stdout`, `file`. Default: stdout,file
 log-output: stdout,file
 
-# Set the directory where the log file (opengist.log) is written. Default: $OG_OPENGIST_HOME/log
+# Set the directory where the log file (qingyugist.log) is written. Default: $QYG_HOME/log
 log-path:
 
-# Public URL to access to Opengist
+# Public URL to access to QingyuGist
 external-url:
 
-# Directory where Opengist will store its data. Default: ~/.opengist/
-opengist-home:
+# Directory where QingyuGist will store its data. Default: ~/.qingyugist/
+qingyugist-home:
 
 # Secret key used for session store & encrypt MFA data on database. Default: <randomized 32 bytes>
 secret-key:
 
-# URI of the database. Default: opengist.db (SQLite) is placed in opengist-home
+# URI of the database. Default: qingyugist.db (SQLite) is placed in qingyugist-home
 # SQLite:        file:/path/to/database
 # PostgreSQL:    postgres://user:password@host:port/database
 # MySQL/MariaDB: mysql://user:password@host:port/database
-db-uri: opengist.db
+db-uri: qingyugist.db
 
 # Define the code indexer (either `bleve`, `meilisearch`, or empty for no index). Default: bleve
 index: bleve
@@ -39,7 +39,7 @@ index.meili.api-key:
 # Fields: content,user,title,description,filename,extension,language,topic. Default: content
 search.default: content
 
-# Default branch name used by Opengist when initializing Git repositories.
+# Default branch name used by QingyuGist when initializing Git repositories.
 # If not set, uses the Git default branch name. See https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup#_new_default_branch
 git.default-branch:
 
@@ -50,7 +50,7 @@ sqlite.journal-mode: WAL
 
 # HTTP server configuration
 # Host to bind to. Default: 0.0.0.0
-# Use an IP address for network binding. Use a path for Unix socket binding (e.g. /run/opengist.sock)
+# Use an IP address for network binding. Use a path for Unix socket binding (e.g. /run/qingyugist.sock)
 http.host: 0.0.0.0
 
 # Port to bind to. Default: 6157
@@ -102,13 +102,13 @@ ssh.username:
 # If not set, uses the URL from the request
 ssh.external-domain:
 
-# Path to an `authorized_keys` file Opengist keeps in sync with users' keys (e.g. `/home/gist/.ssh/authorized_keys`),
+# Path to an `authorized_keys` file QingyuGist keeps in sync with users' keys (e.g. `/home/gist/.ssh/authorized_keys`),
 # used when `ssh.git-enabled` is `host`,
 # Leave empty to use OpenSSH's `AuthorizedKeysCommand` instead.
 ssh.authorized-keys-file:
 
 # OAuth2 configuration
-# The callback/redirect URL must be http://opengist.url/oauth/<github|gitlab|gitea|openid-connect>/callback
+# The callback/redirect URL must be http://qingyugist.url/oauth/<github|gitlab|gitea|openid-connect>/callback
 
 # To create a new OAuth2 application using GitHub : https://github.com/settings/applications/new
 github.client-key:
@@ -155,16 +155,16 @@ ldap.search-base:
 ldap.search-filter:
 
 # Instance name
-# Set your own custom name to be displayed instead of 'Opengist'
+# Set your own custom name to be displayed instead of 'QingyuGist'
 custom.name:
 
 # Custom assets
-# Add your own custom assets, that are files relatives to $opengist-home/custom/
+# Add your own custom assets, that are files relatives to $qingyugist-home/custom/
 custom.logo:
 custom.favicon:
 
 # Static pages in footer (like legal notices, privacy policy, etc.)
-# The path can be a URL or a relative path to a file in the $opengist-home/custom/ directory
+# The path can be a URL or a relative path to a file in the $qingyugist-home/custom/ directory
 custom.static-links:
 #  - name: Gitea
 #    path: https://gitea.com

@@ -8,31 +8,33 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
 )
 
-// authorizedKeysOptions are the SSH restrictions applied to every Opengist key
+// authorizedKeysOptions are the SSH restrictions applied to every QingyuGist key
 // entry: the connection may only run the forced git command, nothing else.
 const authorizedKeysOptions = "no-port-forwarding,no-x11-forwarding,no-agent-forwarding,no-pty"
 
-// Markers delimiting the block Opengist manages inside the authorized_keys file.
+// Markers delimiting the block QingyuGist manages inside the authorized_keys file.
 // Anything outside them (e.g. hand-added keys) is preserved across syncs.
 const (
-	authorizedKeysBegin = "# --- opengist managed keys start (do not edit) ---"
-	authorizedKeysEnd   = "# --- opengist managed keys end ---"
+	authorizedKeysBegin = "# --- qingyugist managed keys start (do not edit) ---"
+	authorizedKeysEnd   = "# --- qingyugist managed keys end ---"
+	legacyKeysBegin     = "# --- " + config.LegacyExecutableName + " managed keys start (do not edit) ---"
+	legacyKeysEnd       = "# --- " + config.LegacyExecutableName + " managed keys end ---"
 )
 
 var authorizedKeysMu sync.Mutex
 
-// AuthorizedKeysLine builds a single authorized_keys entry for an Opengist key:
-// a forced command running `opengist shell <keyID>` (so the daemon knows which
+// AuthorizedKeysLine builds a single authorized_keys entry for a QingyuGist key:
+// a forced command running `qingyugist shell <keyID>` (so the daemon knows which
 // key is connecting), restricted to git, followed by the public key itself.
 //
 // It is shared by the `keys` command (AuthorizedKeysCommand mode) and the
 // managed authorized_keys file writer. execPath is the absolute path to the
-// Opengist binary and configPath the optional --config to propagate.
+// QingyuGist binary and configPath the optional --config to propagate.
 func AuthorizedKeysLine(execPath, configPath string, keyID uint, pubKey string) string {
 	var cmd strings.Builder
 	cmd.WriteString(execPath)
@@ -46,7 +48,7 @@ func AuthorizedKeysLine(execPath, configPath string, keyID uint, pubKey string) 
 	return `command="` + cmd.String() + `",` + authorizedKeysOptions + " " + strings.TrimSpace(pubKey)
 }
 
-// SyncAuthorizedKeys rewrites Opengist's managed block in the configured
+// SyncAuthorizedKeys rewrites QingyuGist's managed block in the configured
 // authorized_keys file from every SSH key in the database, preserving any other
 // lines in the file. It is a no-op unless host mode with a configured file path
 // (config.SshManagesAuthorizedKeys). Safe for concurrent callers.
@@ -65,7 +67,7 @@ func SyncAuthorizedKeys() error {
 
 	// Reuse the stable symlinks (as the Git hooks do) so the forced command keeps
 	// working across binary upgrades.
-	exe := filepath.Join(config.GetHomeDir(), "symlinks", "opengist")
+	exe := filepath.Join(config.GetHomeDir(), "symlinks", "qingyugist")
 	cfg := filepath.Join(config.GetHomeDir(), "symlinks", "config.yml")
 
 	var block strings.Builder
@@ -87,7 +89,7 @@ func SyncAuthorizedKeysLogged() {
 	}
 }
 
-// writeAuthorizedKeysFile replaces the Opengist-managed block (between the
+// writeAuthorizedKeysFile replaces the QingyuGist-managed block (between the
 // marker lines) in path with managedBlock, preserving all other lines, and
 // writes the result atomically with sshd-compatible permissions (dir 0700,
 // file 0600 — sshd's StrictModes ignores looser ones).
@@ -104,9 +106,9 @@ func writeAuthorizedKeysFile(path, managedBlock string) error {
 		for scanner.Scan() {
 			line := scanner.Text()
 			switch line {
-			case authorizedKeysBegin:
+			case authorizedKeysBegin, legacyKeysBegin:
 				inBlock = true
-			case authorizedKeysEnd:
+			case authorizedKeysEnd, legacyKeysEnd:
 				inBlock = false
 			default:
 				if !inBlock {

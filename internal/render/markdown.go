@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"regexp"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
 	"github.com/alecthomas/chroma/v2/formatters/html"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
 	"github.com/yuin/goldmark"
 	emoji "github.com/yuin/goldmark-emoji"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"

@@ -6,8 +6,8 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 )
 
 func RawFile(ctx *context.Context) error {

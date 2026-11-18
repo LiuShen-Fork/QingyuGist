@@ -23,9 +23,9 @@ type GistFileInput struct {
 // Handler-specific interpretation:
 //
 //   - Description - CREATE: nil treated as empty. PATCH: nil = no change.
-//   - Title       - Opengist extension. CREATE: nil = derive from first
+//   - Title       - QingyuGist extension. CREATE: nil = derive from first
 //     filename. PATCH: nil = no change.
-//   - Visibility  - Opengist extension. CREATE: nil = defaults to public.
+//   - Visibility  - QingyuGist extension. CREATE: nil = defaults to public.
 //     PATCH: nil = no change.
 //   - Files       - CREATE: keys define filenames; entries with nil
 //     content are skipped. PATCH: keys must match existing filenames;

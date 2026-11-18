@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/oauth"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/auth/oauth"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/i18n"
-	"github.com/thomiceli/opengist/internal/validator"
-	"github.com/thomiceli/opengist/internal/web/context"
 	"gorm.io/gorm"
 )
 
@@ -60,14 +60,14 @@ func Oauth(ctx *context.Context) error {
 		}
 	}
 
-	var opengistUrl string
+	var qingyugistURL string
 	if config.C.ExternalUrl != "" {
-		opengistUrl = config.C.ExternalUrl
+		qingyugistURL = config.C.ExternalUrl
 	} else {
-		opengistUrl = httpProtocol + "://" + ctx.Request().Host
+		qingyugistURL = httpProtocol + "://" + ctx.Request().Host
 	}
 
-	provider, err := oauth.DefineProvider(providerStr, opengistUrl)
+	provider, err := oauth.DefineProvider(providerStr, qingyugistURL)
 	if err != nil {
 		ctx.AddFlash(ctx.Tr("error.oauth-unsupported"), "error")
 		return ctx.Redirect(302, "/login")

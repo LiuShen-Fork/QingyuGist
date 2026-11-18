@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 )
 
 const (

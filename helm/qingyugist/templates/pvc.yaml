@@ -2,14 +2,14 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ include "opengist.fullname" . }}-data
+  name: {{ include "qingyugist.fullname" . }}-data
   namespace: {{ .Release.Namespace }}
 {{- with .Values.persistence.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-    {{- include "opengist.labels" . | nindent 4 }}
+    {{- include "qingyugist.labels" . | nindent 4 }}
     {{- if .Values.persistence.labels }}
     {{- toYaml .Values.persistence.labels | nindent 4 }}
     {{- end }}

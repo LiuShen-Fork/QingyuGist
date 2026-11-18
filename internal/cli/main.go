@@ -10,40 +10,40 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/actions"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/webauthn"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/index"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/moderation"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/settings"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/ssh"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/metrics"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/server"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/actions"
-	"github.com/thomiceli/opengist/internal/auth/webauthn"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/index"
-	"github.com/thomiceli/opengist/internal/moderation"
-	"github.com/thomiceli/opengist/internal/settings"
-	"github.com/thomiceli/opengist/internal/ssh"
-	"github.com/thomiceli/opengist/internal/web/handlers/metrics"
-	"github.com/thomiceli/opengist/internal/web/server"
 	"github.com/urfave/cli/v2"
 )
 
 var CmdVersion = cli.Command{
 	Name:  "version",
-	Usage: "Print the version of Opengist",
+	Usage: "Print the version of QingyuGist",
 	Action: func(c *cli.Context) error {
-		fmt.Println("Opengist " + config.OpengistVersion)
+		fmt.Println("QingyuGist (清羽Gist) " + config.QingyuGistVersion)
 		return nil
 	},
 }
 
 var CmdStart = cli.Command{
 	Name:  "start",
-	Usage: "Start Opengist server",
+	Usage: "Start QingyuGist server",
 	Action: func(ctx *cli.Context) error {
 		stopCtx, stop := signal.NotifyContext(ctx.Context, syscall.SIGINT, syscall.SIGTERM)
 		defer stop()
 
 		Initialize(ctx)
 
-		httpServer := server.NewServer(os.Getenv("OG_DEV") == "1")
+		httpServer := server.NewServer(config.Env("QYG_DEV") == "1")
 		go httpServer.Start()
 		go ssh.Start()
 		stopCron := actions.StartCron()
@@ -69,9 +69,9 @@ var ConfigFlag = cli.StringFlag{
 
 func App() error {
 	app := cli.NewApp()
-	app.Name = "Opengist"
+	app.Name = "QingyuGist"
 	app.Usage = "A self-hosted pastebin powered by Git."
-	app.HelpName = "opengist"
+	app.HelpName = "qingyugist"
 
 	app.Commands = []*cli.Command{&CmdVersion, &CmdStart, &CmdHook, &CmdAdmin, &CmdKeys, &CmdShell}
 	app.DefaultCommand = CmdStart.Name
@@ -82,7 +82,7 @@ func App() error {
 }
 
 func Initialize(ctx *cli.Context) {
-	fmt.Println("Opengist " + config.OpengistVersion)
+	fmt.Println("QingyuGist (清羽Gist) " + config.QingyuGistVersion)
 
 	if err := config.InitConfig(ctx.String("config"), os.Stdout); err != nil {
 		panic(err)
@@ -103,7 +103,7 @@ func Initialize(ctx *cli.Context) {
 	if ok, err := config.CheckGitVersion(gitVersion); err != nil {
 		log.Warn().Err(err).Msg("Could not determine the git version; some features may not work as expected")
 	} else if !ok {
-		log.Warn().Msg("Git version may be too old, as Opengist has not been tested prior git version 2.28 and some features would not work. " +
+		log.Warn().Msg("Git version may be too old, as QingyuGist has not been tested prior git version 2.28 and some features would not work. " +
 			"Current git version: " + gitVersion)
 	}
 
@@ -190,7 +190,7 @@ func createSymlink(homePath string, configPath string) error {
 		return err
 	}
 
-	symlinkExePath := path.Join(config.GetHomeDir(), "symlinks", "opengist")
+	symlinkExePath := path.Join(config.GetHomeDir(), "symlinks", "qingyugist")
 	if _, err := os.Lstat(symlinkExePath); err == nil {
 		if err := os.Remove(symlinkExePath); err != nil {
 			return err
@@ -198,10 +198,22 @@ func createSymlink(homePath string, configPath string) error {
 	}
 	if err = os.Symlink(exePath, symlinkExePath); err != nil {
 		// Windows only lets privileged processes create symlinks. A copy works
-		// just as well for the git hooks that shell out to `opengist`, so fall
+		// just as well for the git hooks that shell out to `qingyugist`, so fall
 		// back to it instead of refusing to start.
 		if copyErr := copyExecutable(exePath, symlinkExePath); copyErr != nil {
 			return err
+		}
+	}
+
+	// Git hooks written by the pre-fork binary point at the old name. Keep that
+	// path as an alias so existing repositories keep working after an upgrade.
+	if config.LegacyExecutableName != "qingyugist" {
+		legacyExePath := path.Join(config.GetHomeDir(), "symlinks", config.LegacyExecutableName)
+		if _, err := os.Lstat(legacyExePath); err == nil {
+			_ = os.Remove(legacyExePath)
+		}
+		if err := os.Symlink("qingyugist", legacyExePath); err != nil {
+			_ = os.Link(symlinkExePath, legacyExePath)
 		}
 	}
 

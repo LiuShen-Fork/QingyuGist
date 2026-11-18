@@ -12,17 +12,17 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/index"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/settings"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/metrics"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/server"
 	"github.com/gorilla/schema"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/require"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/index"
-	"github.com/thomiceli/opengist/internal/settings"
-	"github.com/thomiceli/opengist/internal/web/context"
-	"github.com/thomiceli/opengist/internal/web/handlers/metrics"
-	"github.com/thomiceli/opengist/internal/web/server"
 )
 
 var databaseType string
@@ -175,7 +175,7 @@ func (s *Server) CreateGist(t *testing.T, visibility string) (gistPath string, g
 		"title":   {"Test"},
 		"name":    {"file.txt", "otherfile.txt"},
 		"content": {"hello world", "other content"},
-		"topics":  {"hello opengist"},
+		"topics":  {"hello qingyugist"},
 		"private": {visibility},
 	}, 302)
 
@@ -226,7 +226,7 @@ func (s *Server) CreateGistAs(t *testing.T, user, visibility string) (string, *d
 
 func Setup(t *testing.T) *Server {
 	tmpDir := t.TempDir()
-	t.Setenv("OPENGIST_SKIP_GIT_HOOKS", "1")
+	t.Setenv("QINGYUGIST_SKIP_GIT_HOOKS", "1")
 	// Never let git fall back to an interactive credential prompt when a test
 	// expects an anonymous clone to be rejected.
 	t.Setenv("GIT_TERMINAL_PROMPT", "0")
@@ -237,7 +237,7 @@ func Setup(t *testing.T) *Server {
 	config.C.LogLevel = "warn"
 	config.C.LogOutput = "stdout"
 	config.C.GitDefaultBranch = "master"
-	config.C.OpengistHome = tmpDir
+	config.C.QingyuGistHome = tmpDir
 
 	config.SetupSecretKey()
 	config.InitLog()
@@ -255,7 +255,7 @@ func Setup(t *testing.T) *Server {
 
 	err = exec.Command("git", "config", "--global", "--type", "bool", "push.autoSetupRemote", "true").Run()
 	require.NoError(t, err)
-	err = exec.Command("git", "config", "--global", "user.email", "test@opengist.io").Run()
+	err = exec.Command("git", "config", "--global", "user.email", "test@qingyugist.io").Run()
 	require.NoError(t, err)
 	err = exec.Command("git", "config", "--global", "user.name", "test").Run()
 	require.NoError(t, err)
@@ -265,12 +265,12 @@ func Setup(t *testing.T) *Server {
 	require.NoError(t, err)
 	homePath := config.GetHomeDir()
 
-	databaseType = os.Getenv("OPENGIST_TEST_DB")
+	databaseType = os.Getenv("QINGYUGIST_TEST_DB")
 	switch databaseType {
 	case "postgres":
-		databaseDsn = "postgres://postgres:opengist@localhost:5432/opengist_test"
+		databaseDsn = "postgres://postgres:qingyugist@localhost:5432/qingyugist_test"
 	case "mysql":
-		databaseDsn = "mysql://root:opengist@localhost:3306/opengist_test"
+		databaseDsn = "mysql://root:qingyugist@localhost:3306/qingyugist_test"
 	default:
 		databaseDsn = config.C.DBUri
 	}

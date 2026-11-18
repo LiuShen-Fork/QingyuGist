@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "opengist.fullname" . }}-http
+  name: {{ include "qingyugist.fullname" . }}-http
   namespace: {{ .Values.namespace | default .Release.Namespace }}
   labels:
-    {{- include "opengist.labels" . | nindent 4 }}
+    {{- include "qingyugist.labels" . | nindent 4 }}
     {{- if .Values.service.http.labels }}
     {{- toYaml .Values.service.http.labels  | nindent 4 }}
     {{- end }}
@@ -44,4 +44,4 @@ spec:
     {{- end }}
       targetPort: {{ index .Values.config "http.port" }}
   selector:
-    {{- include "opengist.selectorLabels" . | nindent 4 }}
+    {{- include "qingyugist.selectorLabels" . | nindent 4 }}

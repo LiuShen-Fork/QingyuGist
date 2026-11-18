@@ -14,18 +14,18 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/ipc"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/settings"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers"
 	"github.com/labstack/echo-contrib/echoprometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/auth"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/i18n"
-	"github.com/thomiceli/opengist/internal/ipc"
-	"github.com/thomiceli/opengist/internal/settings"
-	"github.com/thomiceli/opengist/internal/web/context"
-	"github.com/thomiceli/opengist/internal/web/handlers"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"gorm.io/gorm"
@@ -44,7 +44,7 @@ func (s *Server) registerMiddlewares() {
 	s.echo.Use(Middleware(dataInit).toEcho())
 	s.echo.Use(Middleware(locale).toEcho())
 	if config.C.MetricsEnabled {
-		s.echo.Use(echoprometheus.NewMiddleware("opengist"))
+		s.echo.Use(echoprometheus.NewMiddleware("qingyugist"))
 	}
 
 	s.echo.Pre(middleware.MethodOverrideWithConfig(middleware.MethodOverrideConfig{
@@ -673,7 +673,7 @@ func apiRequireAuth(next Handler) Handler {
 }
 
 // ipcAuth guards the IPC API: only callers presenting the token derived from the
-// secret key (i.e. Opengist's own subprocesses) may proceed.
+// secret key (i.e. QingyuGist's own subprocesses) may proceed.
 func ipcAuth(next Handler) Handler {
 	return func(ctx *context.Context) error {
 		got := []byte(ctx.Request().Header.Get(ipc.AuthHeader))

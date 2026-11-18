@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/render"
-	"github.com/thomiceli/opengist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/render"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 )
 
 func GistIndex(ctx *context.Context) error {
@@ -323,7 +323,7 @@ func escapeJavaScriptContent(htmlContent, cssUrl, themeUrl string, autoMode bool
 }
 
 func setGistCSP(ctx *context.Context) {
-	if os.Getenv("OG_DEV") == "1" {
+	if os.Getenv("QYG_DEV") == "1" {
 		return
 	}
 	nonce, _ := ctx.GetData("cspNonce").(string)

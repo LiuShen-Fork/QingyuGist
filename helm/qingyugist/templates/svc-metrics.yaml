@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "opengist.fullname" . }}-metrics
+  name: {{ include "qingyugist.fullname" . }}-metrics
   namespace: {{ .Values.namespace | default .Release.Namespace }}
   labels:
-    {{- include "opengist.labels" . | nindent 4 }}
+    {{- include "qingyugist.labels" . | nindent 4 }}
     app.kubernetes.io/component: metrics
     {{- with .Values.service.metrics.labels }}
     {{- toYaml . | nindent 4 }}
@@ -28,5 +28,5 @@ spec:
       nodePort: {{ .Values.service.metrics.nodePort }}
       {{- end }}
   selector:
-    {{- include "opengist.selectorLabels" . | nindent 4 }}
+    {{- include "qingyugist.selectorLabels" . | nindent 4 }}
 {{- end }}

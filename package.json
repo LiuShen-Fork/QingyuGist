@@ -1,5 +1,5 @@
 {
-  "name": "opengist",
+  "name": "qingyugist",
   "private": true,
   "scripts": {
     "dev": "node_modules/.bin/vite -c public/vite.config.js",

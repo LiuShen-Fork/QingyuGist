@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "opengist.name" -}}
+{{- define "qingyugist.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "opengist.fullname" -}}
+{{- define "qingyugist.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,17 +26,17 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "opengist.chart" -}}
+{{- define "qingyugist.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "opengist.labels" -}}
-helm.sh/chart: {{ include "opengist.chart" . }}
-app: {{ include "opengist.name" . }}
-{{ include "opengist.selectorLabels" . }}
+{{- define "qingyugist.labels" -}}
+helm.sh/chart: {{ include "qingyugist.chart" . }}
+app: {{ include "qingyugist.name" . }}
+{{ include "qingyugist.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -46,17 +46,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "opengist.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "opengist.name" . }}
+{{- define "qingyugist.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "qingyugist.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "opengist.serviceAccountName" -}}
+{{- define "qingyugist.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "opengist.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "qingyugist.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
@@ -65,7 +65,7 @@ Create the name of the service account to use
 {{/*
 Create image URI
 */}}
-{{- define "opengist.image" -}}
+{{- define "qingyugist.image" -}}
 {{- if .Values.image.digest -}}
 {{- printf "%s@%s" .Values.image.repository .Values.image.digest -}}
 {{- else -}}
@@ -76,10 +76,10 @@ Create image URI
 {{/*
 Create secret name
 */}}
-{{- define "opengist.secretName" -}}
+{{- define "qingyugist.secretName" -}}
 {{- if .Values.configExistingSecret -}}
 {{- printf "%s" (tpl .Values.configExistingSecret $) -}}
 {{- else -}}
-{{- printf "%s" (include "opengist.fullname" .) -}}
+{{- printf "%s" (include "qingyugist.fullname" .) -}}
 {{- end -}}
 {{- end -}}

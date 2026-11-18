@@ -4,12 +4,12 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/auth"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/web/context"
-	"github.com/thomiceli/opengist/internal/web/handlers"
 )
 
 // gitRoute maps a Git smart/dumb HTTP URL (matched as a regexp) and method to

@@ -8,9 +8,9 @@ import (
 	"strings"
 	"unicode"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
 	"github.com/meilisearch/meilisearch-go"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/config"
 )
 
 type MeiliIndexer struct {

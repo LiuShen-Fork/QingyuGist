@@ -16,9 +16,9 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/settings"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/settings"
 )
 
 const (

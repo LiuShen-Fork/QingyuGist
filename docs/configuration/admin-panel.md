@@ -1,6 +1,6 @@
 # Admin panel
 
-The first user created on an Opengist instance has access to the admin panel.
+The first user created on a QingyuGist instance has access to the admin panel.
 Open your user menu and choose **Admin**. The panel is available at
 `/admin`.
 
@@ -31,7 +31,7 @@ are shown masked; leaving a masked value untouched keeps the stored secret.
 
 - Site name and description used in the interface, page titles and metadata.
 - External URL, used for generated links.
-- Logo and favicon. Enter a file name from `<opengist-home>/custom/`, or a full
+- Logo and favicon. Enter a file name from `<qingyugist-home>/custom/`, or a full
   `http(s)://` URL.
 - Custom CSS and JavaScript injected into every page.
 - Source repository URL, shown as a GitHub icon at the bottom of the sidebar.

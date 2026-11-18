@@ -8,11 +8,11 @@ import (
 	"os"
 	"strings"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/password"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/auth/password"
-	"github.com/thomiceli/opengist/internal/config"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/validator"
 	"github.com/urfave/cli/v2"
 )
 
@@ -97,7 +97,7 @@ var CmdAdminCreateUser = cli.Command{
 		username := ctx.String("username")
 		if username == "" {
 			if ctx.NArg() > 0 {
-				return cliError("create-user takes flags, not a positional argument; pass the username via --username (e.g. opengist admin create-user --username %s ...)", ctx.Args().Get(0))
+				return cliError("create-user takes flags, not a positional argument; pass the username via --username (e.g. qingyugist admin create-user --username %s ...)", ctx.Args().Get(0))
 			}
 			return cliError("username is required (use --username)")
 		}

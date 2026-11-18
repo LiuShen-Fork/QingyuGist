@@ -227,9 +227,9 @@ settings.link-gitlab-account: '关联 GitLab 账号'
 settings.unlink-gitlab-account: '解除关联 GitLab 账号'
 settings.change-username: '修改用户名'
 settings.create-password: '创建密码'
-settings.create-password-help: '创建您的密码以通过 HTTP 的方式登录到 Opengist'
+settings.create-password-help: '创建您的密码以通过 HTTP 的方式登录到 QingyuGist'
 settings.change-password: '修改密码'
-settings.change-password-help: '修改您通过 HTTP 登录到 Opengist 的密码'
+settings.change-password-help: '修改您通过 HTTP 登录到 QingyuGist 的密码'
 settings.password-label-title: '密码'
 error.bad-request: '请求错误'
 error.signup-disabled: '注册已被禁用'
@@ -350,7 +350,7 @@ admin.search-index: 搜索索引
 admin.index-engine: 索引引擎
 admin.disabled: 已禁用
 admin.external-url: 外部地址
-admin.opengist-home: 数据目录
+admin.qingyugist-home: 数据目录
 admin.public: 公开
 admin.private: 私有
 admin.storage: 存储占用
@@ -494,7 +494,7 @@ admin.actions.subtitle: 手动运行维护任务。部分任务也会按计划�
 admin.actions.sync-db: 删除数据库中没有记录的仓库
 admin.actions.sync-fs: 删除磁盘上没有仓库的 Gist
 admin.actions.sync-ssh-keys: 重新生成 authorized_keys 文件
-auth.oauth.already-have-account: 如果你已有 Opengist 账号，请先登录，然后在设置中关联你的 %s 账号。
+auth.oauth.already-have-account: 如果你已有 QingyuGist 账号，请先登录，然后在设置中关联你的 %s 账号。
 auth.oauth.cancel: 取消
 auth.oauth.complete-registration: 完成注册
 auth.oauth.complete-registration-button: 创建账号
@@ -650,7 +650,7 @@ sidebar.gists: Gist
 sidebar.explore: 发现
 settings.link-oidc-account: 关联 OpenID 账号
 settings.unlink-oidc-account: 解除 OpenID 关联
-settings.unlink-oauth-confirm: 确定要解除 %s 账号的关联吗？如果这是你登录 Opengist 的唯一方式，你可能将无法再访问账户。
+settings.unlink-oauth-confirm: 确定要解除 %s 账号的关联吗？如果这是你登录 QingyuGist 的唯一方式，你可能将无法再访问账户。
 settings.site.repository_url: 源码仓库
 settings.site.repository_url_help: 页脚 QingyuGist 链接指向的地址，留空则隐藏。
 settings.site.links: 页脚链接

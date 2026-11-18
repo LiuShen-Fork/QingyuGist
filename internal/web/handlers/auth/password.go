@@ -3,13 +3,13 @@ package auth
 import (
 	"errors"
 
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth"
+	passwordpkg "github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/password"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 	"github.com/rs/zerolog/log"
-	"github.com/thomiceli/opengist/internal/auth"
-	passwordpkg "github.com/thomiceli/opengist/internal/auth/password"
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/i18n"
-	"github.com/thomiceli/opengist/internal/validator"
-	"github.com/thomiceli/opengist/internal/web/context"
 	"gorm.io/gorm"
 )
 

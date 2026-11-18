@@ -3,11 +3,11 @@ package gist
 import (
 	"strconv"
 
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/moderation"
-	"github.com/thomiceli/opengist/internal/render"
-	"github.com/thomiceli/opengist/internal/settings"
-	"github.com/thomiceli/opengist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/moderation"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/render"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/settings"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 )
 
 func Edit(ctx *context.Context) error {

@@ -26,7 +26,7 @@ type GistSimple struct {
 	HTMLUrl     string     `json:"html_url"`
 	Description string     `json:"description"`
 	Public      bool       `json:"public"`
-	Visibility  string     `json:"visibility"` // Opengist extension: public/unlisted/private
+	Visibility  string     `json:"visibility"` // QingyuGist extension: public/unlisted/private
 	LikeCount   int        `json:"like_count"`
 	ForkCount   int        `json:"fork_count"`
 	CloneUrl    string     `json:"clone_url"`

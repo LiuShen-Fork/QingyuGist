@@ -3,7 +3,7 @@
 /* Map Tailwind's `dark:` variant onto VitePress's `.dark` class. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Opengist brand gray palette (replaces Tailwind's default gray). */
+/* QingyuGist brand gray palette (replaces Tailwind's default gray). */
 @theme {
   --color-gray-50: #EEEFF1;
   --color-gray-100: #DEDFE3;
@@ -68,7 +68,7 @@
   --vp-c-default-3: var(--vp-c-gray-3);
   --vp-c-default-soft: var(--vp-c-gray-soft);
 
-  /* Opengist brand blue (matches --color-primary-* in the app). */
+  /* QingyuGist brand blue (matches --color-primary-* in the app). */
   --vp-c-brand-1: #3c79e2;
   --vp-c-brand-2: #356fc0;
   --vp-c-brand-3: #3c79e2;

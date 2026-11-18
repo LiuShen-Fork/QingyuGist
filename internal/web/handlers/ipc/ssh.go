@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/thomiceli/opengist/internal/db"
-	"github.com/thomiceli/opengist/internal/git"
-	"github.com/thomiceli/opengist/internal/ipc"
-	"github.com/thomiceli/opengist/internal/ssh"
-	"github.com/thomiceli/opengist/internal/web/context"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/ipc"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/ssh"
+	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
 	"gorm.io/gorm"
 )
 
