@@ -677,3 +677,13 @@ site.icon.mastodon: Mastodon
 site.icon.telegram: Telegram
 theme.toggle: Toggle theme
 sidebar.links: Links
+
+sidebar.profile: Profile
+sidebar.language: Language
+sidebar.back-to-top: Back to top
+visibility.all: All visibility
+
+settings.style.theme-color: Accent color
+
+settings.style.mode: Appearance mode
+settings.style.wrap: Line wrapping

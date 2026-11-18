@@ -665,3 +665,13 @@ site.icon.mastodon: Mastodon
 site.icon.telegram: Telegram
 theme.toggle: 切换主题
 sidebar.links: 链接
+
+sidebar.profile: 个人主页
+sidebar.language: 语言
+sidebar.back-to-top: 回到顶部
+visibility.all: 全部可见性
+
+settings.style.theme-color: 主题色
+
+settings.style.mode: 外观模式
+settings.style.wrap: 换行方式

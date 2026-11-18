@@ -143,9 +143,8 @@
         </form>
 
         <div class="ml-auto flex items-center gap-2">
-            {{ template "theme_toggle" . }}
             {{ if .userLogged }}
-            <a hx-boost="false" href="{{ .c.ExternalUrl }}/" class="btn-sm px-2.5 sm:px-3" aria-label="{{ .locale.Tr "header.menu.new" }}">
+            <a hx-boost="false" href="{{ .c.ExternalUrl }}/" class="btn-sm-outline px-2.5 sm:px-3" aria-label="{{ .locale.Tr "header.menu.new" }}">
                 <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
                 <span class="hidden sm:inline">{{ .locale.Tr "header.menu.new" }}</span>
             </a>
@@ -203,6 +202,10 @@
         </div>
     </main>
 </div>
+
+<button type="button" id="back-to-top" class="og-back-to-top" aria-label="{{ .locale.Tr "sidebar.back-to-top" }}" title="{{ .locale.Tr "sidebar.back-to-top" }}">
+    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
+</button>
 
     {{ if .CustomJS }}<script nonce="{{ .cspNonce }}">{{ .CustomJS }}</script>{{ end }}
 </body>

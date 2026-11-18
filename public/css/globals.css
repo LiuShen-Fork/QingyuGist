@@ -388,25 +388,11 @@ table.csv-table thead th {
     opacity: 1;
 }
 
-/* The collapse control sits on the sidebar/content divider at the top, like a
-   small handle, instead of taking space in the navigation header. */
+/* The collapse control lives inside the sidebar header, aligned to its right
+   edge. It is a normal 32px icon button so it matches the rest of the chrome. */
 #sidebar-toggle {
-    position: absolute;
-    top: 0.875rem;
-    right: 0;
-    z-index: 10;
-    width: 1.75rem;
-    height: 1.75rem;
-    transform: translateX(50%);
-    border: 1px solid var(--sidebar-border);
-    border-radius: 9999px;
-    background: var(--sidebar);
-    box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 10%, transparent);
-}
-
-#sidebar-toggle:hover {
-    background: var(--sidebar-accent);
-    opacity: 1;
+    width: 2rem;
+    height: 2rem;
 }
 
 /* The drawer opens at the same breakpoint where this control appears; never
@@ -423,22 +409,25 @@ table.csv-table thead th {
    the mobile drawer keeps its own behavior. The rail keeps icons visible so the
    collapse button in the sidebar header stays reachable to expand again. */
 @media (min-width: 768px) {
-    /* Rail width (matches Tailwind's w-16 = 4rem). */
+    /* Rail width (3.5rem) — narrower than the expanded 15rem sidebar while
+       still fitting a 36px square control with breathing room. */
     html.sidebar-collapsed #sidebar {
-        width: 4rem;
+        width: 3.5rem;
     }
 
     html.sidebar-collapsed #content-wrapper {
-        margin-left: 4rem;
+        margin-left: 3.5rem;
     }
 
     /* Hide text without dropping it from the accessibility tree, so every
-       icon-only link keeps its name for screen readers. */
+       icon-only link keeps its name for screen readers. Scope this to nav
+       labels: the open language popover lives inside the rail and its links
+       must keep their visible labels. */
     html.sidebar-collapsed #sidebar p {
         display: none;
     }
 
-    html.sidebar-collapsed #sidebar span {
+    html.sidebar-collapsed #sidebar :is(.og-nav-link > span, .og-language-button > span) {
         position: absolute;
         width: 1px;
         height: 1px;
@@ -450,24 +439,45 @@ table.csv-table thead th {
         border: 0;
     }
 
-    /* Center the remaining icons within the narrow rail. */
-    html.sidebar-collapsed #sidebar :is(a, button) {
+    /* Every control in the rail is the same 36px square, centered on one
+       vertical line. This keeps nav icons, footer utilities and the collapse
+       toggle visually identical instead of stretching into wide bars. */
+    html.sidebar-collapsed #sidebar :is(.og-nav-link, .og-icon-button, .og-language-button) {
+        display: flex;
+        width: 2.25rem;
+        height: 2.25rem;
+        margin-inline: auto;
+        padding: 0;
+        align-items: center;
         justify-content: center;
     }
 
-    /* The logo and the collapse button cannot share a 4rem rail; keep only
-       the control that brings the sidebar back. */
     html.sidebar-collapsed #sidebar header {
         justify-content: center;
-        padding-inline: 0.5rem;
+        padding-inline: 0.625rem;
     }
 
     html.sidebar-collapsed #sidebar header > a {
         display: none;
     }
 
-    html.sidebar-collapsed #sidebar-toggle svg {
-        transform: rotate(180deg);
+    html.sidebar-collapsed #sidebar-toggle {
+        margin-inline: auto;
+    }
+
+    html.sidebar-collapsed .og-sidebar-utilities {
+        flex-direction: column;
+        align-items: center;
+        padding-inline: 0;
+    }
+
+    html.sidebar-collapsed .og-language-menu-wrapper {
+        width: 2.25rem;
+        margin-inline: auto;
+    }
+
+    html.sidebar-collapsed .og-language-chevron {
+        display: none;
     }
 }
 
@@ -594,6 +604,143 @@ table.csv-table thead th {
     opacity: 0.35;
 }
 
+/* Sidebar footer: one row of square utility controls, then a full-width
+   language selector. Both share the same height and corner radius. */
+.og-sidebar-utilities {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    padding: 0 0.25rem;
+    margin-bottom: 0.375rem;
+}
+
+.og-language-menu-wrapper {
+    display: block;
+}
+
+.og-language-button {
+    display: flex;
+    width: 100%;
+    height: 2rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    border: 0;
+    border-radius: calc(var(--radius) - 0.05rem);
+    background: transparent;
+    padding: 0 0.5rem;
+    color: inherit;
+    font-size: 0.8125rem;
+    line-height: 1;
+    opacity: 0.75;
+    transition: opacity 120ms ease, background-color 120ms ease;
+}
+
+.og-language-button:hover {
+    background: color-mix(in oklab, currentColor 9%, transparent);
+    opacity: 1;
+}
+
+.og-language-button:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    opacity: 1;
+}
+
+.og-language-chevron {
+    opacity: 0.5;
+}
+
+.og-language-popover {
+    width: 100%;
+    min-width: 11rem;
+    max-height: min(22rem, 70vh);
+    overflow-y: auto;
+    padding: 0.25rem;
+}
+
+.og-language-popover a {
+    border-radius: calc(var(--radius) - 0.1rem);
+    padding: 0.4rem 0.5rem;
+    font-size: 0.8125rem;
+}
+
+/* Return-to-top affordance. It stays out of the way until the reader has
+   moved down the page, then fades in at a consistent spot on every layout. */
+.og-back-to-top {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 40;
+    display: inline-flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    background: var(--card);
+    color: var(--foreground);
+    box-shadow:
+        0 1px 2px 0 color-mix(in oklab, var(--foreground) 6%, transparent),
+        0 10px 28px -14px color-mix(in oklab, var(--foreground) 30%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(0.5rem);
+    transition: opacity 160ms ease, transform 160ms ease, background-color 120ms ease;
+}
+
+.og-back-to-top:hover {
+    background: var(--muted);
+}
+
+.og-back-to-top:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+}
+
+.og-back-to-top.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+@media (max-width: 639px) {
+    .og-back-to-top {
+        right: 1rem;
+        bottom: 1rem;
+    }
+}
+
+/* Radio pills ------------------------------------------------------------- */
+.og-radio {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) - 0.05rem);
+    background: var(--card);
+    padding: 0.5rem 0.625rem;
+    font-size: 0.8125rem;
+    transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.og-radio:hover {
+    border-color: color-mix(in oklab, var(--primary) 35%, var(--border));
+}
+
+.og-radio:has(input:checked) {
+    border-color: color-mix(in oklab, var(--primary) 55%, var(--border));
+    background: color-mix(in oklab, var(--primary) 7%, var(--card));
+}
+
+.og-radio input[type="radio"] {
+    accent-color: var(--primary);
+}
+
 /* Select ----------------------------------------------------------------- */
 /* The native element stays in the form; og-select.ts renders this trigger and
    fixed-position listbox on top of it. */
@@ -601,7 +748,6 @@ table.csv-table thead th {
     position: relative;
     display: inline-flex;
     min-width: 5.75rem;
-    max-width: 100%;
     vertical-align: middle;
 }
 

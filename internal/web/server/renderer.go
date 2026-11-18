@@ -232,6 +232,19 @@ func (s *Server) setFuncMap() {
 			}
 			return int(float64(part) / float64(total) * 100)
 		},
+		// withQuery returns the current request URI with one query parameter
+		// replaced. Used by the sidebar language switcher so changing language
+		// keeps the active filters and pagination.
+		"withQuery": func(requestURI, key, value string) string {
+			u, err := url.Parse(requestURI)
+			if err != nil {
+				return requestURI
+			}
+			q := u.Query()
+			q.Set(key, value)
+			u.RawQuery = q.Encode()
+			return u.String()
+		},
 		"mainTheme": func(theme *db.UserStyleDTO) string {
 			if theme == nil {
 				return "auto"

@@ -344,6 +344,7 @@ func locale(next Handler) Handler {
 
 		ctx.SetData("localeName", localeUsed.Name)
 		ctx.SetData("locale", localeUsed)
+		ctx.SetData("requestUri", ctx.Request().URL.RequestURI())
 		ctx.SetData("allLocales", i18n.Locales.Locales)
 
 		return next(ctx)

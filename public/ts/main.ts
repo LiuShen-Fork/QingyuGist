@@ -33,6 +33,7 @@ const init = () => {
     initOgSelects();
     initSiteLinks();
     syncSidebarToggle();
+    syncBackToTop();
 };
 
 document.addEventListener('DOMContentLoaded', init);
@@ -62,9 +63,34 @@ document.addEventListener('click', (e) => {
     syncSidebarToggle();
 });
 
-// Quick light/dark switch in the header. This is a local override: it wins
-// over the account's light/dark/auto preference and is applied before paint by
-// the head script. Keep the account setting as the long-lived preference.
+// Reveal the return-to-top control once the reader has moved past the first
+// screen. The button itself is re-rendered on hx-boost swaps, so state is
+// derived from scroll position rather than stored on the element.
+function syncBackToTop() {
+    const button = document.getElementById('back-to-top');
+    if (!button) return;
+    button.classList.toggle('is-visible', window.scrollY > 360);
+    if (button.dataset.bound === '1') return;
+    button.dataset.bound = '1';
+    button.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+window.addEventListener('scroll', syncBackToTop, { passive: true });
+
+// Controls marked data-auto-submit apply immediately (filters, sort order)
+// instead of making the reader look for an "apply" button.
+document.addEventListener('change', (e) => {
+    const control = (e.target as Element | null)?.closest('[data-auto-submit]');
+    if (!control) return;
+    const form = control.closest('form');
+    if (form) form.requestSubmit();
+});
+
+// Quick light/dark switch in the sidebar footer. This is a local override: it
+// wins over the account's light/dark/auto preference and is applied before paint
+// by the head script. Keep the account setting as the long-lived preference.
 document.addEventListener('click', (e) => {
     const toggle = (e.target as Element | null)?.closest('#theme-toggle');
     if (!toggle) return;
