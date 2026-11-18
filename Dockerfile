@@ -1,3 +1,10 @@
+# The toolchain stages are pinned to the build platform on purpose: image
+# references in COPY --from resolve to the *target* platform, so an arm64 build
+# would otherwise copy arm64 node/go binaries into an amd64 stage and try to run
+# them under QEMU (failing with "Could not open '/lib/ld-musl-aarch64.so.1'").
+FROM --platform=$BUILDPLATFORM golang:1.27.2-alpine3.24 AS golang
+FROM --platform=$BUILDPLATFORM node:26.5.0-alpine3.24 AS node
+
 FROM --platform=$BUILDPLATFORM alpine:3.24 AS base
 
 RUN apk update && \
@@ -8,11 +15,11 @@ RUN apk update && \
         musl-dev \
         libstdc++
 
-COPY --from=golang:1.27.2-alpine3.24 /usr/local/go/ /usr/local/go/
+COPY --from=golang /usr/local/go/ /usr/local/go/
 ENV PATH="/usr/local/go/bin:${PATH}"
 ENV CGO_ENABLED=0
 
-COPY --from=node:26.5.0-alpine3.24 /usr/local/ /usr/local/
+COPY --from=node /usr/local/ /usr/local/
 ENV NODE_PATH="/usr/local/lib/node_modules"
 ENV PATH="/usr/local/bin:${PATH}"
 

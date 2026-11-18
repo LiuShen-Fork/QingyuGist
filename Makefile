@@ -2,7 +2,7 @@
 
 # Specify the name of your Go binary output
 BINARY_NAME := qingyugist
-GIT_TAG := $(shell git describe --tags)
+GIT_TAG := $(shell git describe --tags 2>/dev/null || echo dev)
 VERSION := $(patsubst v%,%,$(GIT_TAG))
 VERSION_PKG := github.com/LiuShen-Fork/QingyuGist/internal/config.QingyuGistVersion
 TEST_DB_TYPE ?= sqlite
