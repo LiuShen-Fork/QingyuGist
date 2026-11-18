@@ -7,8 +7,10 @@ gist.db
 public/assets/*
 public/manifest.json
 public/.vite/*
-./qingyugist
-qingyugist
+/qingyugist
+qingyugist.db
+qingyugist.log
+qingyugist-secret.key
 build/
 docs/.vitepress/dist/
 docs/.vitepress/cache/
