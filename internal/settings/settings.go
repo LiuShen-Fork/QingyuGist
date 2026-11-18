@@ -244,11 +244,7 @@ func Definitions() []Definition {
 
 // AllDefinitions returns every configurable setting in display order.
 func AllDefinitions() []Definition {
-	out := make([]Definition, 0, len(definitions))
-	for _, d := range definitions {
-		out = append(out, d)
-	}
-	return out
+	return append([]Definition(nil), definitions...)
 }
 
 // DefinitionsByCategory returns the definitions of a category.
