@@ -54,7 +54,7 @@ func GetGistLanguages(currentUserId uint) ([]struct {
 
 // GetGistLanguagesByTopic returns the most common languages across the gists
 // carrying `topic` that are visible to currentUserId. Used to populate the
-// language facet on the /-/topics/{topic} filter so it only lists languages
+// language facet on the /topics/{topic} filter so it only lists languages
 // present among that topic's gists.
 func GetGistLanguagesByTopic(currentUserId uint, topic string) ([]struct {
 	Language string

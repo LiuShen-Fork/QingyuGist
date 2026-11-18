@@ -83,7 +83,7 @@ func TestOIDCLoginPKCE(t *testing.T) {
 		}
 
 		if invitationCode != "" {
-			resp, err := client.Get(base + "/-/register?code=" + url.QueryEscape(invitationCode))
+			resp, err := client.Get(base + "/register?code=" + url.QueryEscape(invitationCode))
 			require.NoError(t, err)
 			_ = resp.Body.Close()
 		}
@@ -113,7 +113,7 @@ func TestOIDCLoginPKCE(t *testing.T) {
 		})
 		defer resp.Body.Close()
 
-		require.Equal(t, "/-/login", resp.Request.URL.Path)
+		require.Equal(t, "/login", resp.Request.URL.Path)
 	})
 
 	assertRegistrationDenied := func(t *testing.T, client *http.Client, username string) {
@@ -140,7 +140,7 @@ func TestOIDCLoginPKCE(t *testing.T) {
 		require.NoError(t, err)
 		_ = resp.Body.Close()
 		require.Equal(t, http.StatusFound, resp.StatusCode)
-		require.Equal(t, "/-/login", resp.Header.Get("Location"))
+		require.Equal(t, "/login", resp.Header.Get("Location"))
 		exists, err := db.UserExists(username)
 		require.NoError(t, err)
 		require.False(t, exists, "denied registration must not create an account")
@@ -151,7 +151,7 @@ func TestOIDCLoginPKCE(t *testing.T) {
 		_ = resp.Body.Close()
 		require.NoError(t, err)
 		require.Equal(t, http.StatusFound, resp.StatusCode)
-		require.Equal(t, "/-/login", resp.Header.Get("Location"))
+		require.Equal(t, "/login", resp.Header.Get("Location"))
 		require.Empty(t, body, "denied registration must not render the form")
 	}
 
@@ -159,7 +159,7 @@ func TestOIDCLoginPKCE(t *testing.T) {
 		require.NoError(t, db.UpdateSetting(db.SettingDisableSignup, "1"))
 		resp, _, client := login(t, "", nil)
 		_ = resp.Body.Close()
-		require.Equal(t, "/-/login", resp.Request.URL.Path)
+		require.Equal(t, "/login", resp.Request.URL.Path)
 		assertRegistrationDenied(t, client, "uninvited")
 	})
 
@@ -196,7 +196,7 @@ func TestOIDCLoginPKCE(t *testing.T) {
 		require.NoError(t, db.UpdateSetting(db.SettingDisableSignup, "1"))
 		blockedResp, _, _ := login(t, "", nil)
 		_ = blockedResp.Body.Close()
-		require.Equal(t, "/-/login", blockedResp.Request.URL.Path)
+		require.Equal(t, "/login", blockedResp.Request.URL.Path)
 
 		invitation := &db.Invitation{ExpiresAt: time.Now().Add(time.Hour).Unix(), NbMax: 1}
 		require.NoError(t, invitation.Create())

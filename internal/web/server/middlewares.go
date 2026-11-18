@@ -231,7 +231,7 @@ func inOAuthRegisterSession(next Handler) Handler {
 		sess := ctx.GetSession()
 		_, ok := sess.Values["oauthProvider"].(string)
 		if !ok {
-			return ctx.RedirectTo("/-/login")
+			return ctx.RedirectTo("/login")
 		}
 		return next(ctx)
 	}
@@ -254,7 +254,7 @@ func makeCheckRequireLogin(isSingleGistAccess bool) Middleware {
 
 			if !allow {
 				ctx.AddFlash(ctx.Tr("flash.auth.must-be-logged-in"), "error")
-				return ctx.RedirectTo("/-/login")
+				return ctx.RedirectTo("/login")
 			}
 			return next(ctx)
 		}
@@ -277,7 +277,7 @@ func checkFileUploadEnabled(next Handler) Handler {
 // makeApiCheckRequireLogin is the /api/v1 counterpart of makeCheckRequireLogin:
 // it enforces the instance's RequireLogin / AllowGistsWithoutLogin settings on
 // anonymous gist reads, but responds with a JSON 401 instead of redirecting to
-// /-/login. ctx.User is already resolved from the Authorization header by
+// /login. ctx.User is already resolved from the Authorization header by
 // apiBindAuth, so there is no token fallback to do here.
 func makeApiCheckRequireLogin(isSingleGistAccess bool) Middleware {
 	return func(next Handler) Handler {
@@ -734,14 +734,51 @@ func dynamicCORS(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-// redirectToExplore permanently redirects a legacy route to its replacement
-// while preserving the query string.
-func redirectToExplore(target string) Handler {
+// redirectLegacy permanently redirects an old route to its replacement while
+// preserving the query string. A 308 also preserves the request method and
+// body, which matters for the handful of legacy POST endpoints.
+func redirectLegacy(target string) Handler {
 	return func(ctx *context.Context) error {
 		url := target
 		if q := ctx.Request().URL.RawQuery; q != "" {
 			url += "?" + q
 		}
-		return ctx.RedirectTo(url)
+		return ctx.Redirect(http.StatusPermanentRedirect, url)
+	}
+}
+
+// redirectLegacyPrefix redirects every path below oldPrefix to the equivalent
+// path below newPrefix, e.g. /settings/ssh -> /settings/ssh.
+func redirectLegacyPrefix(oldPrefix, newPrefix string) Handler {
+	return func(ctx *context.Context) error {
+		url := newPrefix + strings.TrimPrefix(ctx.Request().URL.Path, oldPrefix)
+		if q := ctx.Request().URL.RawQuery; q != "" {
+			url += "?" + q
+		}
+		return ctx.Redirect(http.StatusPermanentRedirect, url)
+	}
+}
+
+// redirectLegacyUserTab redirects /:user/-/liked to /:user/liked (and forked).
+func redirectLegacyUserTab(tab string) Handler {
+	return func(ctx *context.Context) error {
+		url := "/" + ctx.Param("user") + "/" + tab
+		if q := ctx.Request().URL.RawQuery; q != "" {
+			url += "?" + q
+		}
+		return ctx.Redirect(http.StatusPermanentRedirect, url)
+	}
+}
+
+// redirectReservedGist keeps gist URLs working for an account whose username
+// is also a top-level route. Unknown paths under /admin (and the other
+// user-facing route names) move to the collision-free /@username namespace.
+func redirectReservedGist(name string) Handler {
+	return func(ctx *context.Context) error {
+		url := "/@" + name + strings.TrimPrefix(ctx.Request().URL.Path, "/"+name)
+		if q := ctx.Request().URL.RawQuery; q != "" {
+			url += "?" + q
+		}
+		return ctx.Redirect(http.StatusPermanentRedirect, url)
 	}
 }

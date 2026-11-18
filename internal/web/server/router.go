@@ -42,11 +42,11 @@ func (s *Server) registerRoutes() {
 
 		r.Static("/avatar", settings.AvatarsDir())
 
-		r.GET("/-/register", auth.Register)
-		r.POST("/-/register", auth.ProcessRegister)
-		r.GET("/-/login", auth.Login)
-		r.POST("/-/login", auth.ProcessLogin)
-		r.GET("/-/logout", auth.Logout)
+		r.GET("/register", auth.Register)
+		r.POST("/register", auth.ProcessRegister)
+		r.GET("/login", auth.Login)
+		r.POST("/login", auth.ProcessLogin)
+		r.GET("/logout", auth.Logout)
 		r.GET("/oauth/register", auth.OauthRegister, inOAuthRegisterSession)
 		r.POST("/oauth/register", auth.ProcessOauthRegister, inOAuthRegisterSession)
 		r.GET("/oauth/:provider", auth.Oauth)
@@ -61,7 +61,7 @@ func (s *Server) registerRoutes() {
 		r.GET("/mfa", auth.Mfa, inMFASession)
 		r.POST("/mfa/totp/assertion", auth.AssertTotp, inMFASession)
 
-		sA := r.SubGroup("/-/settings")
+		sA := r.SubGroup("/settings")
 		{
 			sA.Use(logged)
 			sA.GET("", settings.UserAccount)
@@ -87,7 +87,7 @@ func (s *Server) registerRoutes() {
 			sA.POST("/totp/regenerate", auth.RegenerateTotpRecoveryCodes)
 		}
 
-		sB := r.SubGroup("/-/admin-panel")
+		sB := r.SubGroup("/admin")
 		{
 			sB.Use(adminPermission)
 			sB.GET("", admin.AdminIndex)
@@ -109,9 +109,9 @@ func (s *Server) registerRoutes() {
 			sB.POST("/delete-expired-gists", admin.AdminDeleteExpiredGists)
 			sB.POST("/sync-ssh-keys", admin.AdminSyncSSHKeys)
 			sB.POST("/backfill-activity", admin.AdminBackfillActivity)
-			sB.GET("/configuration", admin.AdminConfig)
-			sB.POST("/configuration", admin.AdminUpdateConfig)
-			sB.PUT("/set-config", admin.AdminSetConfig)
+			sB.GET("/settings", admin.AdminConfig)
+			sB.POST("/settings", admin.AdminUpdateConfig)
+			sB.PUT("/settings", admin.AdminSetConfig)
 		}
 
 		if config.C.HttpGit {
@@ -178,27 +178,54 @@ func (s *Server) registerRoutes() {
 		r.GET("/explore", gist.AllGists, checkRequireLogin, setAllGistsMode("all"))
 		r.GET("/explore/liked", gist.AllGists, checkRequireLogin, setAllGistsMode("all-liked"))
 		r.GET("/explore/forked", gist.AllGists, checkRequireLogin, setAllGistsMode("all-forked"))
-		// Legacy discovery routes, kept so old bookmarks and links keep working.
-		r.GET("/-/all", redirectToExplore("/explore"))
-		r.GET("/-/liked", redirectToExplore("/explore/liked"))
-		r.GET("/-/forked", redirectToExplore("/explore/forked"))
-		r.GET("/-/topics", gist.Topics, checkRequireLogin)
-		r.GET("/-/users", gist.Users, checkRequireLogin)
+
+		r.GET("/topics", gist.Topics, checkRequireLogin)
+		r.GET("/topics/:topic", gist.AllGists, checkRequireLogin, setAllGistsMode("topics"))
+		r.GET("/users", gist.Users, checkRequireLogin)
 
 		if index.IndexEnabled() {
-			r.GET("/-/search", gist.Search, checkRequireLogin)
+			r.GET("/search", gist.Search, checkRequireLogin)
 		} else {
-			r.GET("/-/search", gist.AllGists, checkRequireLogin, setAllGistsMode("search"))
+			r.GET("/search", gist.AllGists, checkRequireLogin, setAllGistsMode("search"))
 		}
 
 		r.GET("/:user", gist.AllGists, checkRequireLogin, setAllGistsMode("fromUser"))
-		r.GET("/:user/-/liked", gist.AllGists, checkRequireLogin, setAllGistsMode("liked"))
-		r.GET("/:user/-/forked", gist.AllGists, checkRequireLogin, setAllGistsMode("forked"))
+		r.GET("/:user/liked", gist.AllGists, checkRequireLogin, setAllGistsMode("liked"))
+		r.GET("/:user/forked", gist.AllGists, checkRequireLogin, setAllGistsMode("forked"))
 
-		r.GET("/-/topics/:topic", gist.AllGists, checkRequireLogin, setAllGistsMode("topics"))
+		// /@username is the profile alias for names that collide with a
+		// top-level route (for example an existing account named "admin").
+		r.GET("/@:user", gist.AllGists, checkRequireLogin, setAllGistsMode("fromUser"))
+		r.GET("/@:user/liked", gist.AllGists, checkRequireLogin, setAllGistsMode("liked"))
+		r.GET("/@:user/forked", gist.AllGists, checkRequireLogin, setAllGistsMode("forked"))
 
-		sC := r.SubGroup("/:user/:gistname")
-		{
+		// Unknown paths below a user-facing route name may still be a gist
+		// belonging to an account with that name; move them to /@username.
+		for _, name := range []string{"admin", "settings", "login", "register", "logout", "search", "topics", "users", "explore"} {
+			r.Any("/"+name+"/*", redirectReservedGist(name))
+		}
+
+		// Legacy routes. They stay as permanent redirects so existing bookmarks,
+		// shared links and git remotes keep working after the URL cleanup.
+		r.Any("/-/login", redirectLegacy("/login"))
+		r.Any("/-/register", redirectLegacy("/register"))
+		r.Any("/-/logout", redirectLegacy("/logout"))
+		r.Any("/-/settings", redirectLegacy("/settings"))
+		r.Any("/-/settings/*", redirectLegacyPrefix("/-/settings", "/settings"))
+		r.Any("/-/admin-panel", redirectLegacy("/admin"))
+		r.Any("/-/admin-panel/*", redirectLegacyPrefix("/-/admin-panel", "/admin"))
+		r.Any("/-/all", redirectLegacy("/explore"))
+		r.Any("/-/liked", redirectLegacy("/explore/liked"))
+		r.Any("/-/forked", redirectLegacy("/explore/forked"))
+		r.Any("/-/topics", redirectLegacy("/topics"))
+		r.Any("/-/topics/*", redirectLegacyPrefix("/-/topics", "/topics"))
+		r.Any("/-/users", redirectLegacy("/users"))
+		r.Any("/-/search", redirectLegacy("/search"))
+		r.GET("/:user/-/liked", redirectLegacyUserTab("liked"))
+		r.GET("/:user/-/forked", redirectLegacyUserTab("forked"))
+
+		registerGistRoutes := func(prefix string) {
+			sC := r.SubGroup(prefix)
 			sC.Use(makeCheckRequireLogin(true), gistInit)
 			sC.GET("", gist.GistIndex)
 			sC.GET("/rev/:revision", gist.GistIndex)
@@ -221,6 +248,11 @@ func (s *Server) registerRoutes() {
 			sC.GET("/forks", gist.Forks, checkRequireLogin)
 			sC.PUT("/checkbox", gist.Checkbox, logged, writePermission, notArchived)
 		}
+
+		// The @username namespace keeps gists reachable for accounts whose
+		// name is also a top-level route (for example an existing "admin").
+		registerGistRoutes("/:user/:gistname")
+		registerGistRoutes("/@:user/:gistname")
 	}
 
 	customFs := os.DirFS(filepath.Join(config.GetHomeDir(), "custom"))
@@ -246,6 +278,7 @@ func (s *Server) registerRoutes() {
 	// Git HTTP routes
 	if config.C.HttpGit {
 		r.Any("/:user/:gistname/*", git.GitHttp, gistSoftInit)
+		r.Any("/@:user/:gistname/*", git.GitHttp, gistSoftInit)
 	}
 
 	r.Any("/*", noRouteFound)

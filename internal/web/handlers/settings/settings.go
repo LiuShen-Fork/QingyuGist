@@ -79,5 +79,5 @@ func ProcessUserStyle(ctx *context.Context) error {
 	}
 
 	ctx.AddFlash("Updated style", "success")
-	return ctx.RedirectTo("/-/settings/style")
+	return ctx.RedirectTo("/settings/style")
 }

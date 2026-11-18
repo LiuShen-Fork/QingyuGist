@@ -10,6 +10,7 @@ import (
 	"github.com/thomiceli/opengist/internal/db"
 	"github.com/thomiceli/opengist/internal/index"
 	"github.com/thomiceli/opengist/internal/render"
+	"github.com/thomiceli/opengist/internal/validator"
 	"github.com/thomiceli/opengist/internal/web/context"
 	"github.com/thomiceli/opengist/internal/web/handlers"
 	"gorm.io/gorm"
@@ -84,7 +85,7 @@ func AllGists(ctx *context.Context) error {
 			ctx.SetData("htmlTitle", ctx.TrH("gist.list.search-results"))
 			ctx.SetData("searchQuery", ctx.QueryParam("q"))
 			pagination.Query = ctx.QueryParam("q")
-			urlPage = "-/search"
+			urlPage = "search"
 			gists, err = db.GetAllGistsFromSearch(currentUserId, ctx.QueryParam("q"), pageInt-1, sort, order, "")
 		case "topics":
 			topic := ctx.Param("topic")
@@ -93,7 +94,7 @@ func AllGists(ctx *context.Context) error {
 			}
 			ctx.SetData("htmlTitle", ctx.TrH("gist.list.topic-results-topic", topic))
 			ctx.SetData("topic", topic)
-			urlPage = "-/topics/" + topic
+			urlPage = "topics/" + topic
 
 			if languages, err := db.GetGistLanguagesByTopic(currentUserId, topic); err != nil {
 				return ctx.ErrorRes(500, "Error fetching languages", err)
@@ -143,6 +144,9 @@ func AllGists(ctx *context.Context) error {
 		}
 		ctx.SetData("fromUser", fromUser)
 
+		// Keep profile pagination and tabs on the collision-safe alias.
+		fromUserPath := validator.ProfilePath(fromUserStr)
+
 		// Highlight "My gists" on any of the logged-in user's own tabs
 		// (gists, liked, forked).
 		if userLogged != nil && fromUserStr == userLogged.Username {
@@ -169,15 +173,15 @@ func AllGists(ctx *context.Context) error {
 
 		switch mode {
 		case "liked":
-			urlPage = fromUserStr + "/-/liked"
+			urlPage = fromUserPath + "/liked"
 			ctx.SetData("htmlTitle", ctx.TrH("gist.list.all-liked-by", fromUserStr))
 			gists, err = db.GetAllGistsLikedByUser(fromUser.ID, currentUserId, nil, pageInt-1, sort, order, 11, 10)
 		case "forked":
-			urlPage = fromUserStr + "/-/forked"
+			urlPage = fromUserPath + "/forked"
 			ctx.SetData("htmlTitle", ctx.TrH("gist.list.all-forked-by", fromUserStr))
 			gists, err = db.GetAllGistsForkedByUser(fromUser.ID, currentUserId, nil, pageInt-1, sort, order, 11, 10)
 		case "fromUser":
-			urlPage = fromUserStr
+			urlPage = fromUserPath
 
 			if languages, err := db.GetGistLanguagesForUser(fromUser.ID, currentUserId); err != nil {
 				return ctx.ErrorRes(500, "Error fetching languages", err)
@@ -302,7 +306,7 @@ func Search(ctx *context.Context) error {
 		renderedGists = append(renderedGists, &rendered)
 	}
 
-	if err = handlers.Paginate(ctx, renderedGists, pageInt, 10, "gists", "-/search", 2, pagination); err != nil {
+	if err = handlers.Paginate(ctx, renderedGists, pageInt, 10, "gists", "search", 2, pagination); err != nil {
 		return ctx.ErrorRes(404, ctx.Tr("error.page-not-found"), nil)
 	}
 

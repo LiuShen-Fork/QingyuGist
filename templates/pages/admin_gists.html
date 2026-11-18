@@ -38,7 +38,7 @@
                             </div>
                         </td>
                         <td class="px-4 py-3">
-                            <a href="{{ $.c.ExternalUrl }}/{{ $gist.User.Username }}" class="text-muted-foreground hover:text-foreground hover:underline">{{ $gist.User.Username }}</a>
+                            <a href="{{ $.c.ExternalUrl }}/{{ profilePath $gist.User.Username }}" class="text-muted-foreground hover:text-foreground hover:underline">{{ $gist.User.Username }}</a>
                         </td>
                         <td class="px-4 py-3">
                             <span class="badge border-transparent {{ if eq $gist.VisibilityStr "public" }}bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300{{ else }}bg-muted text-muted-foreground{{ end }}">{{ $.locale.Tr (printf "gist.%s" $gist.VisibilityStr) }}</span>
@@ -47,7 +47,7 @@
                         <td class="text-muted-foreground hidden px-4 py-3 text-right tabular-nums sm:table-cell">{{ $gist.NbLikes }}</td>
                         <td class="text-muted-foreground hidden px-4 py-3 md:table-cell">{{ $gist.CreatedAt | humanDate }}</td>
                         <td class="px-4 py-3 text-right">
-                            <form action="{{ $.c.ExternalUrl }}/-/admin-panel/gists/{{ $gist.ID }}/delete" method="POST">
+                            <form action="{{ $.c.ExternalUrl }}/admin/gists/{{ $gist.ID }}/delete" method="POST">
                                 {{ $.csrfHtml }}
                                 <button type="submit" class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex size-8 items-center justify-center rounded-md transition-colors"
                                         title="{{ $.locale.Tr "admin.delete" }}"

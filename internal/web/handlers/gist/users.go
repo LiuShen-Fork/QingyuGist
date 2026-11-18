@@ -45,7 +45,7 @@ func Users(ctx *context.Context) error {
 		Query: query,
 	}
 
-	if err = handlers.Paginate(ctx, users, pageInt, 10, "users", "-/users", 1, pagination); err != nil {
+	if err = handlers.Paginate(ctx, users, pageInt, 10, "users", "users", 1, pagination); err != nil {
 		return ctx.ErrorRes(404, ctx.Tr("error.page-not-found"), nil)
 	}
 

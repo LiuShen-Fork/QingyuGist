@@ -2,7 +2,7 @@
 <header class="space-y-3">
     <div class="flex flex-wrap items-center justify-between gap-3">
         <div class="flex min-w-0 items-center gap-3">
-            <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}" class="shrink-0">
+            <a href="{{ .c.ExternalUrl }}/{{ profilePath .gist.User.Username }}" class="shrink-0">
                 {{ if not (shouldGenerateAvatar .gist.User .DisableGravatar) }}
                     <img class="size-12 rounded-full border object-cover" src="{{ avatarUrl .gist.User .DisableGravatar }}" alt="{{ .gist.User.Username }}" />
                 {{ else }}
@@ -11,7 +11,7 @@
             </a>
             <div class="min-w-0">
                 <h1 class="break-all text-2xl font-bold leading-tight">
-                    <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}" class="hover:underline">{{ .gist.User.Username }}</a>
+                    <a href="{{ .c.ExternalUrl }}/{{ profilePath .gist.User.Username }}" class="hover:underline">{{ .gist.User.Username }}</a>
                     <span class="text-muted-foreground">/</span>
                     <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}/{{ .gist.Identifier }}" class="font-semibold hover:underline">{{ .gist.Title }}</a>
                 </h1>
@@ -48,7 +48,7 @@
             {{ end }}
 
             {{ else }}
-            <a href="{{ .c.ExternalUrl }}/-/login" class="btn-sm-outline">
+            <a href="{{ .c.ExternalUrl }}/login" class="btn-sm-outline">
                 <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
                 {{ .locale.Tr "gist.header.like" }} <span class="text-muted-foreground">{{ .gist.NbLikes }}</span>
             </a>
@@ -170,7 +170,7 @@
     {{ if .gist.Topics }}
     <div class="flex flex-wrap gap-1">
         {{ range .gist.Topics }}
-        <a href="{{ $.c.ExternalUrl }}/-/topics/{{ .Topic }}" class="badge-secondary hover:bg-secondary/80">{{ .Topic }}</a>
+        <a href="{{ $.c.ExternalUrl }}/topics/{{ .Topic }}" class="badge-secondary hover:bg-secondary/80">{{ .Topic }}</a>
         {{ end }}
     </div>
     {{ end }}

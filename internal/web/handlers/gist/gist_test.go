@@ -115,7 +115,7 @@ func TestTopicPageDecodesPercentEncodedTopic(t *testing.T) {
 	}, 302)
 	s.Logout()
 
-	resp := s.Request(t, "GET", "/-/topics/%e6%95%b0%e6%8d%ae%e5%ba%93", nil, 200)
+	resp := s.Request(t, "GET", "/topics/%e6%95%b0%e6%8d%ae%e5%ba%93", nil, 200)
 	body, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 	require.Contains(t, string(body), "Unicode topic gist")
@@ -315,7 +315,7 @@ func TestGistAccess(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s.Login(t, "thomas")
 			for k, v := range tt.settings {
-				s.Request(t, "PUT", "/-/admin-panel/set-config", url.Values{"key": {k}, "value": {v}}, 200)
+				s.Request(t, "PUT", "/admin/settings", url.Values{"key": {k}, "value": {v}}, 200)
 			}
 
 			t.Run("Owner", func(t *testing.T) {
@@ -343,7 +343,7 @@ func TestGistAccess(t *testing.T) {
 
 			s.Login(t, "thomas")
 			for k := range tt.settings {
-				s.Request(t, "PUT", "/-/admin-panel/set-config", url.Values{"key": {k}, "value": {"0"}}, 200)
+				s.Request(t, "PUT", "/admin/settings", url.Values{"key": {k}, "value": {"0"}}, 200)
 			}
 		})
 	}

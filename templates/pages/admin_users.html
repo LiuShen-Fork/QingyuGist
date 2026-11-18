@@ -25,7 +25,7 @@
                                 <img class="size-8 rounded-full border object-cover" src="{{ avatarUrl $user $.DisableGravatar }}" alt="" loading="lazy" />
                                 <div class="min-w-0">
                                     <div class="flex items-center gap-2">
-                                        <a href="{{ $.c.ExternalUrl }}/{{ $user.Username }}" class="text-foreground hover:text-primary font-medium hover:underline">{{ $user.Username }}</a>
+                                        <a href="{{ $.c.ExternalUrl }}/{{ profilePath $user.Username }}" class="text-foreground hover:text-primary font-medium hover:underline">{{ $user.Username }}</a>
                                         {{ if $user.IsAdmin }}<span class="badge border-transparent bg-primary/10 text-primary">{{ $.locale.Tr "admin.users.admin" }}</span>{{ end }}
                                     </div>
                                     <p class="text-muted-foreground text-xs tabular-nums">#{{ $user.ID }}</p>
@@ -34,7 +34,7 @@
                         </td>
                         <td class="text-muted-foreground px-4 py-3">{{ $user.CreatedAt | humanDate }}</td>
                         <td class="px-4 py-3 text-right">
-                            <form action="{{ $.c.ExternalUrl }}/-/admin-panel/users/{{ $user.ID }}/delete" method="POST">
+                            <form action="{{ $.c.ExternalUrl }}/admin/users/{{ $user.ID }}/delete" method="POST">
                                 {{ $.csrfHtml }}
                                 <button type="submit" class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex size-8 items-center justify-center rounded-md transition-colors"
                                         title="{{ $.locale.Tr "admin.delete" }}"

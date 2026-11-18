@@ -10,13 +10,9 @@ func TestReservedUsernames(t *testing.T) {
 	v := NewValidator()
 
 	for _, name := range []string{
-		"register",
-		"login",
-		"logout",
-		"settings",
-		"admin-panel",
 		"all",
-		"search",
+		"admin-panel",
+		"admin",
 	} {
 		t.Run("allowed "+name, func(t *testing.T) {
 			require.NoError(t, v.Var(name, "notreserved"))
@@ -33,6 +29,13 @@ func TestReservedUsernames(t *testing.T) {
 		"mfa",
 		"webauthn",
 		"oauth",
+		"login",
+		"register",
+		"logout",
+		"settings",
+		"search",
+		"topics",
+		"users",
 	} {
 		t.Run("reserved "+name, func(t *testing.T) {
 			require.Error(t, v.Var(name, "notreserved"))

@@ -6,7 +6,7 @@
 
     <!-- Search / sort toolbar -->
     <div class="flex flex-wrap items-center gap-2">
-        <form action="{{ .c.ExternalUrl }}/-/users" method="GET" class="flex flex-1 flex-wrap items-center gap-2">
+        <form action="{{ .c.ExternalUrl }}/users" method="GET" class="flex flex-1 flex-wrap items-center gap-2">
             <div class="relative min-w-60 flex-1">
                 <input type="text" name="q" value="{{ .searchQuery }}" autocomplete="off" spellcheck="false"
                        placeholder="{{ .locale.Tr "explore.users.search-placeholder" }}"
@@ -52,7 +52,7 @@
                     {{ range .users }}
                     <tr class="hover:bg-muted/50">
                         <td class="px-4 py-2">
-                            <a href="{{ $.c.ExternalUrl }}/{{ .Username }}" class="flex items-center gap-3">
+                            <a href="{{ $.c.ExternalUrl }}/{{ profilePath .Username }}" class="flex items-center gap-3">
                                 {{ if not (shouldGenerateAvatar .User $.DisableGravatar) }}
                                     <img class="size-11 shrink-0 rounded-full border object-cover" src="{{ avatarUrl .User $.DisableGravatar }}" alt="{{ .Username }}" />
                                 {{ else }}

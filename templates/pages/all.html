@@ -30,9 +30,9 @@
     {{ if .fromUser }}
     <!-- Tabs for a user's gists -->
     <nav class="flex gap-1 border-b" aria-label="Tabs">
-        <a href="{{ .c.ExternalUrl }}/{{ .fromUser.Username }}" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "fromUser" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.all" }} <span class="text-muted-foreground">{{ .countFromUser }}</span></a>
-        {{ if or (ne .countLiked 0) (eq .mode "liked") }}<a href="{{ .c.ExternalUrl }}/{{ .fromUser.Username }}/-/liked" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "liked" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.liked" }} <span>{{ .countLiked }}</span></a>{{ end }}
-        {{ if or (ne .countForked 0) (eq .mode "forked") }}<a href="{{ .c.ExternalUrl }}/{{ .fromUser.Username }}/-/forked" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "forked" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.forked" }} <span>{{ .countForked }}</span></a>{{ end }}
+        <a href="{{ .c.ExternalUrl }}/{{ profilePath .fromUser.Username }}" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "fromUser" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.all" }} <span class="text-muted-foreground">{{ .countFromUser }}</span></a>
+        {{ if or (ne .countLiked 0) (eq .mode "liked") }}<a href="{{ .c.ExternalUrl }}/{{ profilePath .fromUser.Username }}/liked" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "liked" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.liked" }} <span>{{ .countLiked }}</span></a>{{ end }}
+        {{ if or (ne .countForked 0) (eq .mode "forked") }}<a href="{{ .c.ExternalUrl }}/{{ profilePath .fromUser.Username }}/forked" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "forked" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.forked" }} <span>{{ .countForked }}</span></a>{{ end }}
     </nav>
     {{ else if or (eq .mode "all") (eq .mode "all-liked") (eq .mode "all-forked") }}
     <!-- Tabs for the explore "All gists" views -->
@@ -47,7 +47,7 @@
     <!-- Filter / sort toolbar -->
     <div class="flex flex-wrap items-center gap-2">
         {{ if or (eq .mode "fromUser") (eq .mode "all") (eq .mode "topics") }}
-        <form action="{{ .c.ExternalUrl }}/{{ if eq .mode "fromUser" }}{{ .fromUser.Username }}{{ else if eq .mode "topics" }}-/topics/{{ .topic }}{{ else }}explore{{ end }}" method="GET"
+        <form action="{{ .c.ExternalUrl }}/{{ if eq .mode "fromUser" }}{{ profilePath .fromUser.Username }}{{ else if eq .mode "topics" }}topics/{{ .topic }}{{ else }}explore{{ end }}" method="GET"
               class="flex flex-1 flex-wrap items-center gap-2"
               data-gist-filter
               data-init-title="{{ .title }}" data-init-visibility="{{ .visibility }}" data-init-language="{{ .language }}" data-init-topics="{{ .topics }}">

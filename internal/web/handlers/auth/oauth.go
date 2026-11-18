@@ -33,7 +33,7 @@ func allowOauthSignup(ctx *context.Context) (*db.Invitation, bool, error) {
 
 	if ctx.GetData("DisableSignup") == true {
 		ctx.AddFlash(ctx.Tr("error.signup-disabled"), "error")
-		return nil, false, ctx.Redirect(302, "/-/login")
+		return nil, false, ctx.Redirect(302, "/login")
 	}
 	return nil, true, nil
 }
@@ -70,7 +70,7 @@ func Oauth(ctx *context.Context) error {
 	provider, err := oauth.DefineProvider(providerStr, opengistUrl)
 	if err != nil {
 		ctx.AddFlash(ctx.Tr("error.oauth-unsupported"), "error")
-		return ctx.Redirect(302, "/-/login")
+		return ctx.Redirect(302, "/login")
 	}
 
 	if err = provider.RegisterProvider(); err != nil {
@@ -85,7 +85,7 @@ func OauthCallback(ctx *context.Context) error {
 	provider, err := oauth.CompleteUserAuth(ctx)
 	if err != nil {
 		ctx.AddFlash(fmt.Sprintf("%s: %s", ctx.Tr("auth.oauth.no-provider"), err.Error()), "error")
-		return ctx.Redirect(302, "/-/login")
+		return ctx.Redirect(302, "/login")
 	}
 
 	currUser := ctx.User
@@ -97,7 +97,7 @@ func OauthCallback(ctx *context.Context) error {
 		if existingUser, err := db.GetUserByProvider(user.UserID, provider.GetProvider()); err == nil && existingUser != nil {
 			if existingUser.ID != currUser.ID {
 				ctx.AddFlash(ctx.Tr("flash.auth.oauth-already-linked", config.C.OIDCProviderName), "error")
-				return ctx.RedirectTo("/-/settings")
+				return ctx.RedirectTo("/settings")
 			}
 
 			// the account is already linked to the user currently logged in:
@@ -112,7 +112,7 @@ func OauthCallback(ctx *context.Context) error {
 		}
 
 		ctx.AddFlash(ctx.Tr("flash.auth.account-linked-oauth", config.C.OIDCProviderName), "success")
-		return ctx.RedirectTo("/-/settings")
+		return ctx.RedirectTo("/settings")
 	}
 
 	userDB, err := db.GetUserByProvider(user.UserID, provider.GetProvider())
@@ -324,8 +324,8 @@ func OauthUnlink(ctx *context.Context) error {
 		}
 
 		ctx.AddFlash(ctx.Tr("flash.auth.account-unlinked-oauth", config.C.OIDCProviderName), "success")
-		return ctx.RedirectTo("/-/settings")
+		return ctx.RedirectTo("/settings")
 	}
 
-	return ctx.RedirectTo("/-/settings")
+	return ctx.RedirectTo("/settings")
 }

@@ -1,7 +1,7 @@
 {{ define "gist" }}
 <article class="bg-card text-card-foreground rounded-xl border">
     <header class="flex items-start gap-3 p-4">
-        <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}" class="shrink-0">
+        <a href="{{ .c.ExternalUrl }}/{{ profilePath .gist.User.Username }}" class="shrink-0">
             {{ if not (shouldGenerateAvatar .gist.User .DisableGravatar) }}
                 <img class="size-9 rounded-full border object-cover" src="{{ avatarUrl .gist.User .DisableGravatar }}" alt="{{ .gist.User.Username }}" />
             {{ else }}
@@ -12,7 +12,7 @@
         <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <h3 class="break-all text-base">
-                    <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}" class="hover:underline">{{ .gist.User.Username }}</a>
+                    <a href="{{ .c.ExternalUrl }}/{{ profilePath .gist.User.Username }}" class="hover:underline">{{ .gist.User.Username }}</a>
                     <span class="text-muted-foreground">/</span>
                     <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}/{{ .gist.Identifier }}" class="font-semibold hover:underline">{{ .gist.Title }}</a>
                 </h3>
@@ -28,7 +28,7 @@
                     {{ end }}
                 </span>
                 {{ range .gist.TopicsSlice }}
-                <a href="{{ $.c.ExternalUrl }}/-/topics/{{ . }}" class="badge-secondary hover:bg-secondary/80">{{ . }}</a>
+                <a href="{{ $.c.ExternalUrl }}/topics/{{ . }}" class="badge-secondary hover:bg-secondary/80">{{ . }}</a>
                 {{ end }}
             </div>
 

@@ -120,7 +120,7 @@ func AdminUsers(ctx *context.Context) error {
 		return ctx.ErrorRes(500, "Cannot get users", err)
 	}
 
-	if err = handlers.Paginate(ctx, data, pageInt, 10, "data", "-/admin-panel/users", 1, nil); err != nil {
+	if err = handlers.Paginate(ctx, data, pageInt, 10, "data", "admin/users", 1, nil); err != nil {
 		return ctx.ErrorRes(404, ctx.Tr("error.page-not-found"), nil)
 	}
 
@@ -138,7 +138,7 @@ func AdminGists(ctx *context.Context) error {
 		return ctx.ErrorRes(500, "Cannot get gists", err)
 	}
 
-	if err = handlers.Paginate(ctx, data, pageInt, 10, "data", "-/admin-panel/gists", 1, nil); err != nil {
+	if err = handlers.Paginate(ctx, data, pageInt, 10, "data", "admin/gists", 1, nil); err != nil {
 		return ctx.ErrorRes(404, ctx.Tr("error.page-not-found"), nil)
 	}
 
@@ -158,7 +158,7 @@ func AdminUserDelete(ctx *context.Context) error {
 	opengistssh.SyncAuthorizedKeysLogged()
 
 	ctx.AddFlash(ctx.Tr("flash.admin.user-deleted"), "success")
-	return ctx.RedirectTo("/-/admin-panel/users")
+	return ctx.RedirectTo("/admin/users")
 }
 
 func AdminGistDelete(ctx *context.Context) error {
@@ -174,7 +174,7 @@ func AdminGistDelete(ctx *context.Context) error {
 	gist.RemoveFromIndex()
 
 	ctx.AddFlash(ctx.Tr("flash.admin.gist-deleted"), "success")
-	return ctx.RedirectTo("/-/admin-panel/gists")
+	return ctx.RedirectTo("/admin/gists")
 }
 
 type configSection struct {
@@ -294,7 +294,7 @@ func AdminUpdateConfig(ctx *context.Context) error {
 	}
 
 	ctx.AddFlash(ctx.Tr("flash.admin.config-saved"), "success")
-	return ctx.RedirectTo("/-/admin-panel/configuration")
+	return ctx.RedirectTo("/admin/settings")
 }
 
 // AdminSetConfig is the legacy endpoint used by the old dashboard switches. It
@@ -354,7 +354,7 @@ func AdminInvitationsCreate(ctx *context.Context) error {
 	}
 
 	ctx.AddFlash(ctx.Tr("flash.admin.invitation-created"), "success")
-	return ctx.RedirectTo("/-/admin-panel/invitations")
+	return ctx.RedirectTo("/admin/invitations")
 }
 
 func AdminInvitationsDelete(ctx *context.Context) error {
@@ -369,5 +369,5 @@ func AdminInvitationsDelete(ctx *context.Context) error {
 	}
 
 	ctx.AddFlash(ctx.Tr("flash.admin.invitation-deleted"), "success")
-	return ctx.RedirectTo("/-/admin-panel/invitations")
+	return ctx.RedirectTo("/admin/invitations")
 }

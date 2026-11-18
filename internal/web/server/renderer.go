@@ -21,6 +21,7 @@ import (
 	"github.com/thomiceli/opengist/internal/config"
 	"github.com/thomiceli/opengist/internal/db"
 	"github.com/thomiceli/opengist/internal/index"
+	"github.com/thomiceli/opengist/internal/validator"
 	"github.com/thomiceli/opengist/internal/web/context"
 	"github.com/thomiceli/opengist/internal/web/handlers"
 	"github.com/thomiceli/opengist/public"
@@ -99,6 +100,7 @@ func (s *Server) setFuncMap() {
 			}
 			return user.AvatarURL == "" && (user.MD5Hash == "" || noGravatar)
 		},
+		"profilePath": validator.ProfilePath,
 		"asset": func(file string) string {
 			if s.dev {
 				return "http://localhost:16157/" + file

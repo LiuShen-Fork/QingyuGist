@@ -70,17 +70,45 @@ func ValidationMessages(err *error, locale *i18n.Locale) string {
 	return strings.Join(messages, " ; ")
 }
 
-func validateReservedKeywords(fl validator.FieldLevel) bool {
-	name := fl.Field().String()
+// ReservedUsernames are names that would shadow a top-level route. New
+// accounts with these names are rejected, except for "admin": it is such a
+// common account name that it stays creatable, and its profile is served from
+// /@admin.
+var ReservedUsernames = []string{
+	"api", "assets", "explore", "init", "healthcheck", "preview", "metrics",
+	"mfa", "webauthn", "oauth", "login", "register", "logout", "settings",
+	"admin", "search", "topics", "users",
+}
 
-	restrictedNames := map[string]struct{}{}
-	for _, restrictedName := range []string{"api", "assets", "explore", "init", "healthcheck", "preview", "metrics", "mfa", "webauthn", "oauth"} {
-		restrictedNames[restrictedName] = struct{}{}
+// IsReservedUsername reports whether a username collides with a top-level route.
+func IsReservedUsername(name string) bool {
+	for _, reserved := range ReservedUsernames {
+		if name == reserved {
+			return true
+		}
 	}
+	return false
+}
 
-	// if the name is not in the restricted names, it is valid
-	_, ok := restrictedNames[name]
-	return !ok
+// IsReservedForSignup is the stricter signup rule. "admin" is deliberately
+// allowed so the conventional administrator account keeps working; its links
+// use the /@admin profile alias.
+func IsReservedForSignup(name string) bool {
+	return name != "admin" && IsReservedUsername(name)
+}
+
+// ProfilePath returns the URL path fragment for a user's profile. Names that
+// are also top-level routes use the /@username alias so /admin keeps opening
+// the admin panel while the admin's own profile stays reachable.
+func ProfilePath(name string) string {
+	if IsReservedUsername(name) {
+		return "@" + name
+	}
+	return name
+}
+
+func validateReservedKeywords(fl validator.FieldLevel) bool {
+	return !IsReservedForSignup(fl.Field().String())
 }
 
 func validateAlphaNumDash(fl validator.FieldLevel) bool {

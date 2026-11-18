@@ -8,7 +8,7 @@ import (
 
 // actionView is the template model for a single row on the admin actions page.
 type actionView struct {
-	Path     string // POST endpoint suffix under /-/admin-panel, e.g. "sync-fs"
+	Path     string // POST endpoint suffix under /admin, e.g. "sync-fs"
 	LabelKey string // i18n key for the action's label
 	Icon     string // icon key rendered by the template
 	Running  bool   // currently in progress in this instance
@@ -117,7 +117,7 @@ func runAdminAction(ctx *context.Context, actionType int, legacyFlashKey string)
 	go actions.RunOnce(actionType)
 	if ctx.QueryParam("legacy") == "1" {
 		ctx.AddFlash(ctx.Tr(legacyFlashKey), "success")
-		return ctx.RedirectTo("/-/admin-panel")
+		return ctx.RedirectTo("/admin")
 	}
-	return ctx.RedirectTo("/-/admin-panel/actions?run=1")
+	return ctx.RedirectTo("/admin/actions?run=1")
 }

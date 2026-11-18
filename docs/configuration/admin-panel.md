@@ -2,7 +2,7 @@
 
 The first user created on an Opengist instance has access to the admin panel.
 Open your user menu and choose **Admin**. The panel is available at
-`/-/admin-panel`.
+`/admin`.
 
 ## Dashboard
 
