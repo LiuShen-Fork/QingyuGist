@@ -431,6 +431,9 @@ flash.gist.forked: Gist has been forked
 flash.user.email-updated: Email updated
 flash.user.avatar-updated: Avatar updated
 flash.user.avatar-deleted: Avatar removed
+flash.user.style-updated: Appearance updated
+flash.auth.totp-invalid: Invalid authentication secret
+flash.auth.totp-enabled: Two-factor authentication enabled
 flash.user.avatar-invalid: Invalid image file, allowed formats are PNG, JPEG, GIF and WebP
 flash.user.avatar-too-large: Image file is too large, the maximum size is 5 MB
 flash.user.invalid-ssh-key: Invalid SSH key
@@ -510,6 +513,14 @@ settings.site.custom_css: Custom CSS
 settings.site.custom_css_help: Injected into every page after the theme styles.
 settings.site.custom_js: Custom JavaScript
 settings.site.custom_js_help: Injected at the end of every page.
+settings.site.homepage_url: Homepage
+settings.site.homepage_url_help: Optional homepage, shown as a home icon in the sidebar footer.
+settings.site.contact_email: Contact email
+settings.site.contact_email_help: Optional contact address, shown as a mail icon in the sidebar footer.
+settings.site.icp: ICP filing number
+settings.site.icp_help: Shown in the site footer, linked to the MIIT filing site.
+settings.site.police_record: Public security filing
+settings.site.police_record_help: Shown in the site footer beside the ICP filing.
 settings.auth.registration_mode: Registration
 settings.auth.registration_mode_help: Controls who can create an account.
 settings.auth.registration_open: Open registration
@@ -653,9 +664,9 @@ settings.link-oidc-account: Link OpenID account
 settings.unlink-oidc-account: Unlink OpenID account
 settings.unlink-oauth-confirm: Are you sure you want to unlink your %s account? You may lose access to Opengist if it is your only way to log in.
 settings.site.repository_url: Source repository
-settings.site.repository_url_help: Linked from the source-code icon in the sidebar. Leave empty to hide it.
-settings.site.links: Sidebar links
-settings.site.links_help: Additional links shown at the bottom of the sidebar, each with a label, URL and icon.
+settings.site.repository_url_help: Linked from the QingyuGist item in the site footer. Leave empty to hide it.
+settings.site.links: Footer links
+settings.site.links_help: Additional links shown in the site footer, each with a label, URL and icon.
 admin.links.add: Add link
 admin.links.icon: Icon
 admin.links.label: Label
@@ -681,6 +692,10 @@ sidebar.links: Links
 sidebar.profile: Profile
 sidebar.language: Language
 sidebar.back-to-top: Back to top
+sidebar.homepage: Homepage
+sidebar.email: Email
+sidebar.source: Source repository
+toast.close: Close notification
 visibility.all: All visibility
 
 settings.style.theme-color: Accent color

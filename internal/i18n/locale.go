@@ -125,7 +125,11 @@ func (l *Locale) String(key string, args ...any) string {
 	message := l.Messages[key]
 
 	if message == "" {
-		return Locales.Locales["en-US"].String(key, args...)
+		fallback := Locales.Locales["en-US"]
+		if fallback == nil || fallback.Code == l.Code {
+			return key
+		}
+		return fallback.String(key, args...)
 	}
 
 	if len(args) == 0 {
@@ -139,7 +143,11 @@ func (l *Locale) Tr(key string, args ...any) template.HTML {
 	message := l.Messages[key]
 
 	if message == "" {
-		return Locales.Locales["en-US"].Tr(key, args...)
+		fallback := Locales.Locales["en-US"]
+		if fallback == nil || fallback.Code == l.Code {
+			return template.HTML(key)
+		}
+		return fallback.Tr(key, args...)
 	}
 
 	if len(args) == 0 {

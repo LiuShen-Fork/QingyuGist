@@ -393,6 +393,14 @@ settings.site.custom_css: 自定义 CSS
 settings.site.custom_css_help: 在主题样式之后注入每个页面。
 settings.site.custom_js: 自定义 JavaScript
 settings.site.custom_js_help: 在每个页面末尾注入。
+settings.site.homepage_url: 个人主页
+settings.site.homepage_url_help: 可选，显示为侧边栏底部的房子图标。
+settings.site.contact_email: 联系邮箱
+settings.site.contact_email_help: 可选，显示为侧边栏底部的邮件图标。
+settings.site.icp: ICP 备案号
+settings.site.icp_help: 显示在页脚，链接至工信部备案查询。
+settings.site.police_record: 公网安备
+settings.site.police_record_help: 显示在页脚，与 ICP 备案并列。
 settings.auth.registration_mode: 注册方式
 settings.auth.registration_mode_help: 控制谁可以创建账户。
 settings.auth.registration_open: 开放注册
@@ -513,6 +521,9 @@ flash.gist.archived: Gist 已归档
 flash.gist.unarchived: Gist 已取消归档
 flash.gist.updated: Gist 已更新
 flash.user.avatar-deleted: 头像已移除
+flash.user.style-updated: 外观设置已更新
+flash.auth.totp-invalid: 身份验证密钥无效
+flash.auth.totp-enabled: 双重验证已启用
 flash.user.avatar-invalid: 图片格式无效，仅支持 PNG、JPEG、GIF 和 WebP
 flash.user.avatar-too-large: 图片文件过大，最大为 5 MB
 flash.user.avatar-updated: 头像已更新
@@ -641,9 +652,9 @@ settings.link-oidc-account: 关联 OpenID 账号
 settings.unlink-oidc-account: 解除 OpenID 关联
 settings.unlink-oauth-confirm: 确定要解除 %s 账号的关联吗？如果这是你登录 Opengist 的唯一方式，你可能将无法再访问账户。
 settings.site.repository_url: 源码仓库
-settings.site.repository_url_help: 侧边栏源码图标指向的地址，留空则隐藏。
-settings.site.links: 侧边栏链接
-settings.site.links_help: 显示在侧边栏底部的自定义链接，可分别设置名称、地址和图标。
+settings.site.repository_url_help: 页脚 QingyuGist 链接指向的地址，留空则隐藏。
+settings.site.links: 页脚链接
+settings.site.links_help: 显示在站点页脚的自定义链接，可分别设置名称、地址和图标。
 admin.links.add: 添加链接
 admin.links.icon: 图标
 admin.links.label: 名称
@@ -669,6 +680,10 @@ sidebar.links: 链接
 sidebar.profile: 个人主页
 sidebar.language: 语言
 sidebar.back-to-top: 回到顶部
+sidebar.homepage: 个人主页
+sidebar.email: 联系邮箱
+sidebar.source: 源码仓库
+toast.close: 关闭通知
 visibility.all: 全部可见性
 
 settings.style.theme-color: 主题色

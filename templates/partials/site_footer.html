@@ -1,0 +1,53 @@
+{{ define "site_footer" }}
+<footer class="og-site-footer mt-auto">
+    <div class="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-6 text-xs sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+        <div class="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2">
+            <a href="{{ .c.ExternalUrl }}/" class="og-footer-link font-medium text-foreground">
+                {{ if .c.CustomLogo }}
+                <img src="{{ custom .c.CustomLogo }}" class="size-4 object-contain" alt="" />
+                {{ else }}
+                <img src="{{ asset "img/qingyugist.svg" }}" class="size-4 dark:invert" alt="" />
+                {{ end }}
+                <span>{{ .SiteName }}</span>
+            </a>
+            <span class="text-muted-foreground/70">© {{ currentYear }}</span>
+
+            {{ if .SiteRepositoryURL }}
+            <a hx-boost="false" target="_blank" rel="noopener noreferrer" href="{{ .SiteRepositoryURL }}" class="og-footer-link">
+                <svg class="size-3.5" aria-hidden="true"><use href="#og-icon-github"></use></svg>
+                <span>QingyuGist</span>
+            </a>
+            {{ end }}
+
+            {{ range .SiteLinks }}
+            <a hx-boost="false" target="_blank" rel="noopener noreferrer" href="{{ .URL }}" class="og-footer-link">
+                <svg class="size-3.5" aria-hidden="true"><use href="#og-icon-{{ .Icon }}"></use></svg>
+                <span>{{ .Label }}</span>
+            </a>
+            {{ end }}
+
+            {{ range .c.StaticLinks }}
+            <a hx-boost="false" target="_blank" rel="noopener noreferrer" href="{{ if isUrl .Path }}{{ .Path }}{{ else }}{{ $.c.ExternalUrl }}/assets/{{ .Path }}{{ end }}" class="og-footer-link">
+                <svg class="size-3.5" aria-hidden="true"><use href="#og-icon-link"></use></svg>
+                <span>{{ .Name }}</span>
+            </a>
+            {{ end }}
+        </div>
+
+        {{ if or .SiteICP .SitePoliceRecord }}
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground md:justify-end">
+            {{ if .SiteICP }}
+            <a hx-boost="false" target="_blank" rel="noopener noreferrer" href="https://beian.miit.gov.cn/" class="og-footer-link">
+                <span>{{ .SiteICP }}</span>
+            </a>
+            {{ end }}
+            {{ if .SitePoliceRecord }}
+            <a hx-boost="false" target="_blank" rel="noopener noreferrer" href="https://beian.mps.gov.cn/" class="og-footer-link">
+                <span>{{ .SitePoliceRecord }}</span>
+            </a>
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+</footer>
+{{ end }}

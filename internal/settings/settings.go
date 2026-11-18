@@ -14,6 +14,7 @@ package settings
 import (
 	"encoding/json"
 	"fmt"
+	"net/mail"
 	"net/url"
 	"strconv"
 	"strings"
@@ -79,6 +80,10 @@ const (
 	KeySiteCustomCSS   = "site.custom-css"
 	KeySiteCustomJS    = "site.custom-js"
 	KeySiteRepository  = "site.repository-url"
+	KeySiteHomepage    = "site.homepage-url"
+	KeySiteEmail       = "site.contact-email"
+	KeySiteICP         = "site.icp"
+	KeySitePolice      = "site.police-record"
 	KeySiteLinks       = "site.links"
 
 	KeyRegistrationMode       = "auth.registration-mode"
@@ -160,11 +165,15 @@ type Definition struct {
 
 var definitions = []Definition{
 	// Site / branding
-	{Key: KeySiteName, Kind: KindString, Category: CategorySite, Label: "settings.site.name", Help: "settings.site.name_help", Placeholder: "Opengist", Max: 80},
+	{Key: KeySiteName, Kind: KindString, Category: CategorySite, Label: "settings.site.name", Help: "settings.site.name_help", Placeholder: "QingyuGist", Max: 80},
 	{Key: KeySiteDescription, Kind: KindString, Category: CategorySite, Label: "settings.site.description", Help: "settings.site.description_help", Max: 200},
 	{Key: KeySiteExternalURL, Kind: KindURL, Category: CategorySite, Label: "settings.site.external_url", Help: "settings.site.external_url_help", Placeholder: "https://gist.example.com", Max: 300},
 	{Key: KeySiteLogo, Kind: KindString, Category: CategorySite, Label: "settings.site.logo", Help: "settings.site.logo_help", Placeholder: "logo.svg", Max: 300},
 	{Key: KeySiteFavicon, Kind: KindString, Category: CategorySite, Label: "settings.site.favicon", Help: "settings.site.favicon_help", Placeholder: "favicon.png", Max: 300},
+	{Key: KeySiteHomepage, Kind: KindURL, Category: CategorySite, Label: "settings.site.homepage_url", Help: "settings.site.homepage_url_help", Placeholder: "https://example.com", Max: 300},
+	{Key: KeySiteEmail, Kind: KindString, Default: "", Category: CategorySite, Label: "settings.site.contact_email", Help: "settings.site.contact_email_help", Placeholder: "hello@example.com", Max: 200},
+	{Key: KeySiteICP, Kind: KindString, Default: "", Category: CategorySite, Label: "settings.site.icp", Help: "settings.site.icp_help", Placeholder: "京ICP备 00000000 号-1", Max: 80},
+	{Key: KeySitePolice, Kind: KindString, Default: "", Category: CategorySite, Label: "settings.site.police_record", Help: "settings.site.police_record_help", Placeholder: "京公网安备 00000000000000 号", Max: 80},
 	{Key: KeySiteCustomCSS, Kind: KindText, Category: CategorySite, Label: "settings.site.custom_css", Help: "settings.site.custom_css_help", Rows: 6},
 	{Key: KeySiteCustomJS, Kind: KindText, Category: CategorySite, Label: "settings.site.custom_js", Help: "settings.site.custom_js_help", Rows: 6},
 	{Key: KeySiteRepository, Kind: KindURL, Default: DefaultRepositoryURL, Category: CategorySite, Label: "settings.site.repository_url", Help: "settings.site.repository_url_help", Placeholder: DefaultRepositoryURL, Max: 300},
@@ -478,6 +487,14 @@ func validateDefinition(d Definition, value string) error {
 			return err
 		}
 	}
+	if d.Key == KeySiteEmail {
+		if value = strings.TrimSpace(value); value != "" {
+			addr, err := mail.ParseAddress(value)
+			if err != nil || addr.Address != value {
+				return fmt.Errorf("%s: %q is not a valid email address", d.Key, value)
+			}
+		}
+	}
 	switch d.Kind {
 	case KindBool:
 		if value != "0" && value != "1" {
@@ -622,12 +639,20 @@ func SiteName() string {
 	if config.C.CustomName != "" {
 		return config.C.CustomName
 	}
-	return "Opengist"
+	return "QingyuGist"
 }
 
 func SiteDescription() string { return strings.TrimSpace(Get(KeySiteDescription)) }
 
 func SiteRepositoryURL() string { return strings.TrimSpace(Get(KeySiteRepository)) }
+
+func SiteHomepageURL() string { return strings.TrimSpace(Get(KeySiteHomepage)) }
+
+func SiteContactEmail() string { return strings.TrimSpace(Get(KeySiteEmail)) }
+
+func SiteICP() string { return strings.TrimSpace(Get(KeySiteICP)) }
+
+func SitePoliceRecord() string { return strings.TrimSpace(Get(KeySitePolice)) }
 
 // SiteLink is an administrator-defined link shown at the bottom of the sidebar.
 type SiteLink struct {

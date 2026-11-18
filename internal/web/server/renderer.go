@@ -226,6 +226,9 @@ func (s *Server) setFuncMap() {
 		},
 		"humanSize":     humanSize,
 		"humanDuration": humanDuration,
+		"currentYear": func() int {
+			return time.Now().Year()
+		},
 		"percent": func(part, total int64) int {
 			if total <= 0 {
 				return 0
