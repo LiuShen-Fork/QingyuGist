@@ -24,7 +24,7 @@ services:
     volumes:
       - "$HOME/.qingyugist:/qingyugist"
     environment:
-      # QYG_LQYG_LEVEL: info
+      # QYG_LOG_LEVEL: info
       # other configuration options
 ```
 

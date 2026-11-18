@@ -38,13 +38,13 @@ services:
   qingyugist:
     # ...
     environment:
-      QYG_LQYG_LEVEL: "info"
+      QYG_LOG_LEVEL: "info"
       # etc.
 ```
 
 Usage via command line :
 ```shell
-QYG_LQYG_LEVEL=info ./qingyugist
+QYG_LOG_LEVEL=info ./qingyugist
 ```
 
 ### Using Docker Compose secrets

@@ -28,7 +28,7 @@ User admin has been created with administrator privileges.
 Reading the password from stdin is recommended for automation, so it never appears in the process list or your playbook:
 
 ```bash
-$ printf '%s' "$QYG_ADMIN_PASSWORD" | ./qingyugist admin create-user --username admin --password-stdin --admin
+$ printf '%s' "$ADMIN_PASSWORD" | ./qingyugist admin create-user --username admin --password-stdin --admin
 User admin has been created with administrator privileges.
 ```
 

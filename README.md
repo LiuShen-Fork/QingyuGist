@@ -1,114 +1,125 @@
-# Opengist
+# QingyuGist · 清羽Gist
 
-<img height="108px" src="https://raw.githubusercontent.com/thomiceli/opengist/master/public/img/opengist.svg" alt="Opengist" align="right" />
+<img height="108px" src="https://raw.githubusercontent.com/LiuShen-Fork/Qingyu-Gist/master/public/img/qingyugist.svg" alt="QingyuGist" align="right" />
 
-Opengist is a **self-hosted** Pastebin **powered by Git**. All snippets are stored in a Git repository and can be
-read and/or modified using standard Git commands, or with the web interface.
-It is similar to [GitHub Gist](https://gist.github.com/), but open-source and could be self-hosted.
+QingyuGist (清羽Gist) is a self-hosted pastebin powered by Git. Every snippet is
+a real Git repository, so it can be read and edited from the web interface or
+with ordinary `git clone`, `pull` and `push`.
 
-[Home Page](https://opengist.io) • [Documentation](https://opengist.io/docs) • [Discord](https://discord.gg/9Pm3X5scZT) • [Demo](https://demo.opengist.io)
+This repository is an independent hard fork. It keeps the data format of the
+upstream project, but the interface, defaults and deployment tooling have been
+reworked around a simpler, calmer experience.
 
+[Repository](https://github.com/LiuShen-Fork/Qingyu-Gist) · [Documentation](docs/) · [Releases](https://github.com/LiuShen-Fork/Qingyu-Gist/releases)
 
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/thomiceli/opengist?sort=semver)
-![License](https://img.shields.io/github/license/thomiceli/opengist?color=blue)
-[![Go CI](https://github.com/thomiceli/opengist/actions/workflows/go.yml/badge.svg)](https://github.com/thomiceli/opengist/actions/workflows/go.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/thomiceli/opengist)](https://goreportcard.com/report/github.com/thomiceli/opengist)
-[![Translate](https://tr.opengist.io/widget/_/svg-badge.svg)](https://tr.opengist.io/projects/_/opengist/)
+![CI](https://github.com/LiuShen-Fork/Qingyu-Gist/actions/workflows/ci.yml/badge.svg)
+![License](https://img.shields.io/github/license/LiuShen-Fork/Qingyu-Gist?color=blue)
 
 ## Features
 
-* Create public, unlisted or private snippets
-* [Init](/docs/usage/init-via-git.md) / Clone / Pull / Push snippets **via Git** over HTTP or SSH
-* Syntax highlighting ; markdown & CSV support
-* Search code in snippets; browse users snippets, likes and forks
-* Add topics to snippets
-* Embed snippets in other websites
-* Revisions history
-* Like / Fork snippets
-* Download raw files or as a ZIP archive
-* OAuth2 login with GitHub, GitLab, Gitea, and OpenID Connect
-* Restrict or unrestrict snippets visibility to anonymous users
-* Docker support / Helm Chart
-* [More...](/docs/introduction.md#features)
+- Public, unlisted and private gists, with revisions, likes, forks and topics
+- Clone, pull and push over HTTP or SSH
+- Syntax highlighting, Markdown, CSV and notebook previews
+- Full-text search, including Chinese word segmentation, with a scheduled reindex
+- Explore feeds and contribution heatmaps, globally and per user
+- OAuth2 login with GitHub, GitLab, Gitea and OpenID Connect; passkeys and TOTP
+- Per-instance branding: name, description, logo, favicon, custom CSS and JavaScript
+- Admin panel with live settings, storage and runtime dashboard, and user management
+- Optional AI moderation for public gists, upload quotas and CORS controls
+- Responsive light/dark interface, English and Simplified Chinese out of the box
 
 ## Quick start
 
-### With Docker
+### Docker
 
-Docker [images](https://github.com/thomiceli/opengist/pkgs/container/opengist) are available for each release :
+Images are published to GitHub Container Registry on every release:
 
 ```shell
-docker pull ghcr.io/thomiceli/opengist:1.15.3
+docker pull ghcr.io/liushen-fork/qingyugist:latest
 ```
 
-It can be used in a `docker-compose.yml` file :
-
-1. Create a `docker-compose.yml` file with the following content
-2. Run `docker compose up -d`
-3. Opengist is now running on port 6157, you can browse http://localhost:6157
-
-```yml
+```yaml
 services:
-  opengist:
-    image: ghcr.io/thomiceli/opengist:1.15.3
-    container_name: opengist
+  qingyugist:
+    image: ghcr.io/liushen-fork/qingyugist:latest
+    container_name: qingyugist
     restart: unless-stopped
     ports:
-      - "6157:6157" # HTTP port
-      - "2222:2222" # SSH port, can be removed if you don't use SSH
+      - "6157:6157"
+      - "2222:2222"
     volumes:
-      - "$HOME/.opengist:/opengist"
+      - "$HOME/.qingyugist:/qingyugist"
 ```
 
-You can define which user/group should run the container and own the files by setting the `UID` and `GID` environment variables :
+Then open <http://localhost:6157>. The first account created becomes the
+instance administrator.
 
-```yml
-services:
-  opengist:
-    # ...
+To run the container as a specific user, set `UID` and `GID`:
+
+```yaml
     environment:
       UID: 1001
       GID: 1001
 ```
 
-### Via binary
+### Binary
 
-Download the archive for your system from the release page [here](https://github.com/thomiceli/opengist/releases/latest), and extract it.
+Download the archive for your platform from the
+[latest release](https://github.com/LiuShen-Fork/Qingyu-Gist/releases/latest),
+extract it and run the binary:
 
 ```shell
-# example for linux amd64
-wget https://github.com/thomiceli/opengist/releases/download/v1.15.3/opengist1.15.3-linux-amd64.tar.gz
-
-tar xzvf opengist1.15.3-linux-amd64.tar.gz
-cd opengist
-chmod +x opengist
-./opengist # with or without `--config config.yml`
+tar xzf qingyugist-1.0.0-linux-amd64.tar.gz
+./qingyugist
 ```
 
-Opengist is now running on port 6157, you can browse http://localhost:6157
+`qingyugist --config config.yml` uses an explicit YAML configuration file. All
+options can also be supplied through `QYG_*` environment variables; see
+[`config.yml`](config.yml) and the [configuration docs](docs/configuration/configure.md).
 
 ### From source
 
-Requirements: [Git](https://git-scm.com/downloads) (2.28+), [Go](https://go.dev/doc/install) (1.23+), [Node.js](https://nodejs.org/en/download/) (16+), [Make](https://linux.die.net/man/1/make) (optional, but easier)
+Requirements: Git 2.28+, Go 1.27+, Node.js 26+ and Make.
 
 ```shell
-git clone https://github.com/thomiceli/opengist
-cd opengist
+git clone https://github.com/LiuShen-Fork/Qingyu-Gist.git
+cd Qingyu-Gist
 make
-./opengist
+./qingyugist
 ```
 
-Opengist is now running on port 6157, you can browse http://localhost:6157
+The frontend assets are embedded into the binary, so the single executable is
+the only runtime artifact.
 
----
+## Configuration
 
-To create and run a development environment, see [run-development.md](/docs/contributing/development.md).
+Most day-to-day options live in the admin panel at `/admin/settings` and take
+effect immediately: registration mode, upload limits, moderation, CORS, search
+reindexing, branding and the footer. A configuration file is still supported for
+bootstrap values such as the data directory, database URL, ports and OAuth
+providers.
 
-## Documentation
+Data lives in `~/.qingyugist` by default. Set `QYG_HOME` to use another
+directory. Existing installations are migrated automatically: the old database,
+session key and SSH host key are detected, and the repository symlink used by
+existing Git hooks remains available under its historical name.
 
-The documentation is available at [https://opengist.io/](https://opengist.io/) or in the [/docs](/docs) directory.
+## Development
 
+```shell
+make install
+make watch
+```
+
+Run the test suite with:
+
+```shell
+go test -p 1 ./internal/...
+```
+
+See [development docs](docs/contributing/development.md) for the Vite workflow,
+database matrix and test environment.
 
 ## License
 
-Opengist is licensed under the [AGPL-3.0 license](/LICENSE).
+QingyuGist is licensed under the [AGPL-3.0 license](LICENSE).

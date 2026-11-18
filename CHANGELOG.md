@@ -1,7 +1,36 @@
 # Changelog
 
-## [1.15.3](https://github.com/thomiceli/opengist/compare/v1.15.2...v1.15.3) - 2026-10-21
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.16.0](https://github.com/LiuShen-Fork/Qingyu-Gist/releases/tag/v1.16.0) - 2026-11-19
+
+This is the first QingyuGist release: an independent hard fork focused on a
+calmer interface, live administration and a fully self-contained deployment.
+See the [upgrade notes](docs/update.md) before moving an existing instance.
+
+### Added
+- Live instance settings in the admin panel: registration, uploads, CORS,
+  moderation, search, branding and footer links
+- Admin dashboard with storage, memory, index and runtime status
+- Global and per-user contribution heatmaps on the explore feeds
+- Chinese search segmentation and a scheduled search reindex
+- Asynchronous AI moderation for public gists
+- Upload count, file size, total size and media-type limits
+- Custom logo, favicon, CSS, JavaScript, sidebar links and footer records
+- Light/dark themes, localized relative times and toast notifications
+- Release and CI workflows publishing binaries and multi-arch GHCR images
+
+### Changed
+- Renamed the project, module, binary, environment namespace and data files to
+  QingyuGist; existing data and `OG_*` variables are migrated automatically
+- Replaced the `/-/` route prefix with clean top-level paths
+- Rebuilt the interface around a responsive Vercel/shadcn-inspired system
+
+### Fixed
+- Theme-specific Markdown and syntax styles when switching themes at runtime
+- Oversized database pool handling and Windows data-directory paths
+- Several localization gaps in English and Simplified Chinese
+
+## [1.15.3](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.15.2...v1.15.3) - 2026-10-21
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
 - Copy button on fenced code blocks in rendered Markdown (#801) (#838)
@@ -25,8 +54,8 @@ See here how to [update](https://opengist.io/docs/update) Opengist.
 ### Other
 - Update Go & JS deps (#841)
 
-## [1.15.2](https://github.com/thomiceli/opengist/compare/v1.15.1...v1.15.2) - 2026-08-30
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.15.2](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.15.1...v1.15.2) - 2026-08-30
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
 - Anonymous LDAP user search (#794)
@@ -37,15 +66,15 @@ See here how to [update](https://opengist.io/docs/update) Opengist.
 - Invalid header handling in Git `cat-file` batch reader (#802)
 - Overlapping headers in narrow embeds (#803)
 
-## [1.15.1](https://github.com/thomiceli/opengist/compare/v1.15.0...v1.15.1) - 2026-08-04
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.15.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.15.0...v1.15.1) - 2026-08-04
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Fixed
 - Admin pagination with new URLs (#782)
 - Stop unbounded diff content growth for large files (#787)
 
-## [1.15.0](https://github.com/thomiceli/opengist/compare/v1.14.0...v1.15.0) - 2026-07-30
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.15.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.14.0...v1.15.0) - 2026-07-30
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
 - UI rework (#757)
@@ -61,13 +90,13 @@ See here how to [update](https://opengist.io/docs/update) Opengist.
 - OIDC scope includes trailing whitespace if groups not configured (#775)
 - Return 200 for `HEAD /` so uptime monitors don't fail (#773)
 - Bind strategy configuration to deployment in Helm chart (#777)
-- `OG_OPENGIST_HOME` env var in Dockerfile (#779)
+- `QYG_HOME` env var in Dockerfile (#779)
 
 ### Other
 - Update deps (#776)
 
-## [1.14.0](https://github.com/thomiceli/opengist/compare/v1.13.1...v1.14.0) - 2026-07-21
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.14.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.13.1...v1.14.0) - 2026-07-21
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
 - Gist expiration + scheduled actions (#726)
@@ -112,15 +141,15 @@ See here how to [update](https://opengist.io/docs/update) Opengist.
 - Update deps (#762)
 - Update community page with Pi share extension + gistviewer links (#755)
 
-## [1.13.1](https://github.com/thomiceli/opengist/compare/v1.13.0...v1.13.1) - 2026-06-10
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.13.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.13.0...v1.13.1) - 2026-06-10
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Fixed
 - Embedding fix vertical scrolling and improve padding (#714)
 - Fix CSS url for json embed url (#715)
 
-## [1.13.0](https://github.com/thomiceli/opengist/compare/v1.12.2...v1.13.0) - 2026-06-09
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.13.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.12.2...v1.13.0) - 2026-06-09
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
 - REST API (#707) (#711) (#702)
@@ -136,12 +165,12 @@ See here how to [update](https://opengist.io/docs/update) Opengist.
 - Update deps Golang, JS, Docker deps (#713)
 - New docs website (#710)
 
-## [1.12.2](https://github.com/thomiceli/opengist/compare/v1.12.1...v1.12.2) - 2026-03-14
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.12.2](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.12.1...v1.12.2) - 2026-03-14
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
 - Search all fields (#622)
-- Display a form to create an Opengist account coming from a OAuth provider (#623)
+- Display a form to create a QingyuGist account coming from a OAuth provider (#623)
 - Rebuild search index in admin options (#647)
 
 ### Fixed
@@ -154,13 +183,13 @@ See here how to [update](https://opengist.io/docs/update) Opengist.
 - Translation strings (#659)
 - Gitea avatar URL on OAuth (#674)
 
-### [Helm Chart](helm/opengist)
+### [Helm Chart](helm/qingyugist)
 - Add environment variables and secrets to statefulset (#644)
 
-> Admins of Opengist instances may want to run "Rebuild search index" in the admin panel.
+> Admins of QingyuGist instances may want to run "Rebuild search index" in the admin panel.
 
-## [1.12.1](https://github.com/thomiceli/opengist/compare/v1.12.0...v1.12.1) - 2026-02-03
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.12.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.12.0...v1.12.1) - 2026-02-03
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
 - More translation strings (#605)
@@ -170,10 +199,10 @@ See here how to [update](https://opengist.io/docs/update) Opengist.
 - Make text files renderable with mimetypes different than text/plain (#612)
 - Improve security on raw files endpoint (#613)
 
-> Admins of Opengist instances may want to run "Synchronize all gists previews" in the admin panel.
+> Admins of QingyuGist instances may want to run "Synchronize all gists previews" in the admin panel.
 
-## [1.12.0](https://github.com/thomiceli/opengist/compare/v1.11.1...v1.12.0) - 2026-01-27
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.12.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.11.1...v1.12.0) - 2026-01-27
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
 - Access tokens (#602)
@@ -190,13 +219,13 @@ See here how to [update](https://opengist.io/docs/update) Opengist.
 - Update Go + JS deps (#603)
 - Configure Dependabot for updates on Go and NPM (#449)
 
-### [Helm Chart](helm/opengist)
+### [Helm Chart](helm/qingyugist)
 - Use existing pvc claim of provided (#547)
 - Adds StatefulSet support (#549)
 - Move Prom metrics to a dedicated port + support ServiceMonitor (#599)
 
-## [1.11.1](https://github.com/thomiceli/opengist/compare/v1.11.0...v1.11.1) - 2025-09-30
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.11.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.11.0...v1.11.1) - 2025-09-30
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
 - More translation strings (#511)
@@ -207,8 +236,8 @@ See here how to [update](https://opengist.io/docs/update) Opengist.
 ### Other
 - Reset default log level to warn
 
-## [1.11.0](https://github.com/thomiceli/opengist/compare/v1.10.0...v1.11.0) - 2025-09-21
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.11.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.10.0...v1.11.0) - 2025-09-21
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
 - LDAP authentication (#470)
@@ -240,13 +269,13 @@ See here how to [update](https://opengist.io/docs/update) Opengist.
 - Use database for Gist init queue (#498)
 - Update go dep chroma (#493)
 
-## [1.10.0](https://github.com/thomiceli/opengist/compare/v1.9.1...v1.10.0) - 2025-04-07
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.10.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.9.1...v1.10.0) - 2025-04-07
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### 🔴 Deprecations
-_Removed in the next SemVer MAJOR version of Opengist._
+_Removed in the next SemVer MAJOR version of QingyuGist._
 * Use the configuration option `index`/`OG_INDEX` **instead of** `index.enabled`/`OG_INDEX_ENABLED`. The default value is `bleve`.
-* The configuration `index.dirname`/`OG_INDEX_DIRNAME` will be removed. If you're using Bleve, the path of the index will be `opengist.index`.
+* The configuration `index.dirname`/`OG_INDEX_DIRNAME` will be removed. If you're using Bleve, the path of the index will be `qingyugist.index`.
 
 ### Added
 - Helm Chart (#454)
@@ -266,8 +295,8 @@ _Removed in the next SemVer MAJOR version of Opengist._
 ### Other
 - Update deps Golang & JS deps (#455)
 
-## [1.9.1](https://github.com/thomiceli/opengist/compare/v1.9.0...v1.9.1) - 2025-02-04
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.9.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.9.0...v1.9.1) - 2025-02-04
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
 - More translation strings (#401)
@@ -279,8 +308,8 @@ See here how to [update](https://opengist.io/docs/update) Opengist.
 ### Other
 - Update deps Golang & JS deps (#430)
 
-## [1.9.0](https://github.com/thomiceli/opengist/compare/v1.8.4...v1.9.0) - 2025-02-02
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.9.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.8.4...v1.9.0) - 2025-02-02
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
 - Topics (tags) for Gists (#413)
@@ -300,10 +329,10 @@ See here how to [update](https://opengist.io/docs/update) Opengist.
 ### Other
 - Refactor server code (#407)
 - Remove memdb for gist init (#421)
-- Added Opengist Docker images to Docker Hub
+- Added QingyuGist Docker images to Docker Hub
 
-## [1.8.4](https://github.com/thomiceli/opengist/compare/v1.8.3...v1.8.4) - 2024-12-15
-See here how to [update](/docs/update.md) Opengist.
+## [1.8.4](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.8.3...v1.8.4) - 2024-12-15
+See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
 - More translation strings (#398)
@@ -312,15 +341,15 @@ See here how to [update](/docs/update.md) Opengist.
 ### Fixed
 - Prevent passwords managers autofill on filename inputs (#357)
 
-## [1.8.3](https://github.com/thomiceli/opengist/compare/v1.8.2...v1.8.3) - 2024-11-26
-See here how to [update](/docs/update.md) Opengist.
+## [1.8.3](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.8.2...v1.8.3) - 2024-11-26
+See here how to [update](/docs/update.md) QingyuGist.
 
 ### Changed
 - Throw `warn` instead of `fatal` on Git global config init failure (#392)
 - Define esbuild as a Javascript dependency for all other platforms (#393)
 
-## [1.8.2](https://github.com/thomiceli/opengist/compare/v1.8.1...v1.8.2) - 2024-11-25
-See here how to [update](/docs/update.md) Opengist.
+## [1.8.2](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.8.1...v1.8.2) - 2024-11-25
+See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
 - More translation strings (#373) (#388)
@@ -337,8 +366,8 @@ See here how to [update](/docs/update.md) Opengist.
 ### Other
 - Update deps Golang & JS deps
 
-## [1.8.1](https://github.com/thomiceli/opengist/compare/v1.8.0...v1.8.1) - 2024-11-02
-See here how to [update](/docs/update.md) Opengist.
+## [1.8.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.8.0...v1.8.1) - 2024-11-02
+See here how to [update](/docs/update.md) QingyuGist.
 
 ### Changed
 - Hide passkey login when login form is disabled (#369)
@@ -347,13 +376,13 @@ See here how to [update](/docs/update.md) Opengist.
 - Markdown preview (#368)
 - confirm() popup messages (#370)
 
-## [1.8.0](https://github.com/thomiceli/opengist/compare/v1.7.5...v1.8.0) - 2024-10-31
-See here how to [update](https://opengist.io/docs/update) Opengist.
+## [1.8.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.7.5...v1.8.0) - 2024-10-31
+See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### 🔴 Deprecations 
-_Removed in the next SemVer MAJOR version of Opengist._
+_Removed in the next SemVer MAJOR version of QingyuGist._
 * Use the configuration option `db-uri`/`OG_DB_URI` **instead of** `db-filename`/`OG_DB_FILENAME`.\
-  More info [here](https://opengist.io/docs/configuration/databases/sqlite) if you plan to keep SQLite as a DBMS for Opengist.
+  More info [here](https://qingyugist.io/docs/configuration/databases/sqlite) if you plan to keep SQLite as a DBMS for QingyuGist.
 
 ### Added
 - Postgres and MySQL databases support (#335)
@@ -379,16 +408,16 @@ _Removed in the next SemVer MAJOR version of Opengist._
 - Use go 1.23 and update deps (#354)
 - Typos in README (#363)
 
-## [1.7.5](https://github.com/thomiceli/opengist/compare/v1.7.4...v1.7.5) - 2024-09-12
-See here how to [update](/docs/update.md) Opengist.
+## [1.7.5](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.7.4...v1.7.5) - 2024-09-12
+See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
-- New website for documentation using Vitepress [https://opengist.io](https://opengist.io) (#326)
+- New website for documentation using Vitepress [https://qingyugist.io](https://qingyugist.io) (#326)
 - Ukrainian localization (#325)
 - Dummy /metrics endpoint (#327)
 
-## [1.7.4](https://github.com/thomiceli/opengist/compare/v1.7.3...v1.7.4) - 2024-09-09
-See here how to [update](/docs/update.md) Opengist.
+## [1.7.4](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.7.3...v1.7.4) - 2024-09-09
+See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
 - More translations strings (#294) (#304)
@@ -405,8 +434,8 @@ See here how to [update](/docs/update.md) Opengist.
 ### Other
 - Removed logger `trace` and `fatal` levels (#322)
 
-## [1.7.3](https://github.com/thomiceli/opengist/compare/v1.7.2...v1.7.3) - 2024-06-03
-See here how to [update](/docs/update.md) Opengist.
+## [1.7.3](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.7.2...v1.7.3) - 2024-06-03
+See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
 - Setting to allow anonymous access to individual gists while still RequireLogin everywhere else (#229)
@@ -423,8 +452,8 @@ See here how to [update](/docs/update.md) Opengist.
 - Check translations keys in CI (#279)
 - Fix CI check for additional translations only (#289)
 
-## [1.7.2](https://github.com/thomiceli/opengist/compare/v1.7.1...v1.7.2) - 2024-05-05
-See here how to [update](/docs/update.md) Opengist.
+## [1.7.2](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.7.1...v1.7.2) - 2024-05-05
+See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
 - Docs: 
@@ -434,7 +463,7 @@ See here how to [update](/docs/update.md) Opengist.
 
 ### Changed
 - Rework git log parsing and truncating (#260)
-- Set Opengist version from git tags (#261)
+- Set QingyuGist version from git tags (#261)
 
 ### Fixed
 - Missing preview button when editing .md gist (#259)
@@ -446,8 +475,8 @@ See here how to [update](/docs/update.md) Opengist.
 ### Other
 - Use go 1.22 and update deps (#244)
 
-## [1.7.1](https://github.com/thomiceli/opengist/compare/v1.7.0...v1.7.1) - 2024-04-05
-See here how to [update](/docs/update.md) Opengist.
+## [1.7.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.7.0...v1.7.1) - 2024-04-05
+See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
 - Docs: More detailed variant for custom pages (#248)
@@ -456,8 +485,8 @@ See here how to [update](/docs/update.md) Opengist.
 - Auth page GitlabName Error (#242)
 - Empty invitation on user creation (#247)
 
-## [1.7.0](https://github.com/thomiceli/opengist/compare/v1.6.1...v1.7.0) - 2024-04-03
-See here how to [update](/docs/update.md) Opengist.
+## [1.7.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.6.1...v1.7.0) - 2024-04-03
+See here how to [update](/docs/update.md) QingyuGist.
 
 Note: all sessions will be invalidated after this update.
 
@@ -474,7 +503,7 @@ Note: all sessions will be invalidated after this update.
 
 ### Changed
 - Use filesystem session store (#240)
-- Move Git hook logic to Opengist (#213)
+- Move Git hook logic to QingyuGist (#213)
 - Increase login for 1 year (#222)
 
 ### Fixed
@@ -485,8 +514,8 @@ Note: all sessions will be invalidated after this update.
 - GitHub security updates
 - New docker dev env (#220)
 
-## [1.6.1](https://github.com/thomiceli/opengist/compare/v1.6.0...v1.6.1) - 2024-01-06
-See here how to [update](/docs/update.md) Opengist.
+## [1.6.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.6.0...v1.6.1) - 2024-01-06
+See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
 - Healthcheck on Docker container (#204)
@@ -496,8 +525,8 @@ See here how to [update](/docs/update.md) Opengist.
 ### Fixed
 - Directory renaming on username change (#205)
 
-## [1.6.0](https://github.com/thomiceli/opengist/compare/v1.5.3...v1.6.0) - 2024-01-04
-See here how to [update](/docs/update.md) Opengist.
+## [1.6.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.5.3...v1.6.0) - 2024-01-04
+See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
 - Embedded gists (#179)
@@ -542,7 +571,7 @@ See here how to [update](/docs/update.md) Opengist.
 - Log parsing for the 11th empty commit (#184)
 - Optimize reading gist files content (#186)
 
-## [1.5.3](https://github.com/thomiceli/opengist/compare/v1.5.2...v1.5.3) - 2023-11-20
+## [1.5.3](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.5.2...v1.5.3) - 2023-11-20
 ### Added
 - es-ES translation (#139)
 - Create/change account password (#156)
@@ -554,7 +583,7 @@ See here how to [update](/docs/update.md) Opengist.
 - Home user directory detection handling (#145)
 - UI changes (#158)
 
-## [1.5.2](https://github.com/thomiceli/opengist/compare/v1.5.1...v1.5.2) - 2023-10-16
+## [1.5.2](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.5.1...v1.5.2) - 2023-10-16
 ### Added
 - zh-CN translation (#130)
 - ru-RU translation (#135)
@@ -566,7 +595,7 @@ See here how to [update](/docs/update.md) Opengist.
 - Dark background color in Markdown rendering (#137)
 - Error handling for password hashes (#132)
 
-## [1.5.1](https://github.com/thomiceli/opengist/compare/v1.5.0...v1.5.1) - 2023-09-29
+## [1.5.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.5.0...v1.5.1) - 2023-09-29
 ### Added
 - Hungarian translations (#123)
 
@@ -575,7 +604,7 @@ See here how to [update](/docs/update.md) Opengist.
 - Login page disabled depending on locale (#120)
 - Syntax error on templates when calling locale function (#122)
 
-## [1.5.0](https://github.com/thomiceli/opengist/compare/v1.4.2...v1.5.0) - 2023-09-26
+## [1.5.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.4.2...v1.5.0) - 2023-09-26
 ### Added
 - Private Gist visibility (#87)
 - Create gists from a special Git HTTP server remote URL (#95)
@@ -604,7 +633,7 @@ See here how to [update](/docs/update.md) Opengist.
 - Removed CONFIG env var
 - Removed TLS server (#101)
 
-## [1.4.2](https://github.com/thomiceli/opengist/compare/v1.4.1...v1.4.2) - 2023-07-17
+## [1.4.2](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.4.1...v1.4.2) - 2023-07-17
 ### Added
 - External url to HTML links & redirects (#75)
 - Make unlisted gists not SEO crawlable (#78)
@@ -614,22 +643,22 @@ See here how to [update](/docs/update.md) Opengist.
 - Redirect to `/all` when not logged in (#76)
 - Removed Dev Docker image (#80)
 
-## [1.4.1](https://github.com/thomiceli/opengist/compare/v1.4.0...v1.4.1) - 2023-06-25
+## [1.4.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.4.0...v1.4.1) - 2023-06-25
 ### ⚠️ Docker users ⚠️
-Opengist Docker volume has been changed from `/root/.opengist` to `/opengist`, do not forget to update your
+QingyuGist Docker volume has been changed from `/root/.qingyugist` to `/qingyugist`, do not forget to update your
 `docker-compose.yml` file or any other Docker related configuration.
 
-Please make a backup of your Opengist data directory before updating.
+Please make a backup of your QingyuGist data directory before updating.
 
 ### Fixed
 - Git message remote: `warning: unable to access '/root/.config/git/attributes': Permission denied` (#71)
 
-## [1.4.0](https://github.com/thomiceli/opengist/compare/v1.3.0...v1.4.0) - 2023-06-23
+## [1.4.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.3.0...v1.4.0) - 2023-06-23
 ### ⚠️ Docker users ⚠️
-Opengist Docker volume has been changed from `/root/.opengist` to `/opengist`, do not forget to update your
+QingyuGist Docker volume has been changed from `/root/.qingyugist` to `/qingyugist`, do not forget to update your
 `docker-compose.yml` file or any other Docker related configuration.
 
-Please make a backup of your Opengist data directory before updating.
+Please make a backup of your QingyuGist data directory before updating.
 
 ### Added
 - Search gists, browse users snippets, likes and forks (#68)
@@ -640,8 +669,8 @@ Please make a backup of your Opengist data directory before updating.
 - Choose Docker container/volumes owner via UID/GID (#63)
 
 ### Changed
-- Docker volume changed from `/root/.opengist` to `/opengist` (#63)
-- `DEV` environment variable renamed to `OG_DEV` (#64)
+- Docker volume changed from `/root/.qingyugist` to `/qingyugist` (#63)
+- `DEV` environment variable renamed to `QYG_DEV` (#64)
 - Use `npx` in Makefile instead of `./node_modules/.bin` (#66)
 - DEPRECATED: `OG_CONFIG` environment variable (#64)
 
@@ -650,7 +679,7 @@ Please make a backup of your Opengist data directory before updating.
 - Dark mode flickering (#44)
 - Typos (#42)
 
-## [1.3.0](https://github.com/thomiceli/opengist/compare/v1.2.0...v1.3.0) - 2023-05-27
+## [1.3.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.2.0...v1.3.0) - 2023-05-27
 ### Added
 - Disable login form via admin panel
 - Syntax highlighting in Markdown code block (#29)
@@ -660,13 +689,13 @@ Please make a backup of your Opengist data directory before updating.
 
 ### Changed
 - Logs are now also appended to stdout
-- Golang module name is now `github.com/thomiceli/opengist`
+- Golang module name is now `github.com/LiuShen-Fork/Qingyu-Gist`
 
 ### Fixed
 - First account registering with OAuth is now admin
 - Fix HTML entities escaping in Markdown code block (#29)
 
-## [1.2.0](https://github.com/thomiceli/opengist/compare/v1.1.1...v1.2.0) - 2023-05-01
+## [1.2.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.1.1...v1.2.0) - 2023-05-01
 ### Added
 - Restrict or unrestrict snippets visibility to anonymous users (#19)
 - Go CI with Staticcheck
@@ -679,11 +708,11 @@ Please make a backup of your Opengist data directory before updating.
 - Respect ExternalUrl for OAuth (#21)
 - SSH public key detection (#22)
 
-## [1.1.1](https://github.com/thomiceli/opengist/compare/v1.1.0...v1.1.1) - 2023-04-20
+## [1.1.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.1.0...v1.1.1) - 2023-04-20
 ### Fixed
 - Git processes are now correctly killed
 
-## [1.1.0](https://github.com/thomiceli/opengist/compare/v1.0.1...v1.1.0) - 2023-04-18
+## [1.1.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.0.1...v1.1.0) - 2023-04-18
 ### Added
 - GitHub and Gitea OAuth2 login
 - Database migration system
@@ -696,7 +725,7 @@ Please make a backup of your Opengist data directory before updating.
 - Truncate raw file (#4)
 - Fix SSH key table constraints on user delete
 
-## [1.0.1](https://github.com/thomiceli/opengist/compare/v1.0.0...v1.0.1) - 2023-04-12
+## [1.0.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.0.0...v1.0.1) - 2023-04-12
 ### Changed
 - Updated base footer
 - Changed redirections when not logged in
