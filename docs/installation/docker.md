@@ -3,7 +3,7 @@
 Docker [images](https://github.com/LiuShen-Fork/Qingyu-Gist/pkgs/container/qingyugist) are available for each release :
 
 ```shell
-docker pull ghcr.io/liushen-fork/qingyugist:1
+docker pull ghcr.io/liushen-fork/qingyugist:latest
 ```
 
 It can be used in a `docker-compose.yml` file :
@@ -15,7 +15,7 @@ It can be used in a `docker-compose.yml` file :
 ```yml
 services:
   qingyugist:
-    image: ghcr.io/liushen-fork/qingyugist:1
+    image: ghcr.io/liushen-fork/qingyugist:latest
     container_name: qingyugist
     restart: unless-stopped
     ports:

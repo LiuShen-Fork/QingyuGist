@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 const version = 'v1.15'
-const dockerCommand = 'docker run -p 6157:6157 -v "$HOME/.qingyugist:/qingyugist" ghcr.io/liushen-fork/qingyugist:1.15'
+const dockerCommand = 'docker run -p 6157:6157 -v "$HOME/.qingyugist:/qingyugist" ghcr.io/liushen-fork/qingyugist:latest'
 
 const stars = ref(null)
 const formattedStars = computed(() => {

@@ -29,7 +29,7 @@ cp -r ~/.qingyugist ~/.qingyugist.bak
 
 Pull the last version of QingyuGist
 ```shell
-docker pull ghcr.io/liushen-fork/qingyugist:1
+docker pull ghcr.io/liushen-fork/qingyugist:latest
 ```
 
 And restart the container, using `docker compose up -d` for example if you use docker compose.
