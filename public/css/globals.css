@@ -389,10 +389,20 @@ table.csv-table thead th {
 }
 
 /* The collapse control lives inside the sidebar header, aligned to its right
-   edge. It is a normal 32px icon button so it matches the rest of the chrome. */
+   edge. It is deliberately a compact circular handle rather than another
+   square tile: it reads as the seam between the rail and the page. */
 #sidebar-toggle {
-    width: 2rem;
-    height: 2rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid var(--sidebar-border);
+    border-radius: 9999px;
+    background: var(--sidebar);
+    opacity: 0.8;
+}
+
+#sidebar-toggle:hover {
+    background: var(--sidebar-accent);
+    opacity: 1;
 }
 
 /* The drawer opens at the same breakpoint where this control appears; never
@@ -427,7 +437,19 @@ table.csv-table thead th {
         display: none;
     }
 
-    html.sidebar-collapsed #sidebar :is(.og-nav-link > span, .og-language-button > span) {
+    html.sidebar-collapsed #sidebar :is(.og-nav-link, .og-icon-button, .og-language-button) {
+        display: flex;
+        width: 2.25rem;
+        height: 2.25rem;
+        margin-inline: auto;
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* The language control becomes a square icon tile; only its text label is
+       visually hidden, never the globe icon. */
+    html.sidebar-collapsed #sidebar .og-language-label {
         position: absolute;
         width: 1px;
         height: 1px;
@@ -439,15 +461,10 @@ table.csv-table thead th {
         border: 0;
     }
 
-    /* Every control in the rail is the same 36px square, centered on one
-       vertical line. This keeps nav icons, footer utilities and the collapse
-       toggle visually identical instead of stretching into wide bars. */
-    html.sidebar-collapsed #sidebar :is(.og-nav-link, .og-icon-button, .og-language-button) {
+    html.sidebar-collapsed #sidebar .og-language-icon {
         display: flex;
-        width: 2.25rem;
-        height: 2.25rem;
-        margin-inline: auto;
-        padding: 0;
+        width: 1rem;
+        height: 1rem;
         align-items: center;
         justify-content: center;
     }
@@ -462,6 +479,8 @@ table.csv-table thead th {
     }
 
     html.sidebar-collapsed #sidebar-toggle {
+        width: 1.75rem;
+        height: 1.75rem;
         margin-inline: auto;
     }
 
@@ -483,6 +502,148 @@ table.csv-table thead th {
 
 #sidebar-toggle svg {
     transition: transform 160ms ease;
+}
+
+/* Toast notifications ---------------------------------------------------
+   Flashes are transient feedback, not document content. Keeping them pinned
+   to the top-right means saving a setting never shifts the page underneath
+   the pointer, and the reading position survives the redirect. */
+.og-toast-stack {
+    position: fixed;
+    top: 4.5rem;
+    right: 1rem;
+    z-index: 80;
+    display: flex;
+    width: min(22rem, calc(100vw - 2rem));
+    flex-direction: column;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+
+body.auth-page .og-toast-stack {
+    top: 1rem;
+}
+
+.og-toast {
+    --toast-accent: var(--primary);
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    align-items: flex-start;
+    gap: 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 0.25rem);
+    background: var(--popover, var(--card));
+    padding: 0.75rem 0.75rem 0.75rem 0.875rem;
+    color: var(--popover-foreground, var(--foreground));
+    box-shadow:
+        0 1px 2px 0 color-mix(in oklab, #000 6%, transparent),
+        0 12px 32px -12px color-mix(in oklab, #000 28%, transparent);
+    pointer-events: auto;
+    animation: og-toast-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.og-toast[data-variant="success"] { --toast-accent: #10b981; }
+.og-toast[data-variant="error"] { --toast-accent: #ef4444; }
+.og-toast[data-variant="warning"] { --toast-accent: #f59e0b; }
+
+.og-toast-icon {
+    display: inline-flex;
+    width: 1.125rem;
+    height: 1.125rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.0625rem;
+    color: var(--toast-accent);
+}
+
+.og-toast-message {
+    min-width: 0;
+    flex: 1;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.og-toast-close {
+    display: inline-flex;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: none;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: calc(var(--radius) - 0.1rem);
+    background: transparent;
+    color: var(--muted-foreground);
+    opacity: 0.7;
+    transition: opacity 120ms ease, background-color 120ms ease;
+}
+
+.og-toast-close:hover {
+    background: var(--muted);
+    opacity: 1;
+}
+
+.og-toast-progress {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 2px;
+    background: var(--toast-accent);
+    opacity: 0.45;
+    transform-origin: left;
+    animation: og-toast-progress var(--toast-duration, 5000ms) linear forwards;
+}
+
+.og-toast-out {
+    animation: og-toast-out 180ms ease forwards;
+}
+
+@keyframes og-toast-in {
+    from { opacity: 0; transform: translate3d(0.75rem, -0.25rem, 0) scale(0.98); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes og-toast-out {
+    to { opacity: 0; transform: translate3d(0.5rem, -0.25rem, 0) scale(0.98); }
+}
+
+@keyframes og-toast-progress {
+    to { transform: scaleX(0); }
+}
+
+@media (max-width: 639px) {
+    .og-toast-stack {
+        top: 4rem;
+        right: 0.75rem;
+        left: 0.75rem;
+        width: auto;
+    }
+
+    body.auth-page .og-toast-stack {
+        top: 0.75rem;
+    }
+}
+
+/* Site footer ----------------------------------------------------------- */
+.og-site-footer {
+    border-top: 1px solid var(--border);
+    background: color-mix(in oklab, var(--card) 42%, var(--background));
+}
+
+.og-footer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: calc(var(--radius) - 0.1rem);
+    color: var(--muted-foreground);
+    transition: color 120ms ease;
+}
+
+.og-footer-link:hover {
+    color: var(--foreground);
 }
 
 /* Auth ------------------------------------------------------------------ */
@@ -609,6 +770,7 @@ table.csv-table thead th {
 .og-sidebar-utilities {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 0.125rem;
     padding: 0 0.25rem;
     margin-bottom: 0.375rem;

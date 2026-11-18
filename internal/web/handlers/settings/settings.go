@@ -78,6 +78,6 @@ func ProcessUserStyle(ctx *context.Context) error {
 		return ctx.ErrorRes(500, "Cannot update user styles", err)
 	}
 
-	ctx.AddFlash("Updated style", "success")
+	ctx.AddFlash(ctx.Tr("flash.user.style-updated"), "success")
 	return ctx.RedirectTo("/settings/style")
 }

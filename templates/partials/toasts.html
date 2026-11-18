@@ -1,0 +1,44 @@
+{{ define "flashes" }}
+{{ if or .flashErrors .flashSuccess .flashWarnings }}
+<div class="og-toast-stack">
+    {{ range .flashErrors }}
+    <div class="og-toast" data-toast data-variant="error" role="alert" style="--toast-duration: 8000ms">
+        <span class="og-toast-icon" aria-hidden="true">
+            <svg class="size-[1.125rem]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+        </span>
+        <p class="og-toast-message">{{ . }}</p>
+        <button type="button" class="og-toast-close" data-toast-close aria-label="{{ $.locale.Tr "toast.close" }}">
+            <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <span class="og-toast-progress" aria-hidden="true"></span>
+    </div>
+    {{ end }}
+
+    {{ range .flashWarnings }}
+    <div class="og-toast" data-toast data-variant="warning" role="status" style="--toast-duration: 6500ms">
+        <span class="og-toast-icon" aria-hidden="true">
+            <svg class="size-[1.125rem]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.7 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+        </span>
+        <p class="og-toast-message">{{ . }}</p>
+        <button type="button" class="og-toast-close" data-toast-close aria-label="{{ $.locale.Tr "toast.close" }}">
+            <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <span class="og-toast-progress" aria-hidden="true"></span>
+    </div>
+    {{ end }}
+
+    {{ range .flashSuccess }}
+    <div class="og-toast" data-toast data-variant="success" role="status" style="--toast-duration: 4500ms">
+        <span class="og-toast-icon" aria-hidden="true">
+            <svg class="size-[1.125rem]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>
+        </span>
+        <p class="og-toast-message">{{ . }}</p>
+        <button type="button" class="og-toast-close" data-toast-close aria-label="{{ $.locale.Tr "toast.close" }}">
+            <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <span class="og-toast-progress" aria-hidden="true"></span>
+    </div>
+    {{ end }}
+</div>
+{{ end }}
+{{ end }}

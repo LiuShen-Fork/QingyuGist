@@ -1,6 +1,6 @@
 import '../css/main.css';
 import '../img/favicon-32.png';
-import '../img/opengist.svg';
+import '../img/qingyugist.svg';
 
 import 'htmx.org';
 import 'hyperscript.org';
@@ -14,6 +14,7 @@ import { initJdenticon } from './jdenticon';
 import { initOgSelects } from './og-select';
 import { initPdf } from './pdf';
 import { initSiteLinks } from './site-links';
+import { initToasts } from './toasts';
 
 let ipynbModule: Promise<typeof import('./ipynb')> | undefined;
 
@@ -32,6 +33,7 @@ const init = () => {
     initJdenticon();
     initOgSelects();
     initSiteLinks();
+    initToasts();
     syncSidebarToggle();
     syncBackToTop();
 };

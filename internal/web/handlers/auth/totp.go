@@ -58,7 +58,7 @@ func FinishTotp(ctx *context.Context) error {
 	}
 
 	if err := ctx.Validate(dto); err != nil {
-		ctx.AddFlash("Invalid secret", "error")
+		ctx.AddFlash(ctx.Tr("flash.auth.totp-invalid"), "error")
 		return ctx.RedirectTo("/settings/totp/generate")
 	}
 
@@ -85,7 +85,7 @@ func FinishTotp(ctx *context.Context) error {
 		return ctx.ErrorRes(500, "Cannot create TOTP", err)
 	}
 
-	ctx.AddFlash("TOTP successfully enabled", "success")
+	ctx.AddFlash(ctx.Tr("flash.auth.totp-enabled"), "success")
 	codes, err := userTotp.GenerateRecoveryCodes()
 	if err != nil {
 		return ctx.ErrorRes(500, "Cannot generate recovery codes", err)
