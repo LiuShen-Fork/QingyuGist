@@ -56,9 +56,11 @@ func migrateLegacyData(out io.Writer) {
 	home := GetHomeDir()
 
 	// A config file copied from the pre-fork project can still name the old
-	// database. Move it to the new name as well, so upgrading is not limited to
-	// installs that use the new default.
-	if filepath.Base(C.DBUri) == legacyDatabase {
+	// database, and a config-less install keeps the new default name while the
+	// data directory still contains the old file. Rename either spelling when the
+	// new file does not exist yet. Custom database names are left untouched.
+	switch filepath.Base(C.DBUri) {
+	case legacyDatabase, "qingyugist.db":
 		wasAbsolute := filepath.IsAbs(C.DBUri)
 		dir := home
 		if wasAbsolute {

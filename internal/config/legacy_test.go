@@ -72,6 +72,31 @@ func TestMigrateLegacyDataMovesDatabaseAndSecret(t *testing.T) {
 	}
 }
 
+func TestMigrateLegacyDataMovesDefaultNamedDatabase(t *testing.T) {
+	home := t.TempDir()
+	previous := C
+	t.Cleanup(func() { C = previous })
+	C = &config{QingyuGistHome: home, DBUri: "qingyugist.db"}
+
+	if err := os.WriteFile(filepath.Join(home, legacyDatabase), []byte("old"), 0600); err != nil {
+		t.Fatal(err)
+	}
+
+	var out bytes.Buffer
+	migrateLegacyData(&out)
+
+	if C.DBUri != "qingyugist.db" {
+		t.Fatalf("DBUri = %q; want qingyugist.db", C.DBUri)
+	}
+	got, err := os.ReadFile(filepath.Join(home, "qingyugist.db"))
+	if err != nil || string(got) != "old" {
+		t.Fatalf("default database was not migrated: %q, %v", got, err)
+	}
+	if !strings.Contains(out.String(), "Migrated database") {
+		t.Fatalf("migration was not reported: %q", out.String())
+	}
+}
+
 func TestMigrateLegacyDataKeepsExistingNewDatabase(t *testing.T) {
 	home := t.TempDir()
 	previous := C
