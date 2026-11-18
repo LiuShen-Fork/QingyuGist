@@ -566,6 +566,7 @@ auth.create-account: Create your account
 auth.login-subtitle: Sign in to continue to your gists.
 auth.register-subtitle: One account for all your snippets.
 auth.oauth-only-notice: Local sign-up is disabled. Continue with one of the providers below to create an account.
+auth.oauth-only-no-provider: Local sign-up is disabled. Ask an administrator to configure a third-party provider.
 auth.form-disabled: The sign-in form is disabled. Use a third-party provider to continue.
 auth.or: or
 auth.continue-with: Continue with

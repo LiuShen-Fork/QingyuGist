@@ -208,6 +208,15 @@ textarea.input {
     @apply border-input dark:bg-input/30 placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex w-full min-w-0 rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50;
 }
 
+/* A softer, theme-tinted focus ring than the neutral default. Keeps forms
+   legible without the heavy double border the base ring produced. */
+.input:focus-visible,
+textarea.input:focus-visible {
+    border-color: color-mix(in oklab, var(--primary) 55%, var(--input));
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 16%, transparent);
+    outline: none;
+}
+
 /* github-markdown-css paints .markdown-body with its own canvas background
    (background-color: var(--bgColor-default)), and its stylesheet loads after
    this one, so a plain override loses the cascade. Force transparent so the
@@ -403,6 +412,24 @@ table.csv-table thead th {
     html.sidebar-collapsed #sidebar :is(a, button) {
         justify-content: center;
     }
+}
+
+/* Auth ------------------------------------------------------------------ */
+/* A faint, edge-faded grid gives the unauthenticated entry point depth
+   without competing with the form. Uses theme tokens so it follows the
+   user's selected accent and light/dark mode. */
+.auth-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(to right, color-mix(in oklab, var(--border) 75%, transparent) 1px, transparent 1px),
+        linear-gradient(to bottom, color-mix(in oklab, var(--border) 75%, transparent) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: center top;
+    opacity: 0.55;
+    -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 38%, #000 10%, transparent 78%);
+    mask-image: radial-gradient(ellipse 70% 55% at 50% 38%, #000 10%, transparent 78%);
 }
 
 /* Contribution heatmap -------------------------------------------------- */
