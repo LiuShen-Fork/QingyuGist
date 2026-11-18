@@ -49,7 +49,7 @@ func setupMeiliIndexer(t *testing.T) (Indexer, func()) {
 	if host == "" {
 		host = "http://localhost:47700"
 	}
-	apiKey := os.Getenv("OG_TEST_MEILI_API_KEY")
+	apiKey := os.Getenv("QYG_TEST_MEILI_API_KEY")
 
 	indexName := fmt.Sprintf("test_%d", os.Getpid())
 

@@ -300,7 +300,7 @@ func setupMySQL(dbInfo databaseInfo) error {
 
 func DeprecationDBFilename() {
 	if config.C.DBFilename != "" {
-		log.Warn().Msg("The 'db-filename'/'OG_DB_FILENAME' configuration option is deprecated and will be removed in a future version. Please use 'db-uri'/'OG_DB_URI' instead.")
+		log.Warn().Msg("The 'db-filename'/'QYG_DB_FILENAME' configuration option is deprecated and will be removed in a future version. Please use 'db-uri'/'QYG_DB_URI' instead.")
 	}
 
 	if config.C.DBUri == "" {

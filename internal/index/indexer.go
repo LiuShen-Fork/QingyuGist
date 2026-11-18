@@ -158,7 +158,7 @@ func SearchGists(metadata SearchGistMetadata, userId uint, page int) ([]uint, ui
 
 func DepreactionIndexDirname() {
 	if config.C.IndexEnabled {
-		log.Warn().Msg("The 'index.enabled'/'OG_INDEX_ENABLED' configuration option is deprecated and will be removed in a future version. Please use 'index'/'OG_INDEX' instead.")
+		log.Warn().Msg("The 'index.enabled'/'QYG_INDEX_ENABLED' configuration option is deprecated and will be removed in a future version. Please use 'index'/'QYG_INDEX' instead.")
 	}
 
 	if config.C.Index == "" {
@@ -166,6 +166,6 @@ func DepreactionIndexDirname() {
 	}
 
 	if config.C.BleveDirname != "" {
-		log.Warn().Msg("The 'index.dirname'/'OG_INDEX_DIRNAME' configuration option is deprecated and will be removed in a future version.")
+		log.Warn().Msg("The 'index.dirname'/'QYG_INDEX_DIRNAME' configuration option is deprecated and will be removed in a future version.")
 	}
 }
