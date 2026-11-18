@@ -104,6 +104,31 @@ directory. Existing installations are migrated automatically: the old database,
 session key and SSH host key are detected, and the repository symlink used by
 existing Git hooks remains available under its historical name.
 
+## Upgrading from OpenGist
+
+Upgrading an existing OpenGist v1.15.x installation does not require a manual
+database conversion. Stop the old process, back up the data directory, then
+start QingyuGist with the same data:
+
+- The old `~/.opengist` directory, `OG_*` environment variables, YAML keys
+  such as `opengist-home`, and the legacy Docker volume `/opengist` are
+  still accepted.
+- The SQLite database and search index are renamed in place; the session secret
+  and SSH host key are copied. Back up the data directory first, because rolling
+  back to the old binary means restoring that backup or renaming the database
+  back to its old name.
+- Existing repositories, Git hooks, SSH keys, access tokens, passwords and
+  gists are unchanged. Existing `/-/...` bookmarks redirect to the new routes,
+  and existing Git remotes continue to work.
+- Existing browser sessions are invalidated by the cookie rename; users simply
+  sign in again. The search index may be rebuilt in the background after the
+  first start.
+
+Two deployment details need a manual update: the executable is now named
+`qingyugist` (update systemd or other service units), and the container image is
+`ghcr.io/liushen-fork/qingyugist`. New installations should use the new names;
+the compatibility paths are intended for upgrades only.
+
 ## Development
 
 ```shell
