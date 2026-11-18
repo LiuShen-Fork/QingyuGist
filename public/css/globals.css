@@ -409,6 +409,14 @@ table.csv-table thead th {
     opacity: 1;
 }
 
+/* The drawer opens at the same breakpoint where this control appears; never
+   show a desktop rail toggle inside the mobile drawer. */
+@media (max-width: 767px) {
+    #sidebar-toggle {
+        display: none;
+    }
+}
+
 /* Desktop sidebar collapse into an icon-only rail. Toggled by the
    `sidebar-collapsed` class on <html> (restored from localStorage in the head
    script + toggled in main.ts). Only applies at md+ where the sidebar is docked;
