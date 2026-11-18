@@ -8,13 +8,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
-	qingyugistssh "github.com/LiuShen-Fork/Qingyu-Gist/internal/ssh"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/git"
+	"github.com/LiuShen-Fork/QingyuGist/internal/i18n"
+	qingyugistssh "github.com/LiuShen-Fork/QingyuGist/internal/ssh"
+	"github.com/LiuShen-Fork/QingyuGist/internal/validator"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 )
 
 func EmailProcess(ctx *context.Context) error {

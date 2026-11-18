@@ -8,8 +8,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
 	"github.com/rs/zerolog/log"
 )
 

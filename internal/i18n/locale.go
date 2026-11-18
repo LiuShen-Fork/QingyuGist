@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n/locales"
+	"github.com/LiuShen-Fork/QingyuGist/internal/i18n/locales"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"golang.org/x/text/language/display"

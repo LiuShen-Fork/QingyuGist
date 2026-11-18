@@ -4,7 +4,7 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
 	"github.com/labstack/echo-contrib/echoprometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"

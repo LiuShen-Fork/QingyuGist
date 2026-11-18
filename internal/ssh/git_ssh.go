@@ -6,9 +6,9 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/QingyuGist/internal/auth"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/git"
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )

@@ -54,7 +54,7 @@ FROM alpine:3.24 AS prod
 ARG VERSION=dev
 LABEL org.opencontainers.image.title="QingyuGist" \
       org.opencontainers.image.description="A self-hosted pastebin powered by Git" \
-      org.opencontainers.image.source="https://github.com/LiuShen-Fork/Qingyu-Gist" \
+      org.opencontainers.image.source="https://github.com/LiuShen-Fork/QingyuGist" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.licenses="AGPL-3.0"
 

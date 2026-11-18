@@ -27,7 +27,7 @@ Usage via command line :
 ./qingyugist --config /path/to/config.yml
 ```
 
-You can start by copying and/or modifying the provided [config.yml](https://github.com/LiuShen-Fork/Qingyu-Gist/blob/master/config.yml) file.
+You can start by copying and/or modifying the provided [config.yml](https://github.com/LiuShen-Fork/QingyuGist/blob/master/config.yml) file.
 
 
 ## Configuration via Environment Variables

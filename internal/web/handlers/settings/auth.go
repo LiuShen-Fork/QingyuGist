@@ -1,11 +1,11 @@
 package settings
 
 import (
-	passwordpkg "github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/password"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	passwordpkg "github.com/LiuShen-Fork/QingyuGist/internal/auth/password"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/i18n"
+	"github.com/LiuShen-Fork/QingyuGist/internal/validator"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 	"strconv"
 )
 

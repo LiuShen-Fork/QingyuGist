@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/api/v1/types"
-	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers/api/v1/types"
+	webtest "github.com/LiuShen-Fork/QingyuGist/internal/web/test"
 	"github.com/stretchr/testify/require"
 )
 

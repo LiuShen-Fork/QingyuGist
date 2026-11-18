@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/git"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 )
 
 func uploadPack(ctx *context.Context) error {

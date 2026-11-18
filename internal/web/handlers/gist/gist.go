@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/render"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/git"
+	"github.com/LiuShen-Fork/QingyuGist/internal/render"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 )
 
 func GistIndex(ctx *context.Context) error {

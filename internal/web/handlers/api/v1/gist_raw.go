@@ -3,7 +3,7 @@ package v1
 import (
 	"net/url"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 )
 
 // RawFile handles GET /api/gists/:uuid/files/:sha/:filename.

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
+	"github.com/LiuShen-Fork/QingyuGist/internal/validator"
 )
 
 // ExpirationType is the expiration choice a user can pick when creating a

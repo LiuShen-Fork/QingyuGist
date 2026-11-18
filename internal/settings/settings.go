@@ -23,8 +23,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
 	"github.com/rs/zerolog/log"
 )
 
@@ -124,7 +124,7 @@ const (
 
 // DefaultRepositoryURL is the project this instance is built from. It is shown
 // as a source-code icon in the public sidebar and can be changed per instance.
-const DefaultRepositoryURL = "https://github.com/LiuShen-Fork/Qingyu-Gist"
+const DefaultRepositoryURL = "https://github.com/LiuShen-Fork/QingyuGist"
 
 // DefaultModerationPrompt is used when the administrator has not customised it.
 const DefaultModerationPrompt = `You are the content moderation system of a self-hosted code snippet site.

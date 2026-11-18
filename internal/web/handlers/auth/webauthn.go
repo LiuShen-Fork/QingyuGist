@@ -3,9 +3,9 @@ package auth
 import (
 	"bytes"
 	gojson "encoding/json"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/webauthn"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/auth/webauthn"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 	"io"
 )
 

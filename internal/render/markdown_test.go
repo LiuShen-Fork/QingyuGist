@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/git"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/net/html"
 )

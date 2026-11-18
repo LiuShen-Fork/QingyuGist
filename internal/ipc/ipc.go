@@ -25,7 +25,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
 )
 
 // AuthHeader carries the internal API token on requests from subprocesses to

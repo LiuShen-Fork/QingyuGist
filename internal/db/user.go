@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/git"
 	"gorm.io/gorm"
 )
 

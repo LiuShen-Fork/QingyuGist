@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
+	"github.com/LiuShen-Fork/QingyuGist/internal/i18n"
 	"github.com/go-playground/validator/v10"
 )
 

@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
+	"github.com/LiuShen-Fork/QingyuGist/internal/validator"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/i18n"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
 )

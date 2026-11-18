@@ -17,7 +17,7 @@ permissions:
 env:
   GHCR_REGISTRY: ghcr.io
   IMAGE: ghcr.io/liushen-fork/qingyugist
-  VERSION_PACKAGE: github.com/LiuShen-Fork/Qingyu-Gist/internal/config.QingyuGistVersion
+  VERSION_PACKAGE: github.com/LiuShen-Fork/QingyuGist/internal/config.QingyuGistVersion
 
 jobs:
   # Validate the version before spending time on builds, so a typo fails in

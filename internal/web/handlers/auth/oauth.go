@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/oauth"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/i18n"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/auth/oauth"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/i18n"
+	"github.com/LiuShen-Fork/QingyuGist/internal/validator"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )

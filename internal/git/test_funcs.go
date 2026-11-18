@@ -1,7 +1,7 @@
 package git
 
 import (
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
 	"github.com/stretchr/testify/require"
 	"io"
 	"os"

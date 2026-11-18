@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 )
 
 func textFile(ctx *context.Context) error {

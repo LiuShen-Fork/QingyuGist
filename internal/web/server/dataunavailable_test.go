@@ -4,8 +4,8 @@ import (
 	"io"
 	"testing"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/test"
 	"github.com/stretchr/testify/require"
 )
 

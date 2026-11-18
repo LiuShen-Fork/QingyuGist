@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/cli"
+	"github.com/LiuShen-Fork/QingyuGist/internal/cli"
 	"os"
 )
 

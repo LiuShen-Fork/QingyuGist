@@ -8,9 +8,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/settings"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/settings"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 	"github.com/google/uuid"
 )
 

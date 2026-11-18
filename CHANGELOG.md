@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.16.0](https://github.com/LiuShen-Fork/Qingyu-Gist/releases/tag/v1.16.0) - 2026-11-19
+## [1.16.0](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.16.0) - 2026-11-19
 
 This is the first QingyuGist release: an independent hard fork focused on a
 calmer interface, live administration and a fully self-contained deployment.
@@ -29,7 +29,7 @@ See the [upgrade notes](docs/update.md) before moving an existing instance.
 - Oversized database pool handling and Windows data-directory paths
 - Several localization gaps in English and Simplified Chinese
 
-## [1.15.3](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.15.2...v1.15.3) - 2026-10-21
+## [1.15.3](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.15.2...v1.15.3) - 2026-10-21
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
@@ -54,7 +54,7 @@ See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 ### Other
 - Update Go & JS deps (#841)
 
-## [1.15.2](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.15.1...v1.15.2) - 2026-08-30
+## [1.15.2](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.15.1...v1.15.2) - 2026-08-30
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
@@ -66,14 +66,14 @@ See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 - Invalid header handling in Git `cat-file` batch reader (#802)
 - Overlapping headers in narrow embeds (#803)
 
-## [1.15.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.15.0...v1.15.1) - 2026-08-04
+## [1.15.1](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.15.0...v1.15.1) - 2026-08-04
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Fixed
 - Admin pagination with new URLs (#782)
 - Stop unbounded diff content growth for large files (#787)
 
-## [1.15.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.14.0...v1.15.0) - 2026-07-30
+## [1.15.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.14.0...v1.15.0) - 2026-07-30
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
@@ -95,7 +95,7 @@ See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 ### Other
 - Update deps (#776)
 
-## [1.14.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.13.1...v1.14.0) - 2026-07-21
+## [1.14.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.13.1...v1.14.0) - 2026-07-21
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
@@ -141,14 +141,14 @@ See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 - Update deps (#762)
 - Update community page with Pi share extension + gistviewer links (#755)
 
-## [1.13.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.13.0...v1.13.1) - 2026-06-10
+## [1.13.1](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.13.0...v1.13.1) - 2026-06-10
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Fixed
 - Embedding fix vertical scrolling and improve padding (#714)
 - Fix CSS url for json embed url (#715)
 
-## [1.13.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.12.2...v1.13.0) - 2026-06-09
+## [1.13.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.12.2...v1.13.0) - 2026-06-09
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
@@ -165,7 +165,7 @@ See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 - Update deps Golang, JS, Docker deps (#713)
 - New docs website (#710)
 
-## [1.12.2](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.12.1...v1.12.2) - 2026-03-14
+## [1.12.2](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.12.1...v1.12.2) - 2026-03-14
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
@@ -188,7 +188,7 @@ See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 > Admins of QingyuGist instances may want to run "Rebuild search index" in the admin panel.
 
-## [1.12.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.12.0...v1.12.1) - 2026-02-03
+## [1.12.1](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.12.0...v1.12.1) - 2026-02-03
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
@@ -201,7 +201,7 @@ See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 > Admins of QingyuGist instances may want to run "Synchronize all gists previews" in the admin panel.
 
-## [1.12.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.11.1...v1.12.0) - 2026-01-27
+## [1.12.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.11.1...v1.12.0) - 2026-01-27
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
@@ -224,7 +224,7 @@ See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 - Adds StatefulSet support (#549)
 - Move Prom metrics to a dedicated port + support ServiceMonitor (#599)
 
-## [1.11.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.11.0...v1.11.1) - 2025-09-30
+## [1.11.1](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.11.0...v1.11.1) - 2025-09-30
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
@@ -236,7 +236,7 @@ See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 ### Other
 - Reset default log level to warn
 
-## [1.11.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.10.0...v1.11.0) - 2025-09-21
+## [1.11.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.10.0...v1.11.0) - 2025-09-21
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
@@ -269,7 +269,7 @@ See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 - Use database for Gist init queue (#498)
 - Update go dep chroma (#493)
 
-## [1.10.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.9.1...v1.10.0) - 2025-04-07
+## [1.10.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.9.1...v1.10.0) - 2025-04-07
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### 🔴 Deprecations
@@ -295,7 +295,7 @@ _Removed in the next SemVer MAJOR version of QingyuGist._
 ### Other
 - Update deps Golang & JS deps (#455)
 
-## [1.9.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.9.0...v1.9.1) - 2025-02-04
+## [1.9.1](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.9.0...v1.9.1) - 2025-02-04
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
@@ -308,7 +308,7 @@ See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 ### Other
 - Update deps Golang & JS deps (#430)
 
-## [1.9.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.8.4...v1.9.0) - 2025-02-02
+## [1.9.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.8.4...v1.9.0) - 2025-02-02
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### Added
@@ -331,7 +331,7 @@ See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 - Remove memdb for gist init (#421)
 - Added QingyuGist Docker images to Docker Hub
 
-## [1.8.4](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.8.3...v1.8.4) - 2024-12-15
+## [1.8.4](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.8.3...v1.8.4) - 2024-12-15
 See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
@@ -341,14 +341,14 @@ See here how to [update](/docs/update.md) QingyuGist.
 ### Fixed
 - Prevent passwords managers autofill on filename inputs (#357)
 
-## [1.8.3](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.8.2...v1.8.3) - 2024-11-26
+## [1.8.3](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.8.2...v1.8.3) - 2024-11-26
 See here how to [update](/docs/update.md) QingyuGist.
 
 ### Changed
 - Throw `warn` instead of `fatal` on Git global config init failure (#392)
 - Define esbuild as a Javascript dependency for all other platforms (#393)
 
-## [1.8.2](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.8.1...v1.8.2) - 2024-11-25
+## [1.8.2](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.8.1...v1.8.2) - 2024-11-25
 See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
@@ -366,7 +366,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 ### Other
 - Update deps Golang & JS deps
 
-## [1.8.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.8.0...v1.8.1) - 2024-11-02
+## [1.8.1](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.8.0...v1.8.1) - 2024-11-02
 See here how to [update](/docs/update.md) QingyuGist.
 
 ### Changed
@@ -376,7 +376,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 - Markdown preview (#368)
 - confirm() popup messages (#370)
 
-## [1.8.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.7.5...v1.8.0) - 2024-10-31
+## [1.8.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.7.5...v1.8.0) - 2024-10-31
 See here how to [update](https://qingyugist.io/docs/update) QingyuGist.
 
 ### 🔴 Deprecations 
@@ -408,7 +408,7 @@ _Removed in the next SemVer MAJOR version of QingyuGist._
 - Use go 1.23 and update deps (#354)
 - Typos in README (#363)
 
-## [1.7.5](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.7.4...v1.7.5) - 2024-09-12
+## [1.7.5](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.7.4...v1.7.5) - 2024-09-12
 See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
@@ -416,7 +416,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 - Ukrainian localization (#325)
 - Dummy /metrics endpoint (#327)
 
-## [1.7.4](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.7.3...v1.7.4) - 2024-09-09
+## [1.7.4](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.7.3...v1.7.4) - 2024-09-09
 See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
@@ -434,7 +434,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 ### Other
 - Removed logger `trace` and `fatal` levels (#322)
 
-## [1.7.3](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.7.2...v1.7.3) - 2024-06-03
+## [1.7.3](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.7.2...v1.7.3) - 2024-06-03
 See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
@@ -452,7 +452,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 - Check translations keys in CI (#279)
 - Fix CI check for additional translations only (#289)
 
-## [1.7.2](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.7.1...v1.7.2) - 2024-05-05
+## [1.7.2](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.7.1...v1.7.2) - 2024-05-05
 See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
@@ -475,7 +475,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 ### Other
 - Use go 1.22 and update deps (#244)
 
-## [1.7.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.7.0...v1.7.1) - 2024-04-05
+## [1.7.1](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.7.0...v1.7.1) - 2024-04-05
 See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
@@ -485,7 +485,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 - Auth page GitlabName Error (#242)
 - Empty invitation on user creation (#247)
 
-## [1.7.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.6.1...v1.7.0) - 2024-04-03
+## [1.7.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.6.1...v1.7.0) - 2024-04-03
 See here how to [update](/docs/update.md) QingyuGist.
 
 Note: all sessions will be invalidated after this update.
@@ -514,7 +514,7 @@ Note: all sessions will be invalidated after this update.
 - GitHub security updates
 - New docker dev env (#220)
 
-## [1.6.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.6.0...v1.6.1) - 2024-01-06
+## [1.6.1](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.6.0...v1.6.1) - 2024-01-06
 See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
@@ -525,7 +525,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 ### Fixed
 - Directory renaming on username change (#205)
 
-## [1.6.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.5.3...v1.6.0) - 2024-01-04
+## [1.6.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.5.3...v1.6.0) - 2024-01-04
 See here how to [update](/docs/update.md) QingyuGist.
 
 ### Added
@@ -571,7 +571,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 - Log parsing for the 11th empty commit (#184)
 - Optimize reading gist files content (#186)
 
-## [1.5.3](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.5.2...v1.5.3) - 2023-11-20
+## [1.5.3](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.5.2...v1.5.3) - 2023-11-20
 ### Added
 - es-ES translation (#139)
 - Create/change account password (#156)
@@ -583,7 +583,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 - Home user directory detection handling (#145)
 - UI changes (#158)
 
-## [1.5.2](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.5.1...v1.5.2) - 2023-10-16
+## [1.5.2](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.5.1...v1.5.2) - 2023-10-16
 ### Added
 - zh-CN translation (#130)
 - ru-RU translation (#135)
@@ -595,7 +595,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 - Dark background color in Markdown rendering (#137)
 - Error handling for password hashes (#132)
 
-## [1.5.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.5.0...v1.5.1) - 2023-09-29
+## [1.5.1](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.5.0...v1.5.1) - 2023-09-29
 ### Added
 - Hungarian translations (#123)
 
@@ -604,7 +604,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 - Login page disabled depending on locale (#120)
 - Syntax error on templates when calling locale function (#122)
 
-## [1.5.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.4.2...v1.5.0) - 2023-09-26
+## [1.5.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.4.2...v1.5.0) - 2023-09-26
 ### Added
 - Private Gist visibility (#87)
 - Create gists from a special Git HTTP server remote URL (#95)
@@ -633,7 +633,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 - Removed CONFIG env var
 - Removed TLS server (#101)
 
-## [1.4.2](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.4.1...v1.4.2) - 2023-07-17
+## [1.4.2](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.4.1...v1.4.2) - 2023-07-17
 ### Added
 - External url to HTML links & redirects (#75)
 - Make unlisted gists not SEO crawlable (#78)
@@ -643,7 +643,7 @@ See here how to [update](/docs/update.md) QingyuGist.
 - Redirect to `/all` when not logged in (#76)
 - Removed Dev Docker image (#80)
 
-## [1.4.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.4.0...v1.4.1) - 2023-06-25
+## [1.4.1](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.4.0...v1.4.1) - 2023-06-25
 ### ⚠️ Docker users ⚠️
 QingyuGist Docker volume has been changed from `/root/.qingyugist` to `/qingyugist`, do not forget to update your
 `docker-compose.yml` file or any other Docker related configuration.
@@ -653,7 +653,7 @@ Please make a backup of your QingyuGist data directory before updating.
 ### Fixed
 - Git message remote: `warning: unable to access '/root/.config/git/attributes': Permission denied` (#71)
 
-## [1.4.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.3.0...v1.4.0) - 2023-06-23
+## [1.4.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.3.0...v1.4.0) - 2023-06-23
 ### ⚠️ Docker users ⚠️
 QingyuGist Docker volume has been changed from `/root/.qingyugist` to `/qingyugist`, do not forget to update your
 `docker-compose.yml` file or any other Docker related configuration.
@@ -679,7 +679,7 @@ Please make a backup of your QingyuGist data directory before updating.
 - Dark mode flickering (#44)
 - Typos (#42)
 
-## [1.3.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.2.0...v1.3.0) - 2023-05-27
+## [1.3.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.2.0...v1.3.0) - 2023-05-27
 ### Added
 - Disable login form via admin panel
 - Syntax highlighting in Markdown code block (#29)
@@ -689,13 +689,13 @@ Please make a backup of your QingyuGist data directory before updating.
 
 ### Changed
 - Logs are now also appended to stdout
-- Golang module name is now `github.com/LiuShen-Fork/Qingyu-Gist`
+- Golang module name is now `github.com/LiuShen-Fork/QingyuGist`
 
 ### Fixed
 - First account registering with OAuth is now admin
 - Fix HTML entities escaping in Markdown code block (#29)
 
-## [1.2.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.1.1...v1.2.0) - 2023-05-01
+## [1.2.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.1.1...v1.2.0) - 2023-05-01
 ### Added
 - Restrict or unrestrict snippets visibility to anonymous users (#19)
 - Go CI with Staticcheck
@@ -708,11 +708,11 @@ Please make a backup of your QingyuGist data directory before updating.
 - Respect ExternalUrl for OAuth (#21)
 - SSH public key detection (#22)
 
-## [1.1.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.1.0...v1.1.1) - 2023-04-20
+## [1.1.1](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.1.0...v1.1.1) - 2023-04-20
 ### Fixed
 - Git processes are now correctly killed
 
-## [1.1.0](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.0.1...v1.1.0) - 2023-04-18
+## [1.1.0](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.0.1...v1.1.0) - 2023-04-18
 ### Added
 - GitHub and Gitea OAuth2 login
 - Database migration system
@@ -725,7 +725,7 @@ Please make a backup of your QingyuGist data directory before updating.
 - Truncate raw file (#4)
 - Fix SSH key table constraints on user delete
 
-## [1.0.1](https://github.com/LiuShen-Fork/Qingyu-Gist/compare/v1.0.0...v1.0.1) - 2023-04-12
+## [1.0.1](https://github.com/LiuShen-Fork/QingyuGist/compare/v1.0.0...v1.0.1) - 2023-04-12
 ### Changed
 - Updated base footer
 - Changed redirections when not logged in

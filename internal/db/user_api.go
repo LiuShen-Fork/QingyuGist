@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/api/v1/types"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers/api/v1/types"
 )
 
 // ToSimpleAPI returns the public simple-user shape used inside gist responses

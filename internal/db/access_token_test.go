@@ -3,7 +3,7 @@ package db_test
 import (
 	"testing"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
 	"github.com/stretchr/testify/require"
 )
 

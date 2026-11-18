@@ -3,8 +3,8 @@ package gist_test
 import (
 	"testing"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	webtest "github.com/LiuShen-Fork/QingyuGist/internal/web/test"
 	"github.com/stretchr/testify/require"
 )
 

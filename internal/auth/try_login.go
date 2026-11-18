@@ -4,9 +4,9 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/ldap"
-	passwordpkg "github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/password"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/auth/ldap"
+	passwordpkg "github.com/LiuShen-Fork/QingyuGist/internal/auth/password"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )

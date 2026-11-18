@@ -8,7 +8,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
 	"github.com/meilisearch/meilisearch-go"
 	"github.com/rs/zerolog/log"
 )

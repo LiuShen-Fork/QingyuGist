@@ -3,7 +3,7 @@ package cli
 import (
 	"io"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
 	"github.com/urfave/cli/v2"
 )
 

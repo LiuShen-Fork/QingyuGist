@@ -1,7 +1,7 @@
 package oauth
 
 import (
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/openidConnect"
 	"golang.org/x/oauth2"

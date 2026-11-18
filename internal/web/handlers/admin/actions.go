@@ -1,9 +1,9 @@
 package admin
 
 import (
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/actions"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/actions"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 )
 
 // actionView is the template model for a single row on the admin actions page.

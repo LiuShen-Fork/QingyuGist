@@ -4,7 +4,7 @@
 BINARY_NAME := qingyugist
 GIT_TAG := $(shell git describe --tags)
 VERSION := $(patsubst v%,%,$(GIT_TAG))
-VERSION_PKG := github.com/LiuShen-Fork/Qingyu-Gist/internal/config.QingyuGistVersion
+VERSION_PKG := github.com/LiuShen-Fork/QingyuGist/internal/config.QingyuGistVersion
 TEST_DB_TYPE ?= sqlite
 
 all: clean install build

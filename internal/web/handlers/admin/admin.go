@@ -8,15 +8,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/actions"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/git"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/index"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/settings"
-	qingyugistssh "github.com/LiuShen-Fork/Qingyu-Gist/internal/ssh"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers"
+	"github.com/LiuShen-Fork/QingyuGist/internal/actions"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/git"
+	"github.com/LiuShen-Fork/QingyuGist/internal/index"
+	"github.com/LiuShen-Fork/QingyuGist/internal/settings"
+	qingyugistssh "github.com/LiuShen-Fork/QingyuGist/internal/ssh"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers"
 )
 
 var processStart = time.Now()

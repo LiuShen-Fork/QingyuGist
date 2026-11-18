@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/password"
-	ogtotp "github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/totp"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/auth/password"
+	ogtotp "github.com/LiuShen-Fork/QingyuGist/internal/auth/totp"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
 )
 
 type TOTP struct {

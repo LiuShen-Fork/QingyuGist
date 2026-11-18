@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"sync/atomic"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
 	"github.com/rs/zerolog/log"
 )
 

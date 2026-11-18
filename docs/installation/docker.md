@@ -1,6 +1,6 @@
 # Install with Docker
 
-Docker [images](https://github.com/LiuShen-Fork/Qingyu-Gist/pkgs/container/qingyugist) are available for each release :
+Docker [images](https://github.com/LiuShen-Fork/QingyuGist/pkgs/container/qingyugist) are available for each release :
 
 ```shell
 docker pull ghcr.io/liushen-fork/qingyugist:latest

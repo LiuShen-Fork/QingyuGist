@@ -3,9 +3,9 @@ package v1
 import (
 	"time"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers/api/v1/types"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers/api/v1/types"
 )
 
 // gistFetcher is the per-mode db query used by listGistsCommon. Different

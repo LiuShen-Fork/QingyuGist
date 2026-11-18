@@ -8,10 +8,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/password"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/validator"
+	"github.com/LiuShen-Fork/QingyuGist/internal/auth/password"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/validator"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 )

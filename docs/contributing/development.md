@@ -6,7 +6,7 @@ Assuming you have [Make](https://linux.die.net/man/1/make) installed,
 
 ```shell
 # Clone the repository
-git clone git@github.com:LiuShen-Fork/Qingyu-Gist.git
+git clone git@github.com:LiuShen-Fork/QingyuGist.git
 cd qingyugist
 
 # Build the development image
@@ -30,7 +30,7 @@ Requirements:
 * [Make](https://linux.die.net/man/1/make) (optional, but easier)
 
 ```shell
-git clone git@github.com:LiuShen-Fork/Qingyu-Gist.git
+git clone git@github.com:LiuShen-Fork/QingyuGist.git
 cd qingyugist
 make install
 make watch

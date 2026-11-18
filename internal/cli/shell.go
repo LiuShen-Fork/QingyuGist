@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/ipc"
+	"github.com/LiuShen-Fork/QingyuGist/internal/ipc"
 	"github.com/urfave/cli/v2"
 )
 

@@ -7,7 +7,7 @@ Requirements:
 * [Make](https://linux.die.net/man/1/make) (optional, but easier)
 
 ```shell
-git clone https://github.com/LiuShen-Fork/Qingyu-Gist
+git clone https://github.com/LiuShen-Fork/QingyuGist
 cd qingyugist
 
 git checkout v1.15.3

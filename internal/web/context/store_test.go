@@ -4,7 +4,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/config"
+	"github.com/LiuShen-Fork/QingyuGist/internal/config"
 	"github.com/gorilla/sessions"
 	"github.com/stretchr/testify/require"
 )

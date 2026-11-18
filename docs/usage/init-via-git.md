@@ -61,4 +61,4 @@ To http://qingyugist.url/init
  * [new branch]      master -> master
 ```
 
-<video controls="controls" src="https://github.com/LiuShen-Fork/Qingyu-Gist/assets/27960254/3fe1a0ba-b638-4928-83a1-f38e46fea066" />
+<video controls="controls" src="https://github.com/LiuShen-Fork/QingyuGist/assets/27960254/3fe1a0ba-b638-4928-83a1-f38e46fea066" />

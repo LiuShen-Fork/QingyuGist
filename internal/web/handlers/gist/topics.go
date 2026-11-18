@@ -1,9 +1,9 @@
 package gist
 
 import (
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/handlers"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers"
 )
 
 // Topics lists topics in use, ordered from most to least used, each linking to

@@ -1,6 +1,6 @@
 # Learn more about QingyuGist configuration here:
-# https://github.com/LiuShen-Fork/Qingyu-Gist/blob/master/docs/configuration/configure.md
-# https://github.com/LiuShen-Fork/Qingyu-Gist/blob/master/docs/configuration/cheat-sheet.md
+# https://github.com/LiuShen-Fork/QingyuGist/blob/master/docs/configuration/configure.md
+# https://github.com/LiuShen-Fork/QingyuGist/blob/master/docs/configuration/cheat-sheet.md
 
 # Set the log level to one of the following: debug, info, warn, error, fatal. Default: warn
 log-level: warn

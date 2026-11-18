@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 	"github.com/gorilla/schema"
 	"github.com/rs/zerolog/log"
 )

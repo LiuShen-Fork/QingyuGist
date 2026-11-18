@@ -5,9 +5,9 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/auth"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 	"github.com/rs/zerolog/log"
 )
 

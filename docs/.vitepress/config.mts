@@ -158,7 +158,7 @@ export default defineConfig({
                 if (!silent) {
                     const open = state.push('link_open', 'a', 1)
                     open.attrs = [
-                        ['href', `https://github.com/LiuShen-Fork/Qingyu-Gist/pull/${num}`],
+                        ['href', `https://github.com/LiuShen-Fork/QingyuGist/pull/${num}`],
                         ['target', '_blank'],
                         ['rel', 'noreferrer'],
                     ]
@@ -181,7 +181,7 @@ export default defineConfig({
     },
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
-        logo: 'https://raw.githubusercontent.com/LiuShen-Fork/Qingyu-Gist/master/public/img/qingyugist.svg',
+        logo: 'https://raw.githubusercontent.com/LiuShen-Fork/QingyuGist/master/public/img/qingyugist.svg',
         logoLink: '/',
         nav: [
             { text: 'Docs', link: '/docs', activeMatch: '^/docs' },
@@ -196,7 +196,7 @@ export default defineConfig({
                 text: 'v1.15.3',
                 items: [
                     { text: 'Changelog', link: '/changelog' },
-                    { text: 'Releases', link: 'https://github.com/LiuShen-Fork/Qingyu-Gist/releases' },
+                    { text: 'Releases', link: 'https://github.com/LiuShen-Fork/QingyuGist/releases' },
                 ]
             }
         ],
@@ -212,11 +212,11 @@ export default defineConfig({
         },
 
         socialLinks: [
-            {icon: 'github', link: 'https://github.com/LiuShen-Fork/Qingyu-Gist'},
+            {icon: 'github', link: 'https://github.com/LiuShen-Fork/QingyuGist'},
             {icon: 'discord', link: 'https://discord.gg/9Pm3X5scZT'}
         ],
         editLink: {
-            pattern: 'https://github.com/LiuShen-Fork/Qingyu-Gist/edit/master/docs/:path'
+            pattern: 'https://github.com/LiuShen-Fork/QingyuGist/edit/master/docs/:path'
         },
         // @ts-ignore
         lastUpdated: true,

@@ -3,9 +3,9 @@ package auth
 import (
 	"net/url"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/auth/totp"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/auth/totp"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 )
 
 func BeginTotp(ctx *context.Context) error {

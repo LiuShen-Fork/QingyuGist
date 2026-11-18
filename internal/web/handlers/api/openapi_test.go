@@ -3,7 +3,7 @@ package api_test
 import (
 	"testing"
 
-	webtest "github.com/LiuShen-Fork/Qingyu-Gist/internal/web/test"
+	webtest "github.com/LiuShen-Fork/QingyuGist/internal/web/test"
 	"github.com/stretchr/testify/require"
 )
 

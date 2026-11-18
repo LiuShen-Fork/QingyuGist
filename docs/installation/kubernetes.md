@@ -11,5 +11,5 @@ helm repo add qingyugist https://helm.qingyugist.io
 helm install qingyugist qingyugist/qingyugist
 ```
 
-Refer to the [QingyuGist chart](https://github.com/LiuShen-Fork/Qingyu-Gist/tree/master/helm/qingyugist) for more information
+Refer to the [QingyuGist chart](https://github.com/LiuShen-Fork/QingyuGist/tree/master/helm/qingyugist) for more information
 about the chart and to customize your installation.

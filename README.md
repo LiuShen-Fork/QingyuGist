@@ -1,6 +1,6 @@
 # QingyuGist · 清羽Gist
 
-<img height="108px" src="https://raw.githubusercontent.com/LiuShen-Fork/Qingyu-Gist/master/public/img/qingyugist.svg" alt="QingyuGist" align="right" />
+<img height="108px" src="https://raw.githubusercontent.com/LiuShen-Fork/QingyuGist/master/public/img/qingyugist.svg" alt="QingyuGist" align="right" />
 
 QingyuGist (清羽Gist) is a self-hosted pastebin powered by Git. Every snippet is
 a real Git repository, so it can be read and edited from the web interface or
@@ -10,10 +10,10 @@ This repository is an independent hard fork. It keeps the data format of the
 upstream project, but the interface, defaults and deployment tooling have been
 reworked around a simpler, calmer experience.
 
-[Repository](https://github.com/LiuShen-Fork/Qingyu-Gist) · [Documentation](docs/) · [Releases](https://github.com/LiuShen-Fork/Qingyu-Gist/releases)
+[Repository](https://github.com/LiuShen-Fork/QingyuGist) · [Documentation](docs/) · [Releases](https://github.com/LiuShen-Fork/QingyuGist/releases)
 
-![CI](https://github.com/LiuShen-Fork/Qingyu-Gist/actions/workflows/ci.yml/badge.svg)
-![License](https://img.shields.io/github/license/LiuShen-Fork/Qingyu-Gist?color=blue)
+![CI](https://github.com/LiuShen-Fork/QingyuGist/actions/workflows/ci.yml/badge.svg)
+![License](https://img.shields.io/github/license/LiuShen-Fork/QingyuGist?color=blue)
 
 ## Features
 
@@ -65,7 +65,7 @@ To run the container as a specific user, set `UID` and `GID`:
 ### Binary
 
 Download the archive for your platform from the
-[latest release](https://github.com/LiuShen-Fork/Qingyu-Gist/releases/latest),
+[latest release](https://github.com/LiuShen-Fork/QingyuGist/releases/latest),
 extract it and run the binary:
 
 ```shell
@@ -82,8 +82,8 @@ options can also be supplied through `QYG_*` environment variables; see
 Requirements: Git 2.28+, Go 1.27+, Node.js 26+ and Make.
 
 ```shell
-git clone https://github.com/LiuShen-Fork/Qingyu-Gist.git
-cd Qingyu-Gist
+git clone https://github.com/LiuShen-Fork/QingyuGist.git
+cd QingyuGist
 make
 ./qingyugist
 ```

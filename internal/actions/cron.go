@@ -3,7 +3,7 @@ package actions
 import (
 	"time"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/settings"
+	"github.com/LiuShen-Fork/QingyuGist/internal/settings"
 	"github.com/robfig/cron/v3"
 	"github.com/rs/zerolog/log"
 )

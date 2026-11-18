@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/db"
-	"github.com/LiuShen-Fork/Qingyu-Gist/internal/web/context"
+	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 )
 
 // Healthcheck reports service health. A GET request returns the status as JSON;

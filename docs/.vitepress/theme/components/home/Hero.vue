@@ -27,7 +27,7 @@ onMounted(async () => {
   } catch {}
 
   try {
-    const res = await fetch('https://api.github.com/repos/LiuShen-Fork/Qingyu-Gist')
+    const res = await fetch('https://api.github.com/repos/LiuShen-Fork/QingyuGist')
     if (res.ok) {
       stars.value = (await res.json()).stargazers_count
       try {
@@ -56,7 +56,7 @@ onBeforeUnmount(() => clearTimeout(timer))
   <section class="og-hero">
     <a
       class="og-badge"
-      href="https://github.com/LiuShen-Fork/Qingyu-Gist/releases"
+      href="https://github.com/LiuShen-Fork/QingyuGist/releases"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -69,7 +69,7 @@ onBeforeUnmount(() => clearTimeout(timer))
 
     <img
       class="og-logo"
-      src="https://raw.githubusercontent.com/LiuShen-Fork/Qingyu-Gist/master/public/img/qingyugist.svg"
+      src="https://raw.githubusercontent.com/LiuShen-Fork/QingyuGist/master/public/img/qingyugist.svg"
       alt="QingyuGist"
     />
 
@@ -88,7 +88,7 @@ onBeforeUnmount(() => clearTimeout(timer))
       </a>
       <a
         class="og-btn og-btn--github"
-        href="https://github.com/LiuShen-Fork/Qingyu-Gist"
+        href="https://github.com/LiuShen-Fork/QingyuGist"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="QingyuGist on GitHub"

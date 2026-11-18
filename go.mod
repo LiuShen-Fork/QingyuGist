@@ -1,4 +1,4 @@
-module github.com/LiuShen-Fork/Qingyu-Gist
+module github.com/LiuShen-Fork/QingyuGist
 
 go 1.27.2
 
