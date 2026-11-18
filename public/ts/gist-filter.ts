@@ -2,12 +2,12 @@
 //
 // A single box drives several backend query params. Free text is the title;
 // qualifiers (`visibility:`, `language:`, `topic:`) chosen from the dropdown
-// become code-styled chips. The chips + title are mirrored into the hidden
-// title/visibility/language/topics inputs the server reads.
+// become code-styled chips. The chips and free-text title are mirrored into
+// hidden inputs; the visibility select submits directly with the form.
 
 type Option = { value: string; label: string };
 
-const KEYS = ['visibility', 'language', 'topic'] as const;
+const KEYS = ['language', 'topic'] as const;
 type Key = (typeof KEYS)[number];
 
 interface Suggestion {
@@ -33,20 +33,30 @@ function setup(form: HTMLFormElement) {
 
     const hidden = {
         title: form.querySelector<HTMLInputElement>('[data-filter-hidden="title"]'),
-        visibility: form.querySelector<HTMLInputElement>('[data-filter-hidden="visibility"]'),
         language: form.querySelector<HTMLInputElement>('[data-filter-hidden="language"]'),
         topics: form.querySelector<HTMLInputElement>('[data-filter-hidden="topics"]'),
     };
 
+    // Empty fields should not appear in the shareable URL. Removing the name
+    // (rather than disabling the control) keeps the styled select usable.
+    const syncParam = (field: HTMLInputElement | HTMLSelectElement | null, name: string, value: string) => {
+        if (!field) return;
+        field.value = value;
+        if (value) field.setAttribute('name', name);
+        else field.removeAttribute('name');
+    };
+    const visibility = form.querySelector<HTMLSelectElement>('select[name="visibility"]');
+    const syncVisibility = () => syncParam(visibility, 'visibility', visibility?.value || '');
+    visibility?.addEventListener('change', syncVisibility);
+    syncVisibility();
+
     const options: Record<Key, Option[]> = {
-        visibility: readOptions(form, 'visibility'),
         language: readOptions(form, 'language'),
         topic: [],
     };
 
-    // Chosen qualifiers. visibility/language are single; topic can repeat.
+    // Chosen qualifiers. Language is single; topic can repeat.
     let tokens: { key: Key; value: string }[] = [];
-    if (form.dataset.initVisibility) tokens.push({ key: 'visibility', value: form.dataset.initVisibility });
     if (form.dataset.initLanguage) tokens.push({ key: 'language', value: form.dataset.initLanguage });
     (form.dataset.initTopics || '')
         .split(/\s+/)
@@ -112,8 +122,8 @@ function setup(form: HTMLFormElement) {
         if (key === 'topic') {
             return prefix ? [{ label: `topic: ${prefix}`, commit: { key: 'topic', value: token.slice(colon + 1) } }] : [];
         }
-        if (key === 'visibility' || key === 'language') {
-            return options[key]
+        if (key === 'language') {
+            return options.language
                 .filter((o) => o.value.toLowerCase().includes(prefix))
                 .slice(0, 30)
                 .map((o) => ({ label: o.label, commit: { key, value: o.value } }));
@@ -169,7 +179,7 @@ function setup(form: HTMLFormElement) {
         const trimmed = input.value.slice(0, -1);
         const sp = trimmed.lastIndexOf(' ');
         const last = trimmed.slice(sp + 1);
-        const m = last.match(/^(visibility|language|topic):(.+)$/i);
+        const m = last.match(/^(language|topic):(.+)$/i);
         if (m) {
             commit(m[1].toLowerCase() as Key, m[2]);
             input.value = trimmed.slice(0, sp + 1);
@@ -177,19 +187,24 @@ function setup(form: HTMLFormElement) {
     }
 
     function syncHidden() {
-        if (hidden.visibility) hidden.visibility.value = tokens.find((t) => t.key === 'visibility')?.value || '';
-        if (hidden.language) hidden.language.value = tokens.find((t) => t.key === 'language')?.value || '';
-        if (hidden.topics)
-            hidden.topics.value = tokens
+        syncParam(hidden.language, 'language', tokens.find((t) => t.key === 'language')?.value || '');
+        syncParam(
+            hidden.topics,
+            'topics',
+            tokens
                 .filter((t) => t.key === 'topic')
                 .map((t) => t.value)
-                .join(' ');
+                .join(' '),
+        );
         // Title is the leftover free text, minus any half-typed qualifier token.
-        if (hidden.title)
-            hidden.title.value = input.value
+        syncParam(
+            hidden.title,
+            'title',
+            input.value
                 .split(/\s+/)
                 .filter((w) => w && !/^(visibility|language|topic):/i.test(w))
-                .join(' ');
+                .join(' '),
+        );
     }
 
     input.addEventListener('focus', render);

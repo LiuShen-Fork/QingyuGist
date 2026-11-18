@@ -67,7 +67,7 @@
               class="flex flex-1 flex-wrap items-center gap-2"
               data-gist-filter
               data-init-title="{{ .title }}" data-init-visibility="{{ .visibility }}" data-init-language="{{ .language }}" data-init-topics="{{ .topics }}">
-            <div class="relative min-w-0 flex-1">
+            <div class="relative w-full min-w-0 sm:w-auto sm:flex-1">
                 <div data-filter-box class="border-input bg-background focus-within:ring-ring flex h-auto min-h-9 flex-wrap items-center gap-1 rounded-md border px-3 py-1 focus-within:ring-1">
                     <input type="text" data-filter-input autocomplete="off" spellcheck="false"
                            placeholder="{{ .locale.Tr "gist.search.placeholder.search" }}"
@@ -76,24 +76,29 @@
                 <div data-filter-menu class="bg-popover text-popover-foreground absolute inset-x-0 top-full z-30 mt-1 hidden max-h-64 overflow-auto rounded-md border p-1 shadow-md"></div>
             </div>
 
-            <!-- Option sources read by the filter script (never rendered). -->
-            <template data-filter-options="visibility">
-                <span data-value="public">{{ .locale.Tr "gist.search.placeholder.public" }}</span>
-                <span data-value="unlisted">{{ .locale.Tr "gist.search.placeholder.unlisted" }}</span>
-                <span data-value="private">{{ .locale.Tr "gist.search.placeholder.private" }}</span>
-            </template>
+            <!-- Visibility is an explicit control on profiles: private and
+                 unlisted gists are otherwise hard to discover. -->
+            {{ if eq .mode "fromUser" }}
+            <label class="sr-only" for="filter-visibility">{{ .locale.Tr "visibility.all" }}</label>
+            <select id="filter-visibility" name="visibility" data-auto-submit class="input h-9 w-auto shrink-0">
+                <option value="">{{ .locale.Tr "visibility.all" }}</option>
+                <option value="public" {{ if eq .visibility "public" }}selected{{ end }}>{{ .locale.Tr "gist.public" }}</option>
+                <option value="unlisted" {{ if eq .visibility "unlisted" }}selected{{ end }}>{{ .locale.Tr "gist.unlisted" }}</option>
+                <option value="private" {{ if eq .visibility "private" }}selected{{ end }}>{{ .locale.Tr "gist.private" }}</option>
+            </select>
+            {{ end }}
+
             <template data-filter-options="language">
                 {{ range .languages }}<span data-value="{{ .Language }}">{{ .Language }} ({{ .Count }})</span>{{ end }}
             </template>
 
             <input type="hidden" name="title" data-filter-hidden="title" value="{{ .title }}" />
-            <input type="hidden" name="visibility" data-filter-hidden="visibility" value="{{ .visibility }}" />
             <input type="hidden" name="language" data-filter-hidden="language" value="{{ .language }}" />
             <input type="hidden" name="topics" data-filter-hidden="topics" value="{{ .topics }}" />
             <input type="hidden" name="sort" value="{{ .pagination.Sort }}" />
             <input type="hidden" name="order" value="{{ .pagination.Order }}" />
 
-            <button type="submit" class="btn h-9 shrink-0">{{ .locale.Tr "gist.search.placeholder.search" }}</button>
+            <button type="submit" class="btn h-9 flex-1 shrink-0 sm:flex-none">{{ .locale.Tr "gist.search.placeholder.search" }}</button>
         </form>
         {{ end }}
 
