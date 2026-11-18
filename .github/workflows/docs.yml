@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -29,9 +29,9 @@ jobs:
       - name: Push to docs repository
         run: |
           git clone https://${{ secrets.STATIC_REPO_TOKEN }}@github.com/${{ secrets.STATIC_REPO }}.git target-repo
-          rm -rf target-repo/srv/opengist
-          mkdir -p target-repo/srv/opengist
-          cp -r docs/.vitepress/dist/* target-repo/srv/opengist/
+          rm -rf target-repo/srv/qingyugist
+          mkdir -p target-repo/srv/qingyugist
+          cp -r docs/.vitepress/dist/* target-repo/srv/qingyugist/
           cd target-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

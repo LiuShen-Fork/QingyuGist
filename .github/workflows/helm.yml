@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
 
       - name: Set up Helm
         uses: azure/setup-helm@v5.0.1
@@ -18,21 +18,21 @@ jobs:
 
       - name: Update Helm chart dependencies
         run: |
-          cd ./helm/opengist
+          cd ./helm/qingyugist
           helm dependency update
 
       - name: Package Helm chart
         run: |
           cd ./helm
-          helm package ./opengist
+          helm package ./qingyugist
 
           # First time, create the index
-          wget -q https://helm.opengist.io/index.yaml
+          wget -q https://helm.qingyugist.io/index.yaml
           if [ ! -f index.yaml ]; then
-            helm repo index --url https://helm.opengist.io .
+            helm repo index --url https://helm.qingyugist.io .
           else
             # For subsequent runs, merge with existing index
-            helm repo index --url https://helm.opengist.io --merge index.yaml .
+            helm repo index --url https://helm.qingyugist.io --merge index.yaml .
           fi
 
       - name: Push to docs repository

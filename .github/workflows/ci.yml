@@ -1,4 +1,4 @@
-name: "Go CI"
+name: CI
 on:
   push:
     branches:
@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
 
       - name: Set up Go 1.27
-        uses: actions/setup-go@v7
+        uses: actions/setup-go@v6
         with:
           go-version: "1.27"
 
@@ -39,15 +39,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
 
       - name: Set up Go 1.27
-        uses: actions/setup-go@v7
+        uses: actions/setup-go@v6
         with:
           go-version: "1.27"
 
       - name: Check Go modules
         run: make go_mod check_changes
+
+      - name: Vet
+        run: go vet ./...
 
       - name: Check translations
         run: make check-tr
@@ -75,10 +78,10 @@ jobs:
         ports:
           - ${{ matrix.port }}
         env:
-          POSTGRES_PASSWORD: opengist
-          POSTGRES_DB: opengist_test
-          MYSQL_ROOT_PASSWORD: opengist
-          MYSQL_DATABASE: opengist_test
+          POSTGRES_PASSWORD: qingyugist
+          POSTGRES_DB: qingyugist_test
+          MYSQL_ROOT_PASSWORD: qingyugist
+          MYSQL_DATABASE: qingyugist_test
         options: >-
           --health-cmd ${{ matrix.database == 'postgres' && 'pg_isready' || '"mysqladmin ping"' }}
           --health-interval 10s
@@ -98,17 +101,17 @@ jobs:
           --health-retries 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
 
       - name: Set up Go ${{ matrix.go }}
-        uses: actions/setup-go@v7
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go }}
 
       - name: Run tests
         run: make test TEST_DB_TYPE=${{ matrix.database }}
         env:
-          OG_TEST_MEILI_HOST: http://localhost:47700
+          QYG_TEST_MEILI_HOST: http://localhost:47700
 
   test:
     name: Test
@@ -121,10 +124,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
 
       - name: Set up Go ${{ matrix.go }}
-        uses: actions/setup-go@v7
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go }}
 
@@ -141,10 +144,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
 
       - name: Set up Go 1.27
-        uses: actions/setup-go@v7
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go }}
 

@@ -1,4 +1,4 @@
-FROM alpine:3.24 AS base
+FROM --platform=$BUILDPLATFORM alpine:3.24 AS base
 
 RUN apk update && \
         apk add --no-cache \
@@ -16,7 +16,7 @@ COPY --from=node:26.5.0-alpine3.24 /usr/local/ /usr/local/
 ENV NODE_PATH="/usr/local/lib/node_modules"
 ENV PATH="/usr/local/bin:${PATH}"
 
-WORKDIR /opengist
+WORKDIR /qingyugist
 
 COPY . .
 
@@ -33,20 +33,30 @@ RUN apk add --no-cache \
 
 EXPOSE 6157 6158 2222 16157
 
-RUN git config --global --add safe.directory /opengist
+RUN git config --global --add safe.directory /qingyugist
 RUN make install
 
-VOLUME /opengist
+VOLUME /qingyugist
 
 CMD ["make", "watch"]
 
 
 FROM base AS build
 
-RUN make
+ARG VERSION=dev
+ARG TARGETARCH
+ENV GOARCH=${TARGETARCH}
+RUN make GIT_TAG=v${VERSION}
 
 
 FROM alpine:3.24 AS prod
+
+ARG VERSION=dev
+LABEL org.opencontainers.image.title="QingyuGist" \
+      org.opencontainers.image.description="A self-hosted pastebin powered by Git" \
+      org.opencontainers.image.source="https://github.com/LiuShen-Fork/Qingyu-Gist" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.licenses="AGPL-3.0"
 
 RUN apk update && \
     apk add --no-cache \
@@ -54,18 +64,18 @@ RUN apk update && \
     curl \
     git
 
-RUN addgroup -S opengist && \
-    adduser -S -G opengist -s /bin/ash -g 'Opengist User' opengist
+RUN addgroup -S qingyugist && \
+    adduser -S -G qingyugist -s /bin/ash -g 'QingyuGist User' qingyugist
 
-WORKDIR /app/opengist
+WORKDIR /app/qingyugist
 
-COPY --from=build --chown=opengist:opengist /opengist/config.yml /config.yml
-COPY --from=build --chown=opengist:opengist /opengist/opengist .
-COPY --from=build --chown=opengist:opengist /opengist/docker ./docker
+COPY --from=build --chown=qingyugist:qingyugist /qingyugist/config.yml /config.yml
+COPY --from=build --chown=qingyugist:qingyugist /qingyugist/qingyugist .
+COPY --from=build --chown=qingyugist:qingyugist /qingyugist/docker ./docker
 
-ENV OG_OPENGIST_HOME=/opengist
+ENV QYG_HOME=/qingyugist
 
 EXPOSE 6157 6158 2222
-VOLUME /opengist
+VOLUME /qingyugist
 HEALTHCHECK --interval=60s --timeout=30s --start-period=15s --retries=3 CMD curl -f http://localhost:6157/healthcheck || exit 1
 ENTRYPOINT ["./docker/entrypoint.sh"]
