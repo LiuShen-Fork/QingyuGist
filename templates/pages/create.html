@@ -64,11 +64,11 @@
                     </div>
 
                     <div class="space-y-1.5">
-                        <label for="expire" class="text-muted-foreground inline-flex items-center gap-1.5 text-xs font-medium">
+                        <label for="expire" class="text-foreground inline-flex items-center gap-1.5 text-sm font-medium">
                             <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                             {{ .locale.Tr "gist.new.expire" }}
                         </label>
-                        <select name="expire" id="expire" class="border-input bg-background h-9 w-full rounded-md border px-2 text-sm"
+                        <select name="expire" id="expire" class="input h-9 w-full"
                                 _="on change if my value is 'custom' remove .hidden from #expire_at else add .hidden to #expire_at end">
                             <option value="never" {{ if or (not .dto.Expire) (eq (toStr .dto.Expire) "never") }}selected{{ end }}>{{ .locale.Tr "gist.new.expire-never" }}</option>
                             <option value="1hour" {{ if eq (toStr .dto.Expire) "1hour" }}selected{{ end }}>{{ .locale.Tr "gist.new.expire-1hour" }}</option>
@@ -78,7 +78,7 @@
                             <option value="15days" {{ if eq (toStr .dto.Expire) "15days" }}selected{{ end }}>{{ .locale.Tr "gist.new.expire-15days" }}</option>
                             <option value="custom" {{ if eq (toStr .dto.Expire) "custom" }}selected{{ end }}>{{ .locale.Tr "gist.new.expire-custom" }}</option>
                         </select>
-                        <input type="datetime-local" name="expire_at" id="expire_at" value="{{ .dto.ExpireAt }}" class="border-input bg-background mt-2 h-9 w-full rounded-md border px-2 text-sm {{ if ne (toStr .dto.Expire) "custom" }}hidden{{ end }}">
+                        <input type="datetime-local" name="expire_at" id="expire_at" value="{{ .dto.ExpireAt }}" class="input mt-2 h-9 w-full {{ if ne (toStr .dto.Expire) "custom" }}hidden{{ end }}">
                     </div>
                 </div>
 

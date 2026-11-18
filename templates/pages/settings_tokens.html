@@ -29,7 +29,7 @@
                 </div>
                 <div class="space-y-1.5">
                     <label for="scope_gist" class="text-sm font-medium">{{ .locale.Tr "settings.token-gist-permission" }}</label>
-                    <select id="scope_gist" name="scope_gist" class="border-input bg-background h-9 w-full max-w-sm rounded-md border px-2 text-sm">
+                    <select id="scope_gist" name="scope_gist" class="input h-9 w-full max-w-sm">
                         <option value="0">{{ .locale.Tr "settings.token-permission-none" }}</option>
                         <option value="1">{{ .locale.Tr "settings.token-permission-read" }}</option>
                         <option value="2">{{ .locale.Tr "settings.token-permission-read-write" }}</option>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="space-y-1.5">
                     <label for="scope_user" class="text-sm font-medium">{{ .locale.Tr "settings.token-user-permission" }}</label>
-                    <select id="scope_user" name="scope_user" class="border-input bg-background h-9 w-full max-w-sm rounded-md border px-2 text-sm">
+                    <select id="scope_user" name="scope_user" class="input h-9 w-full max-w-sm">
                         <option value="0">{{ .locale.Tr "settings.token-permission-none" }}</option>
                         <option value="1">{{ .locale.Tr "settings.token-permission-read" }}</option>
                         <option value="2">{{ .locale.Tr "settings.token-permission-read-write" }}</option>

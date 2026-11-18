@@ -16,23 +16,25 @@
             </div>
             <div class="space-y-6 p-4">
                 <fieldset class="field" role="radiogroup">
-                    <div class="flex flex-wrap gap-x-6 gap-y-3">
-                        <label>
+                    <legend class="mb-2 block text-sm font-medium">{{ .locale.Tr "settings.style.mode" }}</legend>
+                    <div class="grid gap-2 sm:grid-cols-3">
+                        <label class="og-radio">
                             <input value="light" name="theme" type="radio" {{ if .currentStyle }}{{ if eq .currentStyle.Theme "light" }}checked{{ end }}{{ end }} />
                             {{ .locale.Tr "settings.style.theme-light" }}
                         </label>
-                        <label>
+                        <label class="og-radio">
                             <input value="dark" name="theme" type="radio" {{ if .currentStyle }}{{ if eq .currentStyle.Theme "dark" }}checked{{ end }}{{ end }} />
                             {{ .locale.Tr "settings.style.theme-dark" }}
                         </label>
-                        <label>
+                        <label class="og-radio">
                             <input value="auto" name="theme" type="radio" {{ if .currentStyle }}{{ if or (eq .currentStyle.Theme "auto") (not .currentStyle.Theme) }}checked{{ end }}{{ else }}checked{{ end }} />
                             {{ .locale.Tr "settings.style.theme-auto" }}
                         </label>
                     </div>
                 </fieldset>
 
-                <div class="space-y-1.5">
+                <div class="space-y-2">
+                    <p class="text-sm font-medium">{{ .locale.Tr "settings.style.theme-color" }}</p>
                     <fieldset class="field" role="radiogroup">
                         <div class="flex flex-wrap gap-2 pt-1">
                             {{ range $c := .themeColors }}
@@ -76,30 +78,40 @@
                 </div>
 
                 <fieldset class="field" role="radiogroup">
-                    <div class="flex flex-wrap gap-x-6 gap-y-3">
-                        <label>
+                    <legend class="mb-2 block text-sm font-medium">{{ .locale.Tr "settings.style.wrap" }}</legend>
+                    <div class="grid gap-2 sm:grid-cols-2">
+                        <label class="og-radio">
                             <input value="false" name="softwrap" type="radio" {{ if .currentStyle }}{{ if not .currentStyle.SoftWrap }}checked{{ end }}{{ else }}checked{{ end }} />
                             {{ .locale.Tr "settings.style.no-soft-wrap" }}
                         </label>
-                        <label>
+                        <label class="og-radio">
                             <input value="true" name="softwrap" type="radio" {{ if .currentStyle }}{{ if .currentStyle.SoftWrap }}checked{{ end }}{{ end }} />
                             {{ .locale.Tr "settings.style.soft-wrap" }}
                         </label>
                     </div>
                 </fieldset>
 
-                <div class="flex flex-wrap gap-6">
+                <div class="grid gap-4 sm:grid-cols-3">
                     <div class="space-y-1.5">
                         <label for="removedlinecolor" class="block text-sm font-medium">{{ .locale.Tr "settings.style.removed-lines-color" }}</label>
-                        <input type="color" value="{{ if .currentStyle }}{{ .currentStyle.RemovedLineColor }}{{ else }}#ff0000{{ end }}" id="removedlinecolor" name="removedlinecolor" class="h-9 w-16 rounded-md border" />
+                        <div class="flex items-center gap-2.5">
+                            <input type="color" value="{{ if .currentStyle }}{{ .currentStyle.RemovedLineColor }}{{ else }}#ff0000{{ end }}" id="removedlinecolor" name="removedlinecolor" class="h-9 w-14 shrink-0 cursor-pointer rounded-md border bg-background p-1" />
+                            <span data-color-value class="font-mono text-xs uppercase text-muted-foreground">{{ if .currentStyle }}{{ .currentStyle.RemovedLineColor }}{{ else }}#ff0000{{ end }}</span>
+                        </div>
                     </div>
                     <div class="space-y-1.5">
                         <label for="addedlinecolor" class="block text-sm font-medium">{{ .locale.Tr "settings.style.added-lines-color" }}</label>
-                        <input type="color" value="{{ if .currentStyle }}{{ .currentStyle.AddedLineColor }}{{ else }}#00ff80{{ end }}" id="addedlinecolor" name="addedlinecolor" class="h-9 w-16 rounded-md border" />
+                        <div class="flex items-center gap-2.5">
+                            <input type="color" value="{{ if .currentStyle }}{{ .currentStyle.AddedLineColor }}{{ else }}#00ff80{{ end }}" id="addedlinecolor" name="addedlinecolor" class="h-9 w-14 shrink-0 cursor-pointer rounded-md border bg-background p-1" />
+                            <span data-color-value class="font-mono text-xs uppercase text-muted-foreground">{{ if .currentStyle }}{{ .currentStyle.AddedLineColor }}{{ else }}#00ff80{{ end }}</span>
+                        </div>
                     </div>
                     <div class="space-y-1.5">
                         <label for="gitlinecolor" class="block text-sm font-medium">{{ .locale.Tr "settings.style.git-lines-color" }}</label>
-                        <input type="color" value="{{ if .currentStyle }}{{ .currentStyle.GitLineColor }}{{ else }}#8f8f8f{{ end }}" id="gitlinecolor" name="gitlinecolor" class="h-9 w-16 rounded-md border" />
+                        <div class="flex items-center gap-2.5">
+                            <input type="color" value="{{ if .currentStyle }}{{ .currentStyle.GitLineColor }}{{ else }}#8f8f8f{{ end }}" id="gitlinecolor" name="gitlinecolor" class="h-9 w-14 shrink-0 cursor-pointer rounded-md border bg-background p-1" />
+                            <span data-color-value class="font-mono text-xs uppercase text-muted-foreground">{{ if .currentStyle }}{{ .currentStyle.GitLineColor }}{{ else }}#8f8f8f{{ end }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -112,25 +124,26 @@
             </div>
             <div class="space-y-4 p-4">
                 <fieldset class="field" role="radiogroup">
-                    <div class="flex flex-wrap gap-x-6 gap-y-3">
-                        <label>
+                    <legend class="mb-2 block text-sm font-medium">{{ .locale.Tr "settings.style.default-sort" }}</legend>
+                    <div class="grid gap-2 sm:grid-cols-2">
+                        <label class="og-radio">
                             <input value="created" name="defaultsort" type="radio" {{ if .currentStyle }}{{ if or (eq .currentStyle.DefaultSort "created") (eq .currentStyle.DefaultSort "") }}checked{{ end }}{{ else }}checked{{ end }} />
                             {{ .locale.Tr "settings.style.default-sort-created" }}
                         </label>
-                        <label>
+                        <label class="og-radio">
                             <input value="updated" name="defaultsort" type="radio" {{ if .currentStyle }}{{ if eq .currentStyle.DefaultSort "updated" }}checked{{ end }}{{ end }} />
                             {{ .locale.Tr "settings.style.default-sort-updated" }}
                         </label>
                     </div>
                 </fieldset>
-                <p class="text-sm font-medium">{{ .locale.Tr "settings.style.default-order" }}</p>
                 <fieldset class="field" role="radiogroup">
-                    <div class="flex flex-wrap gap-x-6 gap-y-3">
-                        <label>
+                    <legend class="mb-2 block text-sm font-medium">{{ .locale.Tr "settings.style.default-order" }}</legend>
+                    <div class="grid gap-2 sm:grid-cols-2">
+                        <label class="og-radio">
                             <input value="desc" name="defaultorder" type="radio" {{ if .currentStyle }}{{ if or (eq .currentStyle.DefaultOrder "desc") (eq .currentStyle.DefaultOrder "") }}checked{{ end }}{{ else }}checked{{ end }} />
                             {{ .locale.Tr "settings.style.default-order-desc" }}
                         </label>
-                        <label>
+                        <label class="og-radio">
                             <input value="asc" name="defaultorder" type="radio" {{ if .currentStyle }}{{ if eq .currentStyle.DefaultOrder "asc" }}checked{{ end }}{{ end }} />
                             {{ .locale.Tr "settings.style.default-order-asc" }}
                         </label>
@@ -146,7 +159,14 @@
 
     {{/* A quick light/dark override from the header is kept in localStorage. The
          account preference saved here should win, so drop the override. */}}
-    <script nonce="{{ .c.cspNonce }}">
+    <script nonce="{{ .cspNonce }}">
+        document.querySelectorAll('input[type="color"]').forEach((input) => {
+            const output = input.parentElement?.querySelector('[data-color-value]');
+            if (!output) return;
+            const sync = () => { output.textContent = input.value.toUpperCase(); };
+            input.addEventListener('input', sync);
+            sync();
+        });
         document.querySelector('form[action$="/settings/style"]')?.addEventListener('submit', () => {
             localStorage.removeItem('theme');
         });

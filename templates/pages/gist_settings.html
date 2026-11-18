@@ -48,7 +48,7 @@
             </div>
             <form method="post" action="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}/{{ .gist.Identifier }}/visibility" class="flex shrink-0 items-center gap-2">
                 {{ .csrfHtml }}
-                <select name="private" class="border-input bg-background h-9 rounded-md border px-2 text-sm">
+                <select name="private" class="input h-9 w-auto">
                     <option value="0" {{ if eq .gist.Private.String "public" }}selected{{ end }}>{{ .locale.Tr "gist.search.placeholder.public" }}</option>
                     <option value="1" {{ if eq .gist.Private.String "unlisted" }}selected{{ end }}>{{ .locale.Tr "gist.search.placeholder.unlisted" }}</option>
                     <option value="2" {{ if eq .gist.Private.String "private" }}selected{{ end }}>{{ .locale.Tr "gist.search.placeholder.private" }}</option>

@@ -51,7 +51,7 @@
                             </label>
 
                             {{ else if eq (printf "%s" .Kind) "enum" }}
-                            <select id="{{ .Key }}" name="{{ .Key }}" class="input h-9 w-full sm:max-w-[240px]">
+                            <select id="{{ .Key }}" name="{{ .Key }}" class="input h-9 w-full sm:max-w-[340px]">
                                 {{ range .Options }}
                                 <option value="{{ .Value }}" {{ if eq $value .Value }}selected{{ end }}>{{ $.locale.Tr .Label }}</option>
                                 {{ end }}
@@ -105,23 +105,23 @@
                             {{ else if eq (printf "%s" .Kind) "int" }}
                             <input id="{{ .Key }}" name="{{ .Key }}" type="number" value="{{ $value }}"
                                    min="{{ .Min }}" max="{{ .Max }}" step="1"
-                                   class="input h-9 w-full sm:max-w-[160px]" />
+                                   class="input h-9 w-full sm:max-w-[340px]" />
                             {{ if .Unit }}<span class="text-muted-foreground shrink-0 text-xs">{{ $.locale.Tr .Unit }}</span>{{ end }}
 
                             {{ else if eq (printf "%s" .Kind) "secret" }}
                             <input id="{{ .Key }}" name="{{ .Key }}" type="password" value="{{ $value }}"
                                    placeholder="{{ $.secretPlaceholder }}" autocomplete="new-password"
-                                   class="input h-9 w-full sm:max-w-[280px]" />
+                                   class="input h-9 w-full sm:max-w-[340px]" />
 
                             {{ else if eq (printf "%s" .Kind) "url" }}
                             <input id="{{ .Key }}" name="{{ .Key }}" type="url" value="{{ $value }}"
                                    placeholder="{{ .Placeholder }}"
-                                   class="input h-9 w-full sm:max-w-[320px]" />
+                                   class="input h-9 w-full sm:max-w-[340px]" />
 
                             {{ else }}
                             <input id="{{ .Key }}" name="{{ .Key }}" type="text" value="{{ $value }}"
                                    placeholder="{{ .Placeholder }}"
-                                   class="input h-9 w-full sm:max-w-[320px]" />
+                                   class="input h-9 w-full sm:max-w-[340px]" />
                             {{ end }}
                         </div>
                     </div>
