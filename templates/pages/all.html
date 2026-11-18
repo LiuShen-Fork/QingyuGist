@@ -1,57 +1,79 @@
 {{ define "content" }}
 <div class="space-y-6">
-    <header class="flex min-h-9 flex-wrap items-center justify-between gap-3">
+    <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         {{ if .fromUser }}
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-4">
                 {{ if not (shouldGenerateAvatar .fromUser .DisableGravatar) }}
-                    <img class="size-12 rounded-full border object-cover" src="{{ avatarUrl .fromUser .DisableGravatar }}" alt="{{ .fromUser.Username }}" />
+                    <img class="size-14 rounded-full border object-cover shadow-sm" src="{{ avatarUrl .fromUser .DisableGravatar }}" alt="{{ .fromUser.Username }}" />
                 {{ else }}
-                    <svg class="size-12 rounded-full border" data-jdenticon-value="{{ .fromUser.Username }}" width="48" height="48"></svg>
+                    <svg class="size-14 rounded-full border shadow-sm" data-jdenticon-value="{{ .fromUser.Username }}" width="56" height="56"></svg>
                 {{ end }}
-                <div>
-                    <h1 class="text-2xl font-bold leading-tight">{{ .fromUser.Username }}</h1>
-                    <p class="text-muted-foreground text-sm">{{ .locale.Tr "gist.list.joined" }} {{ $.locale.TimeAgo .fromUser.CreatedAt }}</p>
+                <div class="min-w-0">
+                    <h1 class="truncate text-2xl font-semibold leading-tight tracking-tight">{{ .fromUser.Username }}</h1>
+                    <p class="text-muted-foreground mt-1 text-sm">{{ .locale.Tr "gist.list.joined" }} {{ $.locale.TimeAgo .fromUser.CreatedAt }}</p>
                 </div>
             </div>
         {{ else if eq .mode "topics" }}
-            <div class="flex items-center gap-3">
-                <span class="bg-muted text-muted-foreground flex size-12 items-center justify-center rounded-md border text-lg font-medium uppercase">{{ slice .topic 0 1 }}</span>
-                <h1 class="text-2xl font-bold leading-tight">{{ .topic }}</h1>
+            <div class="flex items-center gap-4">
+                <span class="bg-muted text-muted-foreground flex size-12 items-center justify-center rounded-xl border text-lg font-medium uppercase">{{ slice .topic 0 1 }}</span>
+                <div>
+                    <p class="text-muted-foreground text-xs font-medium">{{ .locale.Tr "header.menu.topics" }}</p>
+                    <h1 class="mt-1 text-2xl font-semibold leading-tight tracking-tight">{{ .topic }}</h1>
+                </div>
             </div>
         {{ else if eq .mode "search" }}
-            <h1 class="text-2xl font-bold leading-tight">{{ .locale.Tr "gist.list.search-results" }}</h1>
+            <div class="min-w-0">
+                <p class="text-muted-foreground text-xs font-medium">{{ .locale.Tr "gist.search.placeholder.search" }}</p>
+                <h1 class="mt-1 text-2xl font-semibold leading-tight tracking-tight">{{ .locale.Tr "gist.list.search-results" }}</h1>
+                {{ if .searchQuery }}<p class="text-muted-foreground mt-1 truncate text-sm">“{{ .searchQuery }}”</p>{{ end }}
+            </div>
         {{ else }}
-            <h1 class="text-2xl font-bold leading-tight">{{ .locale.Tr "gist.list.all" }}</h1>
+            <div class="min-w-0">
+                <p class="text-muted-foreground flex items-center gap-2 text-xs font-medium">
+                    <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                    {{ .locale.Tr "sidebar.explore" }}
+                </p>
+                <h1 class="mt-1 text-[28px] font-semibold leading-tight tracking-tight">
+                    {{ if eq .mode "all-liked" }}{{ .locale.Tr "gist.list.recently-liked" }}{{ else if eq .mode "all-forked" }}{{ .locale.Tr "gist.list.recently-forked" }}{{ else }}{{ .locale.Tr "gist.list.all" }}{{ end }}
+                </h1>
+                {{ if eq .mode "all" }}<p class="text-muted-foreground mt-1.5 max-w-2xl text-sm">{{ .locale.Tr "explore.subtitle" }}</p>{{ end }}
+            </div>
+            {{ if and .userLogged (eq .mode "all") }}
+            <a href="{{ .c.ExternalUrl }}/" class="btn h-9 shrink-0">
+                <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                {{ .locale.Tr "header.menu.new" }}
+            </a>
+            {{ end }}
         {{ end }}
     </header>
 
-    {{ if .heatmap }}{{ template "heatmap" . }}{{ end }}
-
     {{ if .fromUser }}
     <!-- Tabs for a user's gists -->
-    <nav class="flex gap-1 border-b" aria-label="Tabs">
-        <a href="{{ .c.ExternalUrl }}/{{ profilePath .fromUser.Username }}" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "fromUser" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.all" }} <span class="text-muted-foreground">{{ .countFromUser }}</span></a>
-        {{ if or (ne .countLiked 0) (eq .mode "liked") }}<a href="{{ .c.ExternalUrl }}/{{ profilePath .fromUser.Username }}/liked" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "liked" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.liked" }} <span>{{ .countLiked }}</span></a>{{ end }}
-        {{ if or (ne .countForked 0) (eq .mode "forked") }}<a href="{{ .c.ExternalUrl }}/{{ profilePath .fromUser.Username }}/forked" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "forked" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.forked" }} <span>{{ .countForked }}</span></a>{{ end }}
+    <nav class="og-tabs" aria-label="Tabs">
+        <a href="{{ .c.ExternalUrl }}/{{ profilePath .fromUser.Username }}" class="og-tab" {{ if eq .mode "fromUser" }}aria-current="page"{{ end }}>{{ .locale.Tr "gist.list.all" }} <span class="og-tab-count">{{ .countFromUser }}</span></a>
+        {{ if or (ne .countLiked 0) (eq .mode "liked") }}<a href="{{ .c.ExternalUrl }}/{{ profilePath .fromUser.Username }}/liked" class="og-tab" {{ if eq .mode "liked" }}aria-current="page"{{ end }}>{{ .locale.Tr "gist.list.liked" }} <span class="og-tab-count">{{ .countLiked }}</span></a>{{ end }}
+        {{ if or (ne .countForked 0) (eq .mode "forked") }}<a href="{{ .c.ExternalUrl }}/{{ profilePath .fromUser.Username }}/forked" class="og-tab" {{ if eq .mode "forked" }}aria-current="page"{{ end }}>{{ .locale.Tr "gist.list.forked" }} <span class="og-tab-count">{{ .countForked }}</span></a>{{ end }}
     </nav>
     {{ else if or (eq .mode "all") (eq .mode "all-liked") (eq .mode "all-forked") }}
-    <!-- Tabs for the explore "All gists" views -->
-    <nav class="flex gap-1 border-b" aria-label="Tabs">
-        <a href="{{ .c.ExternalUrl }}/explore" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "all" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "header.menu.all" }}</a>
-        <a href="{{ .c.ExternalUrl }}/explore/liked" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "all-liked" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.recently-liked" }}</a>
-        <a href="{{ .c.ExternalUrl }}/explore/forked" class="-mb-px border-b-2 px-3 py-2 text-sm font-medium {{ if eq .mode "all-forked" }}border-primary{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">{{ .locale.Tr "gist.list.recently-forked" }}</a>
+    <!-- Tabs for the explore feeds -->
+    <nav class="og-tabs" aria-label="Tabs">
+        <a href="{{ .c.ExternalUrl }}/explore" class="og-tab" {{ if eq .mode "all" }}aria-current="page"{{ end }}>{{ .locale.Tr "header.menu.all" }}</a>
+        <a href="{{ .c.ExternalUrl }}/explore/liked" class="og-tab" {{ if eq .mode "all-liked" }}aria-current="page"{{ end }}>{{ .locale.Tr "gist.list.recently-liked" }}</a>
+        <a href="{{ .c.ExternalUrl }}/explore/forked" class="og-tab" {{ if eq .mode "all-forked" }}aria-current="page"{{ end }}>{{ .locale.Tr "gist.list.recently-forked" }}</a>
     </nav>
     {{ end }}
 
+    {{ if .heatmap }}{{ template "heatmap" . }}{{ end }}
+
     {{ if .sortable }}
     <!-- Filter / sort toolbar -->
-    <div class="flex flex-wrap items-center gap-2">
+    <div class="og-toolbar flex flex-wrap items-center gap-2">
         {{ if or (eq .mode "fromUser") (eq .mode "all") (eq .mode "topics") }}
         <form action="{{ .c.ExternalUrl }}/{{ if eq .mode "fromUser" }}{{ profilePath .fromUser.Username }}{{ else if eq .mode "topics" }}topics/{{ .topic }}{{ else }}explore{{ end }}" method="GET"
               class="flex flex-1 flex-wrap items-center gap-2"
               data-gist-filter
               data-init-title="{{ .title }}" data-init-visibility="{{ .visibility }}" data-init-language="{{ .language }}" data-init-topics="{{ .topics }}">
-            <div class="relative min-w-60 flex-1">
+            <div class="relative min-w-0 flex-1">
                 <div data-filter-box class="border-input bg-background focus-within:ring-ring flex h-auto min-h-9 flex-wrap items-center gap-1 rounded-md border px-3 py-1 focus-within:ring-1">
                     <input type="text" data-filter-input autocomplete="off" spellcheck="false"
                            placeholder="{{ .locale.Tr "gist.search.placeholder.search" }}"
@@ -82,8 +104,8 @@
         {{ end }}
 
         <!-- Sort dropdown (Basecoat dropdown-menu, JS) -->
-        <div class="dropdown-menu ml-auto shrink-0">
-            <button type="button" id="sort-trigger" aria-haspopup="menu" aria-expanded="false" aria-controls="sort-menu" class="btn-outline">
+        <div class="dropdown-menu w-full shrink-0 sm:ml-auto sm:w-auto">
+            <button type="button" id="sort-trigger" aria-haspopup="menu" aria-expanded="false" aria-controls="sort-menu" class="btn-outline h-9 w-full justify-between sm:w-auto">
                 {{ .locale.Tr "gist.list.sort" }} : {{ .order }} {{ .sort }}
                 <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             </button>

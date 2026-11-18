@@ -115,6 +115,9 @@ gist.list.topic-results-topic: All gists matching topic %s
 gist.list.topic-results: All gists matching topic
 
 explore.users.no-users: No users
+explore.users.subtitle: Discover the people sharing code on this instance.
+explore.topics.subtitle: Browse public gists by topic.
+explore.subtitle: Browse public gists from across the instance, and see what people are building.
 explore.users.search-placeholder: Search users
 explore.users.sort-username-asc: Username (A → Z)
 explore.users.sort-username-desc: Username (Z → A)
@@ -577,7 +580,9 @@ flash.admin.config-saved: Configuration saved
 flash.admin.config-save-failed: Could not save configuration
 heatmap.title: Contribution activity
 heatmap.subtitle: Gists created over the past year
-heatmap.events: contributions
+heatmap.events: Contributions
+heatmap.active-days: Active days
+heatmap.best-day: Best day
 heatmap.less: Less
 heatmap.more: More
 heatmap.day.mon: Mon

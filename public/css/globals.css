@@ -432,41 +432,257 @@ table.csv-table thead th {
     mask-image: radial-gradient(ellipse 70% 55% at 50% 38%, #000 10%, transparent 78%);
 }
 
-/* Contribution heatmap -------------------------------------------------- */
-.heatmap-cell {
-    display: inline-block;
-    width: 11px;
-    height: 11px;
-    border-radius: 2px;
-    background: color-mix(in oklab, var(--foreground) 8%, transparent);
-    outline: 1px solid transparent;
-    outline-offset: 1px;
-    transition: background-color 120ms ease, outline-color 120ms ease;
+/* Sidebar navigation ---------------------------------------------------- */
+.og-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: calc(var(--radius) - 0.05rem);
+    padding: 0.4rem 0.5rem;
+    color: color-mix(in oklab, var(--sidebar-foreground) 82%, transparent);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    transition: color 120ms ease, background-color 120ms ease;
 }
 
-.heatmap-cell[data-level="1"] { background: color-mix(in oklab, var(--primary) 26%, transparent); }
-.heatmap-cell[data-level="2"] { background: color-mix(in oklab, var(--primary) 45%, transparent); }
-.heatmap-cell[data-level="3"] { background: color-mix(in oklab, var(--primary) 68%, transparent); }
-.heatmap-cell[data-level="4"] { background: var(--primary); }
+.og-nav-link > svg {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    opacity: 0.75;
+}
 
-.heatmap-cell:hover { outline-color: var(--foreground); }
+.og-nav-link:hover {
+    color: var(--sidebar-accent-foreground);
+    background: var(--sidebar-hover);
+}
 
-.heatmap-week {
+.og-nav-link[aria-current="page"] {
+    color: var(--sidebar-accent-foreground);
+    background: color-mix(in oklab, var(--primary) 9%, var(--sidebar-accent));
+    font-weight: 600;
+}
+
+.og-nav-link[aria-current="page"] > svg {
+    color: var(--primary);
+    opacity: 1;
+}
+
+.og-nav-label {
+    padding: 0.55rem 0.5rem 0.15rem;
+    color: color-mix(in oklab, var(--sidebar-foreground) 52%, transparent);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.055em;
+    line-height: 1.25rem;
+    text-transform: uppercase;
+}
+
+/* Shared surfaces ------------------------------------------------------ */
+.og-card {
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 0.3rem);
+    background: var(--card);
+    box-shadow: 0 1px 2px 0 color-mix(in oklab, var(--foreground) 4%, transparent);
+}
+
+/* Segmented tabs, used by the explore and profile feeds. */
+.og-tabs {
+    display: inline-flex;
+    max-width: 100%;
+    gap: 2px;
+    overflow-x: auto;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 0.2rem);
+    background: color-mix(in oklab, var(--muted) 72%, transparent);
+    scrollbar-width: none;
+}
+
+.og-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.og-tab {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: calc(var(--radius) - 0.05rem);
+    padding: 0.4rem 0.7rem;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    white-space: nowrap;
+    transition: color 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
+}
+
+.og-tab:hover {
+    color: var(--foreground);
+    background: color-mix(in oklab, var(--background) 60%, transparent);
+}
+
+.og-tab[aria-current="page"] {
+    color: var(--foreground);
+    background: var(--card);
+    box-shadow: 0 1px 2px 0 color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+
+.og-tab-count {
+    min-width: 1.25rem;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--foreground) 6%, transparent);
+    padding: 0 0.3rem;
+    color: var(--muted-foreground);
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15rem;
+    text-align: center;
+}
+
+.og-tab[aria-current="page"] .og-tab-count {
+    background: color-mix(in oklab, var(--primary) 12%, transparent);
+    color: var(--primary);
+}
+
+/* Filter / sort strip above a feed. */
+.og-toolbar {
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 0.2rem);
+    background: var(--card);
+    box-shadow: 0 1px 2px 0 color-mix(in oklab, var(--foreground) 4%, transparent);
+}
+
+/* Contribution heatmap -------------------------------------------------- */
+.heatmap {
+    --heatmap-gap: 3px;
+    width: 100%;
+}
+
+.heatmap-months {
     display: grid;
-    grid-template-rows: repeat(7, 11px);
-    gap: 3px;
+    grid-template-columns: repeat(var(--heatmap-weeks), minmax(0, 1fr));
+    column-gap: var(--heatmap-gap);
+    margin-left: calc(2rem + 0.5rem);
+    margin-bottom: 0.4rem;
+    color: var(--muted-foreground);
+    font-size: 10px;
+    line-height: 1;
+}
+
+.heatmap-month {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.heatmap-body {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.5rem;
+    align-items: stretch;
 }
 
 .heatmap-weekdays {
     display: grid;
-    grid-template-rows: repeat(7, 11px);
-    gap: 3px;
-    width: 26px;
-    padding-top: 20px;
-    font-size: 10px;
-    line-height: 11px;
+    grid-template-rows: repeat(7, minmax(0, 1fr));
+    align-items: center;
+    gap: var(--heatmap-gap);
     color: var(--muted-foreground);
+    font-size: 10px;
+    line-height: 1.1;
     text-align: right;
+}
+
+.heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--heatmap-weeks), minmax(0, 1fr));
+    gap: var(--heatmap-gap);
+    min-width: 0;
+}
+
+.heatmap-week {
+    display: grid;
+    grid-template-rows: repeat(7, auto);
+    gap: var(--heatmap-gap);
+    min-width: 0;
+}
+
+.heatmap-cell,
+.heatmap-key {
+    display: block;
+    border-radius: 2.5px;
+    background: color-mix(in oklab, var(--foreground) 7%, var(--card));
+    outline: 1px solid transparent;
+    outline-offset: 1px;
+    transition: background-color 120ms ease, outline-color 120ms ease, filter 120ms ease;
+}
+
+.heatmap-cell {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    aspect-ratio: 1;
+}
+
+.heatmap-cell[data-level="1"],
+.heatmap-key[data-level="1"] { background: color-mix(in oklab, var(--primary) 22%, var(--card)); }
+.heatmap-cell[data-level="2"],
+.heatmap-key[data-level="2"] { background: color-mix(in oklab, var(--primary) 42%, var(--card)); }
+.heatmap-cell[data-level="3"],
+.heatmap-key[data-level="3"] { background: color-mix(in oklab, var(--primary) 66%, var(--card)); }
+.heatmap-cell[data-level="4"],
+.heatmap-key[data-level="4"] { background: var(--primary); }
+
+.heatmap-cell[data-future="true"] {
+    background: transparent;
+    outline-color: color-mix(in oklab, var(--foreground) 5%, transparent);
+}
+
+.heatmap-cell[data-today="true"] {
+    outline-color: var(--foreground);
+}
+
+.heatmap-cell:hover {
+    z-index: 1;
+    outline-color: var(--foreground);
+    filter: brightness(0.94);
+}
+
+.heatmap-key {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+}
+
+/* On narrow screens the full year is split into two stacked bands instead of
+   shrinking every day into an unreadable dot or forcing a horizontal scroll. */
+.heatmap-responsive {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    .heatmap-full {
+        display: none;
+    }
+
+    .heatmap-responsive {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 639px) {
+    .heatmap {
+        --heatmap-gap: 2px;
+    }
+
+    .heatmap-weekdays {
+        font-size: 9px;
+    }
 }
 
 /* Basecoat keeps closed popovers in the layout with only an opacity/scale

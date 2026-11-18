@@ -1,5 +1,5 @@
 {{ define "gist" }}
-<article class="bg-card text-card-foreground rounded-xl border">
+<article class="bg-card text-card-foreground group overflow-hidden rounded-xl border transition-colors hover:border-primary/25">
     <header class="flex items-start gap-3 p-4">
         <a href="{{ .c.ExternalUrl }}/{{ profilePath .gist.User.Username }}" class="shrink-0">
             {{ if not (shouldGenerateAvatar .gist.User .DisableGravatar) }}
@@ -11,7 +11,7 @@
 
         <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <h3 class="break-all text-base">
+                <h3 class="break-all text-[15px] font-semibold tracking-tight">
                     <a href="{{ .c.ExternalUrl }}/{{ profilePath .gist.User.Username }}" class="hover:underline">{{ .gist.User.Username }}</a>
                     <span class="text-muted-foreground">/</span>
                     <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}/{{ .gist.Identifier }}" class="font-semibold hover:underline">{{ .gist.Title }}</a>
@@ -52,7 +52,12 @@
     </header>
 
     <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}/{{ .gist.Identifier }}" class="block border-t">
-        <div class="max-h-72 overflow-auto rounded-b-xl">
+        <div class="bg-muted/35 text-muted-foreground flex items-center gap-2 border-b px-4 py-2 text-xs">
+            <svg class="size-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            <span class="truncate font-mono">{{ if .gist.PreviewFilename }}{{ .gist.PreviewFilename }}{{ else }}{{ .locale.Tr "gist.no-content" }}{{ end }}</span>
+            <span class="ml-auto shrink-0 tabular-nums">{{ .gist.NbFiles }} {{ .locale.Tr "gist.list.files" }}</span>
+        </div>
+        <div class="max-h-60 overflow-auto">
             {{ if .gist.PreviewFilename }}
                 {{ if .gist.PreviewMimeType }}
                     {{ if or .gist.PreviewMimeType.IsSVG .gist.PreviewMimeType.IsImage }}

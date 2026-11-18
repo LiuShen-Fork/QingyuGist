@@ -171,7 +171,7 @@ pagination.next: 下一页
 admin.admin_panel: 管理面板
 admin.general: 通用
 admin.users: 用户
-admin.gists: Gists
+admin.gists: Gist
 admin.configuration: 配置
 admin.versions: 版本
 admin.ssh_keys: SSH 密钥
@@ -464,7 +464,9 @@ flash.admin.config-saved: 配置已保存
 flash.admin.config-save-failed: 配置保存失败
 heatmap.title: 贡献活跃度
 heatmap.subtitle: 过去一年创建的 Gist
-heatmap.events: 次贡献
+heatmap.events: 贡献次数
+heatmap.active-days: 活跃天数
+heatmap.best-day: 单日最高
 heatmap.less: 少
 heatmap.more: 多
 heatmap.day.mon: 一
@@ -495,6 +497,9 @@ error.gist-form-too-large: Gist 表单超过了 10 MB 的请求限制
 error.go-home: 返回首页
 error.no-file-uploaded: 未上传文件
 explore.users.no-users: 暂无用户
+explore.users.subtitle: 发现实例中分享代码的用户。
+explore.topics.subtitle: 按主题浏览公开的 Gist。
+explore.subtitle: 浏览实例中的公开 Gist，看看大家正在创造什么。
 explore.users.search-placeholder: 搜索用户
 explore.users.sort-joined-asc: 最早加入
 explore.users.sort-joined-desc: 最新加入
