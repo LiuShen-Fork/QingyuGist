@@ -335,7 +335,6 @@ gist.search.placeholder.search: 搜索
 gist.search.placeholder.public: 公开
 gist.search.placeholder.unlisted: 未列出的
 
-# 管理面板
 admin.dashboard: 概览
 admin.dashboard-subtitle: 实例的实时运行状态。
 admin.back-to-dashboard: 返回概览
@@ -367,7 +366,6 @@ admin.runtime: 运行环境
 admin.last-index: 上次索引时间
 admin.save-changes: 保存更改
 
-# 设置项
 settings.category.site: 站点
 settings.category.auth: 认证
 settings.category.upload: 上传
@@ -451,7 +449,6 @@ settings.git.default_branch_help: 新仓库使用的分支名称。
 settings.api.enabled: 启用 API
 settings.api.enabled_help: 开放 REST API 与访问令牌。
 
-# 登录与注册
 auth.hero.title: 分享代码，也掌控数据。
 auth.hero.subtitle: 一个快速、自托管的片段、笔记与代码之家。
 auth.hero.feature.gist: 基于 Git 的版本化 Gist
