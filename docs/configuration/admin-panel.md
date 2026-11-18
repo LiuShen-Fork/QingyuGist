@@ -34,6 +34,9 @@ are shown masked; leaving a masked value untouched keeps the stored secret.
 - Logo and favicon. Enter a file name from `<opengist-home>/custom/`, or a full
   `http(s)://` URL.
 - Custom CSS and JavaScript injected into every page.
+- Source repository URL, shown as a GitHub icon at the bottom of the sidebar.
+- Sidebar links: icon, label and URL for each custom link, plus the source
+  repository icon. Existing `custom.static-links` entries keep working.
 
 ### Authentication
 

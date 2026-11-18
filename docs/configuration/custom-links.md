@@ -1,11 +1,31 @@
 # Custom links
 
-On the footer of your Opengist instance, you can add links to custom static templates or any other website you want to link to.
-This can be useful for legal information, privacy policy, or any other information you want to provide to your users.
+The bottom of the sidebar can hold links to your own pages or to other
+websites — useful for legal information, a privacy policy, a personal site or a
+blog.
 
-To add one or more links, you can add your own file to the `$opengist-home/custom` directory or set a URL, then define the relative path and its name in the config.
+## Admin panel (recommended)
 
-For example, if you have a legal information file `legal.html` in the `$opengist-home/custom` directory, and also wish to add a link to a Gitea instance, you can set the link in the config as follows:
+Open **Admin → Configuration → Site → Sidebar links** and add a row for each
+link. Every row has an icon, a label and a URL. Changes are stored in the
+database and apply immediately.
+
+The icon list includes a generic link, home, website, GitHub, GitLab, Gitea,
+email, RSS, code, blog, profile, X, Mastodon and Telegram. Relative paths such
+as `/privacy` and `mailto:` links are accepted as well as `http(s)` URLs.
+
+The source-code icon at the very bottom of the sidebar is controlled separately
+by **Source repository**. Leave it empty to hide the icon.
+
+## Configuration file (legacy)
+
+The `custom.static-links` configuration is still supported for existing
+instances and for links that point at custom HTML files. These links use a
+generic link icon.
+
+If you have a legal information file `legal.html` in the `$opengist-home/custom`
+directory, and also wish to add a link to a Gitea instance, set the links as
+follows:
 
 #### YAML
 ```yaml

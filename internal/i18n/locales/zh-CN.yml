@@ -28,6 +28,7 @@ gist.file-not-valid: 此文件不是有效的 CSV 文件。
 gist.no-content: 没有内容
 
 gist.new.new_gist: 新建 Gist
+gist.new.subtitle: 用任意类型的文件创建公开或私有 Gist。
 gist.new.title: 标题
 gist.new.description: 描述
 gist.new.filename-with-extension: 带扩展名的文件名
@@ -50,7 +51,7 @@ gist.edit.cancel: 取消
 gist.edit.save: 保存
 
 gist.list.joined: 加入于
-gist.list.all: 所有 Gists
+gist.list.all: 所有 Gist
 gist.list.search-results: 搜索结果
 gist.list.sort: 排序
 gist.list.sort-by-created: 创建
@@ -87,11 +88,11 @@ gist.revision.no-changes: 没有任何变更
 gist.revision.no-revisions: 无可供显示的修订
 
 settings: 设置
-settings.header.account: 账号
+settings.header.account: 账号设置
 settings.header.mfa: 多因素认证
-settings.header.ssh: SSH
+settings.header.ssh: SSH 密钥
 settings.header.tokens: 访问令牌
-settings.header.style: 样式
+settings.header.style: 外观
 settings.email: 电子邮箱
 settings.email-help: 用于提交和 Gravatar 头像
 settings.email-set: 设置邮箱地址
@@ -116,7 +117,7 @@ settings.create-token: 创建访问令牌
 settings.create-token-help: 访问令牌用于程序化调用 API
 settings.token-name: 名称
 settings.token-permissions: 权限
-settings.token-gist-permission: Gists
+settings.token-gist-permission: Gist
 settings.token-user-permission: 用户
 settings.token-permission-none: 无访问权限
 settings.token-permission-read: 只读
@@ -151,8 +152,8 @@ error: 错误
 header.menu.all: 全部
 header.menu.new: 新建
 header.menu.search: 搜索
-header.menu.my-gists: 我的 Gists
-header.menu.liked: 喜欢的 Gists
+header.menu.my-gists: 我的 Gist
+header.menu.liked: 喜欢的 Gist
 header.menu.admin: 管理
 header.menu.settings: 设置
 header.menu.logout: 登出
@@ -195,8 +196,8 @@ admin.disable-gravatar: 禁用 Gravatar
 admin.disable-gravatar_help: 停止使用 Gravatar 作为头像提供方。
 admin.api-enabled: 启用 REST API（/api）
 admin.api-enabled_help: 允许通过 Personal Access Token 程序化访问 Gist 和用户信息。
-admin.allow-gists-without-login: 允许未登录状态下访问单个 Gists
-admin.allow-gists-without-login_help: 允许在不登录的情况下查看和下载 Gist，同时需要登录才能使用 Gists 的发现功能。
+admin.allow-gists-without-login: 允许未登录状态下访问单个 Gist
+admin.allow-gists-without-login_help: 允许在不登录的情况下查看和下载 Gist，同时需要登录才能使用 Gist 的发现功能。
 admin.users.delete_confirm: 您想要删除此用户吗？
 
 admin.gists.title: 标题
@@ -209,16 +210,16 @@ gist.new.preview: '预览'
 error.page-not-found: '页面未找到'
 gist.new.create-a-new-gist: '创建一个新的 Gist'
 gist.edit.edit-gist: '编辑 %s'
-gist.list.all-liked-by: '%s 喜欢的所有 Gists'
-gist.list.all-forked-by: '%s 派生的所有 Gists'
-gist.list.all-from: '来自于 %s 的所有 Gists'
-gist.search.found: '个已找到的 Gist(s)'
+gist.list.all-liked-by: '%s 喜欢的所有 Gist'
+gist.list.all-forked-by: '%s 派生的所有 Gist'
+gist.list.all-from: '来自于 %s 的所有 Gist'
+gist.search.found: 个 Gist
 gist.search.no-results: '没有找到任何 Gist'
-gist.search.help.user: '由用户创建的 Gists'
-gist.search.help.title: '包含指定标题的 Gists'
-gist.search.help.filename: '包含指定文件名的 Gists'
-gist.search.help.extension: '包含指定扩展名的 Gists'
-gist.search.help.language: '包含指定编程语言的 Gists'
+gist.search.help.user: '由用户创建的 Gist'
+gist.search.help.title: '包含指定标题的 Gist'
+gist.search.help.filename: '包含指定文件名的 Gist'
+gist.search.help.extension: '包含指定扩展名的 Gist'
+gist.search.help.language: '包含指定编程语言的 Gist'
 gist.forks.for: '%s 的派生'
 gist.likes.for: '%s 的喜欢'
 gist.revision-of: '%s 的修订'
@@ -241,7 +242,7 @@ error.invalid-number: '数字格式不正确'
 error.invalid-character-unescaped: '包含未转义的无效字符'
 admin.invitations: '邀请'
 admin.invitations.create: '创建邀请'
-admin.actions.sync-previews: '同步所有 Gists 预览'
+admin.actions.sync-previews: '同步所有 Gist 预览'
 admin.actions.reset-hooks: '重置所有存储库的 Git 服务 hooks'
 admin.actions.index-gists: '重建搜索索引'
 admin.invitations.help: '即使在禁用注册功能的情况下，邀请功能也可用于创建帐户。'
@@ -261,10 +262,10 @@ flash.auth.account-linked-oauth: '帐户已关联到 %s'
 flash.auth.account-unlinked-oauth: '帐户与 %s 解除关联'
 flash.auth.user-sshkeys-not-retrievable: '无法获取用户密钥'
 flash.auth.user-sshkeys-not-created: '无法创建 SSH 密钥'
-flash.auth.must-be-logged-in: '您必须登录才能访问 Gists'
+flash.auth.must-be-logged-in: '您必须登录才能访问 Gist'
 flash.gist.visibility-changed: 'Gist 可见性已更改'
 flash.gist.deleted: 'Gist 已被删除'
-flash.gist.fork-own-gist: '无法派生自己的 Gists'
+flash.gist.fork-own-gist: '无法派生自己的 Gist'
 flash.gist.forked: 'Gist 已被派生'
 flash.user.email-updated: '电子邮件已更新'
 flash.user.invalid-ssh-key: 'SSH 密钥无效'
@@ -319,11 +320,11 @@ auth.totp.proceed: 继续
 auth.totp.save-recovery-codes: 请将您的恢复代码保存在安全的地方。在您无法访问身份验证应用程序时，可以使用这些代码恢复访问。
 admin.invitations.delete_confirm: 您想要删除此邀请吗？
 gist.new.topics: 主题（用空格分隔）
-validation.invalid-gist-topics: 无效的 Gists 主题，它们必须以字母或数字开头，长度不超过50个字符，并且可以包含连字符
-gist.list.topic-results-topic: '%s 与主题匹配的所有 Gists'
+validation.invalid-gist-topics: 无效的 Gist 主题，它们必须以字母或数字开头，长度不超过50个字符，并且可以包含连字符
+gist.list.topic-results-topic: '%s 与主题匹配的所有 Gist'
 admin.actions.sync-gist-languages: 同步所有 gists 语言
 gist.list.topic-results: 所有匹配主题的 Gist
-gist.search.help.topic: 具有给定主题的 Gists
+gist.search.help.topic: 具有给定主题的 Gist
 gist.search.placeholder.title: 标题
 gist.search.placeholder.visibility: 可见性
 gist.search.placeholder.private: 私密
@@ -346,6 +347,7 @@ admin.instance-description: 启动时从配置文件与环境变量读取的值�
 admin.database: 数据库
 admin.database-name: 数据库名称
 admin.search-index: 搜索索引
+admin.index-engine: 索引引擎
 admin.disabled: 已禁用
 admin.external-url: 外部地址
 admin.opengist-home: 数据目录
@@ -529,7 +531,7 @@ gist.list.gists: Gist
 gist.list.no-topics: 暂无主题
 gist.list.recently-forked: 最近被 Fork
 gist.list.recently-liked: 最近被喜欢
-gist.list.search-for: 搜索结果
+gist.list.search-for: 关键词
 gist.list.topic: 主题
 gist.list.topics: 主题
 gist.list.users: 用户
@@ -559,7 +561,7 @@ header.menu.users: 用户
 settings.avatar: 头像
 settings.avatar-help: 上传自定义头像以替代 Gravatar
 settings.avatar-remove: 移除头像
-settings.header.authentication: 账号认证
+settings.header.authentication: 登录与认证
 settings.style.added-lines-color: 新增行颜色
 settings.style.default-order: 默认排序方向
 settings.style.default-order-asc: 最早优先
@@ -578,6 +580,7 @@ settings.style.theme-auto: 跟随系统
 settings.style.theme-dark: 深色
 settings.style.theme-light: 浅色
 sidebar.collapse: 收起
+sidebar.expand: 展开
 ui.feedback-new: 对新界面的反馈
 validation.invalid-expiration-date: 过期日期无效，必须是未来的有效日期
 validation.should-only-contain-alphanumeric-characters-and-dashes-and-underscores: 字段 %s 只能包含字母、数字、短横线和下划线
@@ -637,3 +640,28 @@ sidebar.explore: 发现
 settings.link-oidc-account: 关联 OpenID 账号
 settings.unlink-oidc-account: 解除 OpenID 关联
 settings.unlink-oauth-confirm: 确定要解除 %s 账号的关联吗？如果这是你登录 Opengist 的唯一方式，你可能将无法再访问账户。
+settings.site.repository_url: 源码仓库
+settings.site.repository_url_help: 侧边栏源码图标指向的地址，留空则隐藏。
+settings.site.links: 侧边栏链接
+settings.site.links_help: 显示在侧边栏底部的自定义链接，可分别设置名称、地址和图标。
+admin.links.add: 添加链接
+admin.links.icon: 图标
+admin.links.label: 名称
+admin.links.url: 网址
+admin.links.remove: 删除链接
+site.icon.link: 链接
+site.icon.home: 主页
+site.icon.globe: 网站
+site.icon.github: GitHub
+site.icon.gitlab: GitLab
+site.icon.gitea: Gitea
+site.icon.mail: 邮箱
+site.icon.rss: RSS
+site.icon.code: 代码
+site.icon.book: 博客
+site.icon.user: 个人主页
+site.icon.x: X
+site.icon.mastodon: Mastodon
+site.icon.telegram: Telegram
+theme.toggle: 切换主题
+sidebar.links: 链接

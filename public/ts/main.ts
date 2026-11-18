@@ -11,7 +11,9 @@ import { initGistFilters } from './gist-filter';
 import { initGistLines } from './gist-lines';
 import { initGistCheckboxes } from './gist-checkbox';
 import { initJdenticon } from './jdenticon';
+import { initOgSelects } from './og-select';
 import { initPdf } from './pdf';
+import { initSiteLinks } from './site-links';
 
 let ipynbModule: Promise<typeof import('./ipynb')> | undefined;
 
@@ -28,6 +30,9 @@ const init = () => {
     initIpynb();
     initPdf();
     initJdenticon();
+    initOgSelects();
+    initSiteLinks();
+    syncSidebarToggle();
 };
 
 document.addEventListener('DOMContentLoaded', init);
@@ -38,11 +43,36 @@ document.body.addEventListener('htmx:afterSwap', init);
 // which survives hx-boost body swaps, so it persists across navigation (the head
 // script restores it from localStorage before paint). A delegated listener keeps
 // working after the #sidebar-toggle button is swapped in on each navigation.
+function syncSidebarToggle() {
+    const toggle = document.getElementById('sidebar-toggle');
+    if (!toggle) return;
+    const collapsed = document.documentElement.classList.contains('sidebar-collapsed');
+    const label = toggle.dataset[collapsed ? 'labelExpand' : 'labelCollapse'];
+    if (label) {
+        toggle.setAttribute('aria-label', label);
+        toggle.setAttribute('title', label);
+    }
+}
+
 document.addEventListener('click', (e) => {
     const toggle = (e.target as Element | null)?.closest('#sidebar-toggle');
     if (!toggle) return;
     const collapsed = document.documentElement.classList.toggle('sidebar-collapsed');
     localStorage.setItem('sidebar-collapsed', collapsed ? '1' : '0');
+    syncSidebarToggle();
+});
+
+// Quick light/dark switch in the header. This is a local override: it wins
+// over the account's light/dark/auto preference and is applied before paint by
+// the head script. Keep the account setting as the long-lived preference.
+document.addEventListener('click', (e) => {
+    const toggle = (e.target as Element | null)?.closest('#theme-toggle');
+    if (!toggle) return;
+    const dark = !document.documentElement.classList.contains('dark');
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    document.documentElement.classList.toggle('dark', dark);
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+    window.dispatchEvent(new Event('og:themechange'));
 });
 
 // Top loading bar for boosted navigations. Large files can take a moment to
@@ -151,6 +181,20 @@ const stripInitMarkers = () => {
     document.querySelectorAll(INIT_MARKERS).forEach((el) => {
         el.removeAttribute('data-dropdown-menu-initialized');
         el.removeAttribute('data-filter-ready');
+    });
+    // A saved htmx snapshot keeps the enhanced dropdown wrappers but not the JS
+    // listeners inside them. Collapse them back to the native select so a
+    // restore can re-enhance from scratch.
+    document.querySelectorAll('.og-select').forEach((wrapper) => {
+        const select = wrapper.querySelector('select');
+        if (!select) return;
+        select.classList.remove('og-select-native');
+        delete (select as HTMLElement).dataset.ogSelectReady;
+        wrapper.parentNode?.insertBefore(select, wrapper);
+        wrapper.remove();
+    });
+    document.querySelectorAll('[data-link-editor]').forEach((editor) => {
+        delete (editor as HTMLElement).dataset.linkEditorReady;
     });
 };
 

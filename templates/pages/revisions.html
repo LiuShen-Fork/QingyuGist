@@ -31,7 +31,7 @@
                 {{ range $file := $commit.Files }}
                 <article class="bg-card overflow-hidden rounded-xl border">
                     <header class="bg-muted/40 flex items-center gap-2 border-b px-4 py-2 text-sm">
-                        <svg class="text-muted-foreground size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+                        <svg class="text-muted-foreground size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
                         {{ if $file.IsCreated }}
                             <span class="font-medium">{{ $file.Filename }}</span> <span class="text-muted-foreground italic">({{ $.locale.Tr "gist.revision.file-created" }})</span>
                         {{ else if $file.IsDeleted }}
@@ -101,7 +101,7 @@
     {{ template "pagination" . }}
     {{ else }}
     <div class="text-muted-foreground flex flex-col items-center justify-center py-16 text-center">
-        <svg class="size-12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+        <svg class="size-12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
         <h3 class="text-foreground mt-3 text-sm font-medium">{{ .locale.Tr "gist.revision.no-revisions" }}</h3>
     </div>
     {{ end }}

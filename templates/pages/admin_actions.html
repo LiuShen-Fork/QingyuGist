@@ -47,7 +47,7 @@
                             </div>
                             {{ if .Periodic }}
                             <p class="text-muted-foreground flex items-center gap-1.5 text-xs">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                                 <code class="font-mono">{{ .Spec }}</code>
                             </p>
                             {{ end }}
@@ -56,7 +56,7 @@
                     <div class="flex shrink-0 items-center gap-3">
                         {{ if .Running }}
                         <span class="badge og-blue border-transparent">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="size-3.5 animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" class="size-3.5 animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
                             {{ $.locale.Tr "admin.actions.running" }}
                         </span>
                         {{ end }}

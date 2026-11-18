@@ -1,6 +1,6 @@
 {{ define "content" }}
 <div class="space-y-5">
-    <h1 class="break-all text-2xl font-bold leading-tight">{{ .locale.Tr "gist.edit.editing" }} {{ .gist.Title }}</h1>
+    {{ template "page_header" dict "Eyebrow" (.locale.Tr "gist.edit.editing") "Title" .gist.Title }}
 
     <form id="create" hx-boost="false" class="space-y-4" method="post" action="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}/{{ .gist.Identifier }}/edit">
         {{ .csrfHtml }}
@@ -20,7 +20,7 @@
         <div id="file-upload-zone" class="space-y-3">
             <label for="file-upload" class="block cursor-pointer">
                 <div class="border-border hover:border-primary flex flex-col items-center rounded-xl border-2 border-dashed p-6 text-center transition-colors">
-                    <svg class="text-muted-foreground size-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    <svg class="text-muted-foreground size-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
                     <span class="mt-3 text-sm font-medium">{{ .locale.Tr "gist.new.drop-files" }}</span>
                     <span class="text-muted-foreground mt-1 text-xs">{{ .locale.Tr "gist.new.any-file-type" }}</span>
                 </div>
@@ -33,7 +33,7 @@
         <!-- Action bar -->
         <div class="flex flex-wrap items-center gap-3">
             <button type="button" id="add-file" class="btn-outline">
-                <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
                 {{ .locale.Tr "gist.new.add-file" }}
             </button>
 

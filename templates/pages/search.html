@@ -2,7 +2,7 @@
 <div class="space-y-6">
     <header class="space-y-1">
         <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-            <h1 class="text-2xl font-bold leading-tight">{{ .locale.Tr "gist.list.search-results" }}</h1>
+            <h1 class="text-[28px] leading-tight font-semibold tracking-tight">{{ .locale.Tr "gist.list.search-results" }}</h1>
             <span class="text-muted-foreground text-sm">{{ .nbHits }} {{ .locale.Tr "gist.search.found" }}</span>
         </div>
         {{ if .searchQuery }}
@@ -43,7 +43,7 @@
         </div>
     {{ else }}
         <div class="text-muted-foreground flex flex-col items-center justify-center py-16 text-center">
-            <svg class="size-12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <svg class="size-12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             <h3 class="text-foreground mt-3 text-sm font-medium">{{ .locale.Tr "gist.search.no-results" }}</h3>
         </div>
     {{ end }}

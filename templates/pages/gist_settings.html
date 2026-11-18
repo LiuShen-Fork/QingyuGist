@@ -1,9 +1,10 @@
 {{ define "content" }}
 <div class="space-y-6">
     <header class="space-y-1">
-        <h1 class="text-2xl font-bold leading-tight">{{ .locale.Tr "settings" }}</h1>
-        <p class="text-muted-foreground text-sm">
-            <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}/{{ .gist.Identifier }}" class="hover:underline">{{ .gist.User.Username }}<span class="text-muted-foreground">/</span>{{ .gist.Title }}</a>
+        <p class="text-muted-foreground text-[11px] font-medium tracking-[0.14em] uppercase">Gist</p>
+        <h1 class="mt-1.5 text-[28px] leading-tight font-semibold tracking-tight">{{ .locale.Tr "settings" }}</h1>
+        <p class="text-muted-foreground mt-1.5 text-sm">
+            <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}/{{ .gist.Identifier }}" class="hover:text-foreground hover:underline">{{ .gist.User.Username }}<span class="text-muted-foreground">/</span>{{ .gist.Title }}</a>
         </p>
     </header>
 
@@ -70,7 +71,7 @@
             <form method="post" action="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}/{{ .gist.Identifier }}/archive" class="shrink-0">
                 {{ .csrfHtml }}
                 <button type="submit" class="btn-sm-outline">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/></svg>
+                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/></svg>
                     {{ if .gist.Archived }}{{ .locale.Tr "gist.header.unarchive" }}{{ else }}{{ .locale.Tr "gist.header.archive" }}{{ end }}
                 </button>
             </form>
@@ -91,7 +92,7 @@
                 {{ .csrfHtml }}
                 <button type="submit" class="btn-sm bg-destructive text-white hover:bg-destructive/90"
                         _="on click if not window.confirm('{{ .locale.Tr "gist.delete.confirm" }}') halt the event">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     {{ .locale.Tr "gist.header.delete" }}
                 </button>
             </form>

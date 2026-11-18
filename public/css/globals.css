@@ -388,11 +388,32 @@ table.csv-table thead th {
     opacity: 1;
 }
 
+/* The collapse control sits on the sidebar/content divider at the top, like a
+   small handle, instead of taking space in the navigation header. */
+#sidebar-toggle {
+    position: absolute;
+    top: 0.875rem;
+    right: 0;
+    z-index: 10;
+    width: 1.75rem;
+    height: 1.75rem;
+    transform: translateX(50%);
+    border: 1px solid var(--sidebar-border);
+    border-radius: 9999px;
+    background: var(--sidebar);
+    box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 10%, transparent);
+}
+
+#sidebar-toggle:hover {
+    background: var(--sidebar-accent);
+    opacity: 1;
+}
+
 /* Desktop sidebar collapse into an icon-only rail. Toggled by the
    `sidebar-collapsed` class on <html> (restored from localStorage in the head
    script + toggled in main.ts). Only applies at md+ where the sidebar is docked;
    the mobile drawer keeps its own behavior. The rail keeps icons visible so the
-   collapse button at the bottom of the sidebar stays reachable to expand again. */
+   collapse button in the sidebar header stays reachable to expand again. */
 @media (min-width: 768px) {
     /* Rail width (matches Tailwind's w-16 = 4rem). */
     html.sidebar-collapsed #sidebar {
@@ -403,15 +424,47 @@ table.csv-table thead th {
         margin-left: 4rem;
     }
 
-    /* Hide text: nav labels, badges, section headings, logo name. Icons stay. */
-    html.sidebar-collapsed #sidebar :is(span, p) {
+    /* Hide text without dropping it from the accessibility tree, so every
+       icon-only link keeps its name for screen readers. */
+    html.sidebar-collapsed #sidebar p {
         display: none;
+    }
+
+    html.sidebar-collapsed #sidebar span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
     }
 
     /* Center the remaining icons within the narrow rail. */
     html.sidebar-collapsed #sidebar :is(a, button) {
         justify-content: center;
     }
+
+    /* The logo and the collapse button cannot share a 4rem rail; keep only
+       the control that brings the sidebar back. */
+    html.sidebar-collapsed #sidebar header {
+        justify-content: center;
+        padding-inline: 0.5rem;
+    }
+
+    html.sidebar-collapsed #sidebar header > a {
+        display: none;
+    }
+
+    html.sidebar-collapsed #sidebar-toggle svg {
+        transform: rotate(180deg);
+    }
+}
+
+#sidebar-toggle svg {
+    transition: transform 160ms ease;
 }
 
 /* Auth ------------------------------------------------------------------ */
@@ -486,6 +539,234 @@ table.csv-table thead th {
     background: var(--card);
     box-shadow: 0 1px 2px 0 color-mix(in oklab, var(--foreground) 4%, transparent);
 }
+
+.og-card-interactive {
+    transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.og-card-interactive:hover {
+    border-color: color-mix(in oklab, var(--primary) 24%, var(--border));
+    box-shadow:
+        0 1px 2px 0 color-mix(in oklab, var(--foreground) 4%, transparent),
+        0 8px 24px -12px color-mix(in oklab, var(--foreground) 22%, transparent);
+}
+
+/* Square icon-only control, used by the theme and sidebar toggles. */
+.og-icon-button {
+    display: inline-flex;
+    width: 2rem;
+    height: 2rem;
+    flex: none;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: calc(var(--radius) - 0.05rem);
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    box-shadow: none;
+    opacity: 0.65;
+    transition: opacity 120ms ease, background-color 120ms ease;
+}
+
+.og-icon-button:hover {
+    background: color-mix(in oklab, currentColor 9%, transparent);
+    opacity: 1;
+}
+
+.og-icon-button:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    opacity: 1;
+}
+
+.og-icon-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
+}
+
+/* Select ----------------------------------------------------------------- */
+/* The native element stays in the form; og-select.ts renders this trigger and
+   fixed-position listbox on top of it. */
+.og-select {
+    position: relative;
+    display: inline-flex;
+    min-width: 5.75rem;
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+.og-select-native {
+    display: none !important;
+}
+
+.og-select-trigger {
+    display: flex;
+    width: 100%;
+    height: 2.25rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    border: 1px solid var(--input);
+    border-radius: calc(var(--radius) - 0.05rem);
+    background: var(--background);
+    padding: 0 0.7rem;
+    color: var(--foreground);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-align: left;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.og-select-trigger:hover {
+    border-color: color-mix(in oklab, var(--foreground) 24%, var(--input));
+}
+
+.og-select-trigger:focus-visible,
+.og-select.is-open .og-select-trigger {
+    border-color: color-mix(in oklab, var(--primary) 55%, var(--input));
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 16%, transparent);
+}
+
+.og-select-trigger:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.og-select.text-xs .og-select-trigger {
+    padding: 0 0.55rem;
+    font-size: 0.75rem;
+}
+
+.og-select-value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.og-select-chevron {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex: none;
+    opacity: 0.55;
+    transition: transform 140ms ease;
+}
+
+.og-select.is-open .og-select-chevron {
+    transform: rotate(180deg);
+}
+
+.og-select-menu {
+    position: fixed;
+    z-index: 70;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0.25rem;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 0.15rem);
+    background: var(--popover);
+    color: var(--popover-foreground);
+    box-shadow:
+        0 10px 30px -12px color-mix(in oklab, var(--foreground) 30%, transparent),
+        0 2px 8px -4px color-mix(in oklab, var(--foreground) 14%, transparent);
+}
+
+.og-select-option {
+    display: flex;
+    width: 100%;
+    cursor: pointer;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: calc(var(--radius) - 0.15rem);
+    padding: 0.42rem 0.5rem;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    text-align: left;
+    transition: background-color 100ms ease, color 100ms ease;
+}
+
+.og-select-option:hover,
+.og-select-option:focus-visible {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    outline: none;
+}
+
+.og-select-option[aria-selected="true"] {
+    background: color-mix(in oklab, var(--primary) 9%, transparent);
+    color: var(--primary);
+    font-weight: 550;
+}
+
+.og-select-option:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.og-select-option-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.og-select-check {
+    display: inline-flex;
+    width: 0.875rem;
+    height: 0.875rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+}
+
+.og-select-check > svg {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+.og-select-option[aria-selected="true"] .og-select-check {
+    opacity: 1;
+}
+
+.og-select-group {
+    padding: 0.45rem 0.5rem 0.2rem;
+    color: var(--muted-foreground);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* Repeating link editor in the admin configuration page. */
+.og-link-row {
+    display: grid;
+    align-items: center;
+    gap: 0.5rem;
+    grid-template-columns: 8.5rem minmax(0, 1fr) minmax(0, 1.4fr) 2rem;
+}
+
+@media (max-width: 639px) {
+    .og-link-row {
+        align-items: start;
+        grid-template-columns: minmax(0, 1fr) 2rem;
+    }
+
+    .og-link-row > :not([data-link-remove]) {
+        grid-column: 1;
+    }
+
+    .og-link-row > [data-link-remove] {
+        grid-column: 2;
+        grid-row: 1;
+        margin-top: 0.125rem;
+    }
+}
+
 
 /* Segmented tabs, used by the explore and profile feeds. */
 .og-tabs {

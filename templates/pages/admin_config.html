@@ -3,8 +3,8 @@
     <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div class="space-y-1">
             <p class="text-muted-foreground text-xs font-medium uppercase tracking-wider">{{ .locale.Tr "admin.admin_panel" }}</p>
-            <h1 class="text-2xl font-semibold tracking-tight">{{ .locale.Tr "admin.configuration" }}</h1>
-            <p class="text-muted-foreground max-w-2xl text-sm">{{ .locale.Tr "admin.config-description" }}</p>
+            <h1 class="text-[28px] leading-tight font-semibold tracking-tight">{{ .locale.Tr "admin.configuration" }}</h1>
+            <p class="text-muted-foreground mt-1.5 max-w-2xl text-sm">{{ .locale.Tr "admin.config-description" }}</p>
         </div>
         <a href="{{ .c.ExternalUrl }}/admin" class="btn-sm-outline w-fit">{{ .locale.Tr "admin.back-to-dashboard" }}</a>
     </header>
@@ -35,14 +35,14 @@
                 <div class="divide-y">
                     {{ range .Fields }}
                     {{ $value := index $.settingValues .Key }}
-                    <div class="grid gap-3 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,340px)] sm:items-center sm:gap-8">
+                    <div class="grid gap-3 px-5 py-4 {{ if eq .Key "site.links" }}sm:grid-cols-1{{ else }}sm:grid-cols-[minmax(0,1fr)_minmax(0,340px)] sm:items-center sm:gap-8{{ end }}">
                         <div class="min-w-0 space-y-1">
                             <label for="{{ .Key }}" class="text-sm font-medium">{{ $.locale.Tr .Label }}</label>
                             {{ if .Help }}<p class="text-muted-foreground text-xs leading-relaxed">{{ $.locale.Tr .Help }}</p>{{ end }}
                             {{ if .ApplyAfterRestart }}<p class="text-xs font-medium text-amber-600 dark:text-amber-400">{{ $.locale.Tr "admin.restart-required" }}</p>{{ end }}
                         </div>
 
-                        <div class="flex items-center gap-2 sm:justify-end">
+                        <div class="flex w-full items-center gap-2 {{ if ne .Key "site.links" }}sm:justify-end{{ end }}">
                             {{ if eq (printf "%s" .Kind) "bool" }}
                             <label class="relative inline-flex cursor-pointer items-center">
                                 <input type="checkbox" id="{{ .Key }}" name="{{ .Key }}" value="1" class="peer sr-only" {{ if eq $value "1" }}checked{{ end }} />
@@ -56,6 +56,46 @@
                                 <option value="{{ .Value }}" {{ if eq $value .Value }}selected{{ end }}>{{ $.locale.Tr .Label }}</option>
                                 {{ end }}
                             </select>
+
+                            {{ else if eq .Key "site.links" }}
+                            <input type="hidden" id="{{ .Key }}" name="{{ .Key }}" value="{{ $value }}" data-links-value />
+                            <div class="w-full space-y-2" data-link-editor>
+                                <div class="space-y-2" data-link-rows>
+                                    {{ range $.SiteLinks }}
+                                    {{ $link := . }}
+                                    <div class="og-link-row" data-link-row>
+                                        <select data-link-icon class="input h-9 w-full" aria-label="{{ $.locale.Tr "admin.links.icon" }}">
+                                            {{ range $.SiteLinkIcons }}
+                                            <option value="{{ . }}" {{ if eq . $link.Icon }}selected{{ end }}>{{ $.locale.Tr (printf "site.icon.%s" .) }}</option>
+                                            {{ end }}
+                                        </select>
+                                        <input data-link-label value="{{ $link.Label }}" maxlength="40" class="input h-9 w-full" placeholder="{{ $.locale.Tr "admin.links.label" }}" aria-label="{{ $.locale.Tr "admin.links.label" }}" />
+                                        <input data-link-url type="text" value="{{ $link.URL }}" maxlength="500" class="input h-9 w-full" placeholder="https://example.com" aria-label="{{ $.locale.Tr "admin.links.url" }}" />
+                                        <button type="button" data-link-remove class="og-icon-button text-muted-foreground hover:text-destructive" aria-label="{{ $.locale.Tr "admin.links.remove" }}" title="{{ $.locale.Tr "admin.links.remove" }}">
+                                            <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"/></svg>
+                                        </button>
+                                    </div>
+                                    {{ end }}
+                                </div>
+                                <button type="button" data-link-add class="btn-sm-outline">
+                                    <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                                    {{ $.locale.Tr "admin.links.add" }}
+                                </button>
+                                <template data-link-template>
+                                    <div class="og-link-row" data-link-row>
+                                        <select data-link-icon class="input h-9 w-full" aria-label="{{ $.locale.Tr "admin.links.icon" }}">
+                                            {{ range $.SiteLinkIcons }}
+                                            <option value="{{ . }}">{{ $.locale.Tr (printf "site.icon.%s" .) }}</option>
+                                            {{ end }}
+                                        </select>
+                                        <input data-link-label maxlength="40" class="input h-9 w-full" placeholder="{{ $.locale.Tr "admin.links.label" }}" aria-label="{{ $.locale.Tr "admin.links.label" }}" />
+                                        <input data-link-url type="text" maxlength="500" class="input h-9 w-full" placeholder="https://example.com" aria-label="{{ $.locale.Tr "admin.links.url" }}" />
+                                        <button type="button" data-link-remove class="og-icon-button text-muted-foreground hover:text-destructive" aria-label="{{ $.locale.Tr "admin.links.remove" }}" title="{{ $.locale.Tr "admin.links.remove" }}">
+                                            <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"/></svg>
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
 
                             {{ else if eq (printf "%s" .Kind) "text" }}
                             <textarea id="{{ .Key }}" name="{{ .Key }}" rows="{{ if .Rows }}{{ .Rows }}{{ else }}4{{ end }}"

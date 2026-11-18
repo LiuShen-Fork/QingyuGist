@@ -1,6 +1,6 @@
 {{ define "content" }}
 <div class="space-y-5">
-    <h1 class="text-2xl font-bold leading-tight">{{ .locale.Tr "gist.new.new_gist" }}</h1>
+    {{ template "page_header" dict "Eyebrow" (.locale.Tr "sidebar.gists") "Title" (.locale.Tr "gist.new.new_gist") "Subtitle" (.locale.Tr "gist.new.subtitle") }}
 
     <form id="create" hx-boost="false" method="post" action="{{ .c.ExternalUrl }}/">
         {{ .csrfHtml }}
@@ -21,7 +21,7 @@
                 </div>
 
                 <button type="button" id="add-file" class="btn-outline">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
                     {{ .locale.Tr "gist.new.add-file" }}
                 </button>
 
@@ -29,7 +29,7 @@
                 <div id="file-upload-zone" class="space-y-3">
                     <label for="file-upload" class="block cursor-pointer">
                         <div class="border-border hover:border-primary flex flex-col items-center rounded-xl border-2 border-dashed p-6 text-center transition-colors">
-                            <svg class="text-muted-foreground size-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                            <svg class="text-muted-foreground size-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
                             <span class="mt-3 text-sm font-medium">{{ .locale.Tr "gist.new.drop-files" }}</span>
                             <span class="text-muted-foreground mt-1 text-xs">{{ .locale.Tr "gist.new.any-file-type" }}</span>
                         </div>
@@ -65,7 +65,7 @@
 
                     <div class="space-y-1.5">
                         <label for="expire" class="text-muted-foreground inline-flex items-center gap-1.5 text-xs font-medium">
-                            <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                            <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                             {{ .locale.Tr "gist.new.expire" }}
                         </label>
                         <select name="expire" id="expire" class="border-input bg-background h-9 w-full rounded-md border px-2 text-sm"
@@ -88,7 +88,7 @@
                     <button type="submit" id="create-btn" class="btn flex-1 rounded-r-none">{{ .locale.Tr "gist.new.create-public-button" }}</button>
                     <div class="dropdown-menu">
                         <button type="button" id="vis-trigger" aria-haspopup="menu" aria-expanded="false" aria-controls="vis-menu" class="btn -ml-px rounded-l-none px-2">
-                            <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                         </button>
                         <div id="vis-menu" data-popover aria-hidden="true" data-side="bottom" data-align="end">
                             <div role="menu" aria-labelledby="vis-trigger">

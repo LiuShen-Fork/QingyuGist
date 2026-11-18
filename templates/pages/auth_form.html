@@ -13,10 +13,13 @@
             <span class="text-sm font-semibold tracking-tight">{{ if .SiteName }}{{ .SiteName }}{{ else if .c.CustomName }}{{ .c.CustomName }}{{ else }}Opengist{{ end }}</span>
         </a>
 
-        <a href="{{ .c.ExternalUrl }}/explore" class="text-muted-foreground hover:text-foreground group flex items-center gap-1.5 text-sm transition-colors">
-            {{ .locale.Tr "sidebar.explore" }}
-            <svg class="size-3.5 transition-transform group-hover:translate-x-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
+        <div class="flex items-center gap-2">
+            {{ template "theme_toggle" . }}
+            <a href="{{ .c.ExternalUrl }}/explore" class="text-muted-foreground hover:text-foreground group flex items-center gap-1.5 text-sm transition-colors">
+                {{ .locale.Tr "sidebar.explore" }}
+                <svg class="size-3.5 transition-transform group-hover:translate-x-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+        </div>
     </header>
 
     <main class="relative z-10 flex flex-1 items-center justify-center px-4 pb-16 pt-2 sm:pb-24">
@@ -68,13 +71,13 @@
                     {{ end }}
                     {{ if .giteaOauth }}
                     <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/gitea" class="btn-outline h-10 w-full justify-center gap-2 font-medium">
-                        <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 8v8M8 6h4a4 4 0 0 1 4 4"/></svg>
+                        <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 8v8M8 6h4a4 4 0 0 1 4 4"/></svg>
                         <span>{{ .locale.Tr "auth.continue-with" }} {{ .c.GiteaName }}</span>
                     </a>
                     {{ end }}
                     {{ if .oidcOauth }}
                     <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/openid-connect" class="btn-outline h-10 w-full justify-center gap-2 font-medium">
-                        <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 8.2-8.2M17 4l3 3M15 6l3 3"/></svg>
+                        <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 8.2-8.2M17 4l3 3M15 6l3 3"/></svg>
                         <span>{{ .locale.Tr "auth.continue-with" }} {{ if .c.OIDCProviderName }}{{ .c.OIDCProviderName }}{{ else }}OpenID{{ end }}</span>
                     </a>
                     {{ end }}

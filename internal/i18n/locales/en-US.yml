@@ -40,6 +40,7 @@ gist.preview-non-available: Preview not available
 gist.embed.view-all-files: View all files
 
 gist.new.new_gist: New gist
+gist.new.subtitle: Create a public or private gist from any file type.
 gist.new.title: Title
 gist.new.description: Description
 gist.new.url: URL
@@ -200,12 +201,12 @@ settings.create-password-help: Create your password to login to Opengist via HTT
 settings.change-password: Change password
 settings.change-password-help: Change your password to login to Opengist via HTTP
 settings.password-label-title: Password
-settings.header.account: Account
+settings.header.account: Account settings
 settings.header.mfa: MFA
 settings.header.authentication: Authentication
-settings.header.ssh: SSH
+settings.header.ssh: SSH keys
 settings.header.tokens: Access tokens
-settings.header.style: Style
+settings.header.style: Appearance
 settings.style.gist-code: Gist code
 settings.style.no-soft-wrap: No Soft Wrap
 settings.style.soft-wrap: Soft Wrap
@@ -335,6 +336,7 @@ header.menu.system: System
 footer.powered-by: Powered by %s
 ui.feedback-new: Give feedback on the new UI
 sidebar.collapse: Collapse
+sidebar.expand: Expand
 
 pagination.older: Older
 pagination.newer: Newer
@@ -462,6 +464,7 @@ admin.instance-description: Boot-time values read from the configuration file an
 admin.database: Database
 admin.database-name: Database name
 admin.search-index: Search index
+admin.index-engine: Index engine
 admin.disabled: Disabled
 admin.external-url: External URL
 admin.opengist-home: Data directory
@@ -649,3 +652,28 @@ sidebar.explore: Explore
 settings.link-oidc-account: Link OpenID account
 settings.unlink-oidc-account: Unlink OpenID account
 settings.unlink-oauth-confirm: Are you sure you want to unlink your %s account? You may lose access to Opengist if it is your only way to log in.
+settings.site.repository_url: Source repository
+settings.site.repository_url_help: Linked from the source-code icon in the sidebar. Leave empty to hide it.
+settings.site.links: Sidebar links
+settings.site.links_help: Additional links shown at the bottom of the sidebar, each with a label, URL and icon.
+admin.links.add: Add link
+admin.links.icon: Icon
+admin.links.label: Label
+admin.links.url: URL
+admin.links.remove: Remove link
+site.icon.link: Link
+site.icon.home: Home
+site.icon.globe: Website
+site.icon.github: GitHub
+site.icon.gitlab: GitLab
+site.icon.gitea: Gitea
+site.icon.mail: Email
+site.icon.rss: RSS
+site.icon.code: Code
+site.icon.book: Blog
+site.icon.user: Profile
+site.icon.x: X
+site.icon.mastodon: Mastodon
+site.icon.telegram: Telegram
+theme.toggle: Toggle theme
+sidebar.links: Links
