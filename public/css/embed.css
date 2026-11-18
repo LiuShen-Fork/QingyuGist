@@ -1,6 +1,6 @@
 /* Self-contained stylesheet for the embeddable gist widget
    (templates/partials/gist_embed.html). It is loaded inside the
-   <opengist-embed> web component's shadow DOM and deliberately does NOT depend
+   <qingyugist-embed> web component's shadow DOM and deliberately does NOT depend
    on the app's new token system — it ships its own scoped Tailwind + palette so
    the embed renders identically wherever it is included. */
 @plugin "@tailwindcss/typography";
@@ -63,7 +63,7 @@
     }
 }
 
-.opengist-embed {
+.qingyugist-embed {
     @import "tailwindcss";
     @layer base {
         ul, ol {

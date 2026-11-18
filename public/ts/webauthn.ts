@@ -23,7 +23,7 @@ function decodeBase64UrlToArrayBuffer(base64Url) {
 
 async function bindPasskey() {
     // @ts-ignore
-    const baseUrl = window.opengist_base_url || '';
+    const baseUrl = window.qingyugist_base_url || '';
     let waitText = document.getElementById("login-passkey-wait");
 
     try {
@@ -91,7 +91,7 @@ async function bindPasskey() {
 
 async function loginWithPasskey() {
     // @ts-ignore
-    const baseUrl = window.opengist_base_url || '';
+    const baseUrl = window.qingyugist_base_url || '';
     let waitText = document.getElementById("login-passkey-wait");
 
     try {

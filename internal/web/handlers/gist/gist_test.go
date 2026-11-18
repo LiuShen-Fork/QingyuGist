@@ -397,7 +397,7 @@ func TestGistJsSingleFile(t *testing.T) {
 		require.NoError(t, err)
 		js := string(body)
 
-		assert.Contains(t, js, "opengist-embed")
+		assert.Contains(t, js, "qingyugist-embed")
 		assert.Contains(t, js, "hello world")
 		assert.NotContains(t, js, "other content")
 	})

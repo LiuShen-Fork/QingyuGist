@@ -148,7 +148,7 @@ function initEditorPage() {
         };
 
         // @ts-ignore
-        const baseUrl = window.opengist_base_url || '';
+        const baseUrl = window.qingyugist_base_url || '';
         let previewShown = false;
         mdpreview.onclick = () => {
             previewShown = !previewShown;
@@ -405,7 +405,7 @@ function initEditorPage() {
         formData.append('file', file);
 
         // @ts-ignore
-        const baseUrl = window.opengist_base_url || '';
+        const baseUrl = window.qingyugist_base_url || '';
         const csrf = document.querySelector<HTMLInputElement>('form#create input[name="_csrf"]')?.value;
 
         try {
@@ -462,7 +462,7 @@ function initEditorPage() {
             // Remove from server
             try {
                 // @ts-ignore
-                const baseUrl = window.opengist_base_url || '';
+                const baseUrl = window.qingyugist_base_url || '';
                 const csrf = document.querySelector<HTMLInputElement>('form#create input[name="_csrf"]')?.value;
 
                 await fetch(`${baseUrl}/upload/${uuid}`, {

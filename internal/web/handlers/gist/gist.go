@@ -254,8 +254,8 @@ func escapeJavaScriptContent(htmlContent, cssUrl, themeUrl string, autoMode bool
 
 	js := fmt.Sprintf(`
 (function() {
-    if (!customElements.get('opengist-embed')) {
-        customElements.define('opengist-embed', class extends HTMLElement {
+    if (!customElements.get('qingyugist-embed')) {
+        customElements.define('qingyugist-embed', class extends HTMLElement {
             constructor() {
                 super();
                 this.attachShadow({ mode: 'open' });
@@ -306,7 +306,7 @@ func escapeJavaScriptContent(htmlContent, cssUrl, themeUrl string, autoMode bool
         return scripts[scripts.length - 1];
     })();
 
-    const instance = document.createElement('opengist-embed');
+    const instance = document.createElement('qingyugist-embed');
     instance.init(%s, %s, %s, %s);
     currentScript.parentNode.insertBefore(instance, currentScript.nextSibling);
 })();
