@@ -78,9 +78,9 @@ jobs:
         ports:
           - ${{ matrix.port }}
         env:
-          POSTGRES_PASSWORD: qingyugist
+          POSTGRES_PASSWORD: "qingyugist"
           POSTGRES_DB: qingyugist_test
-          MYSQL_ROOT_PASSWORD: qingyugist
+          MYSQL_ROOT_PASSWORD: "qingyugist"
           MYSQL_DATABASE: qingyugist_test
         options: >-
           --health-cmd ${{ matrix.database == 'postgres' && 'pg_isready' || '"mysqladmin ping"' }}
