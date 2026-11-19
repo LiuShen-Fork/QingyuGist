@@ -144,6 +144,14 @@
 
         <div class="ml-auto flex items-center gap-2">
             {{ if .userLogged }}
+            <a href="{{ .c.ExternalUrl }}/notifications" class="btn-icon-ghost relative"
+               title="{{ .locale.Tr "notifications.title" }}" aria-label="{{ .locale.Tr "notifications.title" }}">
+                <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                {{ if gt .UnreadNotifications 0 }}
+                <span class="bg-primary text-primary-foreground absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] leading-none font-medium tabular-nums">{{ .UnreadNotifications }}</span>
+                <span class="sr-only">{{ .locale.Tr "notifications.unread" .UnreadNotifications }}</span>
+                {{ end }}
+            </a>
             <a hx-boost="false" href="{{ .c.ExternalUrl }}/" class="btn-sm-outline px-2.5 sm:px-3" aria-label="{{ .locale.Tr "header.menu.new" }}">
                 <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
                 <span class="hidden sm:inline">{{ .locale.Tr "header.menu.new" }}</span>
@@ -182,6 +190,13 @@
 
     <main id="content" class="bg-content flex-1">
         <div class="{{ if .authPage }}h-full{{ else }}mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8{{ end }}">
+            {{ if and .SiteAnnouncement (not .authPage) }}
+            <!-- Site-wide announcement: markdown rendered server-side, so it
+                 carries the same styling as a gist's README. -->
+            <div class="og-announcement mb-6 rounded-xl border px-4 py-3 sm:px-5" role="status">
+                <div class="markdown markdown-body og-md">{{ .SiteAnnouncement }}</div>
+            </div>
+            {{ end }}
             {{ block "flashes" . }}{{ template "flashes" . }}{{ end }}
 {{ end }}
 {{ define "footer" }}

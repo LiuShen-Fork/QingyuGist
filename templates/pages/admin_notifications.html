@@ -1,0 +1,80 @@
+{{ define "content" }}
+<div class="space-y-6">
+    {{ template "admin_header" (dict "Locale" .locale "Title" (.locale.Tr "admin.notifications.title") "Subtitle" (.locale.Tr "admin.notifications.subtitle")) }}
+
+    <!-- Composer: one notice reaches every account, present and future -->
+    <section class="bg-card rounded-xl border">
+        <div class="border-b px-5 py-3">
+            <h2 class="text-sm font-medium">{{ .locale.Tr "admin.notifications.create" }}</h2>
+            <p class="text-muted-foreground mt-1 text-xs">{{ .locale.Tr "admin.notifications.help" }}</p>
+        </div>
+        <form method="POST" action="{{ .c.ExternalUrl }}/admin/notifications">
+            {{ .csrfHtml }}
+            <div class="og-field">
+                <label for="title" class="text-sm font-medium">{{ .locale.Tr "admin.notifications.field.title" }}</label>
+                <div class="og-field-control">
+                    <input type="text" id="title" name="title" maxlength="200" required class="input h-9 w-full" placeholder="{{ .locale.Tr "admin.notifications.field.title_placeholder" }}" />
+                </div>
+            </div>
+            <div class="og-field">
+                <label for="link" class="text-sm font-medium">{{ .locale.Tr "admin.notifications.field.link" }}</label>
+                <div class="og-field-control">
+                    <input type="text" id="link" name="link" class="input h-9 w-full" placeholder="https://" />
+                </div>
+            </div>
+            <div class="og-field og-field--top og-field--wide">
+                <div class="flex items-baseline justify-between gap-3">
+                    <label for="body" class="text-sm font-medium">{{ .locale.Tr "admin.notifications.field.body" }}</label>
+                    <span class="text-muted-foreground text-xs">{{ .locale.Tr "admin.notifications.markdown" }}</span>
+                </div>
+                <div class="og-field-control">
+                    <textarea id="body" name="body" rows="6" required class="input w-full resize-y py-2 text-sm leading-relaxed" placeholder="{{ .locale.Tr "admin.notifications.field.body_placeholder" }}"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end border-t px-5 py-3">
+                <button type="submit" class="btn-sm">{{ .locale.Tr "admin.notifications.publish" }}</button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Sent notices -->
+    <section class="bg-card overflow-hidden rounded-xl border">
+        <div class="flex items-center justify-between gap-3 border-b px-5 py-3">
+            <h2 class="text-sm font-medium">{{ .locale.Tr "admin.notifications.sent" }}</h2>
+            <span class="text-muted-foreground text-xs tabular-nums">{{ len .broadcasts }}</span>
+        </div>
+        {{ if .broadcasts }}
+        <ul class="divide-y">
+            {{ range $notice := .broadcasts }}
+            <li class="flex items-start gap-4 px-5 py-4">
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium break-words">{{ $notice.Title }}</p>
+                    <p class="text-muted-foreground mt-1 line-clamp-3 text-sm break-words whitespace-pre-line">{{ $notice.Body }}</p>
+                    <div class="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+                        <time datetime="{{ $notice.CreatedAt }}">{{ $notice.CreatedAt | humanDate }}</time>
+                        {{ if $notice.Link }}<a href="{{ $notice.Link }}" class="hover:text-foreground underline underline-offset-4">{{ $notice.Link }}</a>{{ end }}
+                    </div>
+                </div>
+                <form action="{{ $.c.ExternalUrl }}/admin/notifications/{{ $notice.ID }}/delete" method="POST">
+                    {{ $.csrfHtml }}
+                    <button type="submit" class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex size-8 items-center justify-center rounded-md transition-colors"
+                            title="{{ $.locale.Tr "admin.delete" }}"
+                            _="on click if not window.confirm('{{ $.locale.Tr "admin.notifications.delete_confirm" }}') halt the event">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                        <span class="sr-only">{{ $.locale.Tr "admin.delete" }}</span>
+                    </button>
+                </form>
+            </li>
+            {{ end }}
+        </ul>
+        {{ else }}
+        <div class="text-muted-foreground flex flex-col items-center gap-3 px-5 py-16 text-center">
+            <span class="bg-muted flex size-12 items-center justify-center rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-5"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            </span>
+            <p class="text-sm">{{ .locale.Tr "admin.notifications.empty" }}</p>
+        </div>
+        {{ end }}
+    </section>
+</div>
+{{ end }}

@@ -324,6 +324,51 @@ textarea.input:focus-visible {
     list-style: revert;
 }
 
+/* The site announcement banner and notification bodies reuse .markdown-body,
+   whose margins are tuned for a whole document. Tighten them so a banner reads
+   as one band instead of a page section, and keep the surface on the theme's
+   muted colour rather than white. */
+.og-announcement {
+    background-color: var(--muted);
+    border-color: var(--border);
+    color: var(--foreground);
+}
+
+.og-md {
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.og-md > :first-child {
+    margin-top: 0 !important;
+}
+
+.og-md > :last-child {
+    margin-bottom: 0 !important;
+}
+
+.og-md h1,
+.og-md h2,
+.og-md h3,
+.og-md h4 {
+    margin: 0.75rem 0 0.375rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+}
+
+.og-md p,
+.og-md ul,
+.og-md ol,
+.og-md blockquote,
+.og-md pre {
+    margin: 0.5rem 0;
+}
+
+.og-md pre,
+.og-md code {
+    font-size: 0.8125rem;
+}
+
 /* Toggled by the gist editor (editor.ts). */
 .hidden-important {
     display: none !important;

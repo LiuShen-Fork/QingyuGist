@@ -35,7 +35,7 @@
                 <div class="divide-y">
                     {{ range .Fields }}
                     {{ $value := index $.settingValues .Key }}
-                    <div class="og-field{{ if eq .Key "site.links" }} og-field--wide{{ end }}{{ if eq (printf "%s" .Kind) "text" }} og-field--top{{ end }}">
+                    <div class="og-field{{ if eq .Key "site.links" }} og-field--wide{{ end }}{{ if eq (printf "%s" .Kind) "text" }} og-field--wide{{ end }}">
                         <div class="min-w-0 space-y-1">
                             <label for="{{ .Key }}" class="text-sm font-medium">{{ $.locale.Tr .Label }}</label>
                             {{ if .Help }}<p class="text-muted-foreground text-xs leading-relaxed">{{ $.locale.Tr .Help }}</p>{{ end }}

@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -19,6 +20,7 @@ import (
 	"github.com/LiuShen-Fork/QingyuGist/internal/db"
 	"github.com/LiuShen-Fork/QingyuGist/internal/i18n"
 	"github.com/LiuShen-Fork/QingyuGist/internal/ipc"
+	"github.com/LiuShen-Fork/QingyuGist/internal/render"
 	"github.com/LiuShen-Fork/QingyuGist/internal/settings"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers"
@@ -369,6 +371,11 @@ func sessionInit(next Handler) Handler {
 				ctx.User = user
 				ctx.SetData("userLogged", user)
 				ctx.SetData("currentStyle", user.GetStyle())
+				// The header bell shows the badge on every page, so the count
+				// travels with the session rather than with the inbox handler.
+				if unread, err := db.CountUnreadNotifications(user.ID); err == nil {
+					ctx.SetData("UnreadNotifications", int(unread))
+				}
 			}
 			return next(ctx)
 		}
@@ -451,9 +458,43 @@ func loadSettings(ctx *context.Context) error {
 	ctx.SetData("SitePoliceRecord", settings.SitePoliceRecord())
 	ctx.SetData("SiteLinks", settings.SiteLinks())
 	ctx.SetData("SiteLinkIcons", settings.SiteLinkIcons())
+	ctx.SetData("SiteAnnouncement", announcementHTML(settings.SiteAnnouncement()))
 	ctx.SetData("ModerationEnabled", settings.ModerationEnabled())
 	ctx.SetData("settings", settings.Snapshot())
 	return nil
+}
+
+// renderedAnnouncement memoises the announcement markdown: the value is the
+// same for every request until an administrator edits it, and rendering it on
+// each page load would be wasted work.
+var renderedAnnouncement struct {
+	sync.Mutex
+	raw  string
+	html template.HTML
+}
+
+// announcementHTML turns the administrator's markdown into the banner markup.
+// An empty setting hides the banner; a document the renderer rejects falls back
+// to escaped text instead of failing the page.
+func announcementHTML(raw string) template.HTML {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return ""
+	}
+
+	renderedAnnouncement.Lock()
+	defer renderedAnnouncement.Unlock()
+	if renderedAnnouncement.raw == raw {
+		return renderedAnnouncement.html
+	}
+
+	out, err := render.MarkdownString(raw)
+	if err != nil {
+		out = template.HTMLEscapeString(raw)
+	}
+	renderedAnnouncement.raw = raw
+	renderedAnnouncement.html = template.HTML(out)
+	return renderedAnnouncement.html
 }
 
 func apiScope(scope, permission uint) Middleware {

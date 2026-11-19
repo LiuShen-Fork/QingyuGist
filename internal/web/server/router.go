@@ -20,6 +20,7 @@ import (
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers/git"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers/health"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers/ipc"
+	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers/notification"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers/settings"
 	"github.com/LiuShen-Fork/QingyuGist/public"
 	"github.com/labstack/echo/v4"
@@ -60,6 +61,16 @@ func (s *Server) registerRoutes() {
 		r.POST("/webauthn/assertion/finish", auth.FinishWebAuthnAssertion, inMFASession)
 		r.GET("/mfa", auth.Mfa, inMFASession)
 		r.POST("/mfa/totp/assertion", auth.AssertTotp, inMFASession)
+
+		// Notification inbox. Broadcasts (user_id 0) are visible to everyone;
+		// the bell in the header links here.
+		nB := r.SubGroup("/notifications")
+		{
+			nB.Use(logged)
+			nB.GET("", notification.List)
+			nB.POST("/read-all", notification.MarkAllRead)
+			nB.POST("/:id/read", notification.MarkRead)
+		}
 
 		sA := r.SubGroup("/settings")
 		{
@@ -111,6 +122,11 @@ func (s *Server) registerRoutes() {
 			sB.GET("/settings", admin.AdminConfig)
 			sB.POST("/settings", admin.AdminUpdateConfig)
 			sB.PUT("/settings", admin.AdminSetConfig)
+			sB.GET("/moderation", admin.AdminModeration)
+			sB.POST("/moderation/retry", admin.AdminModerationRetry)
+			sB.GET("/notifications", admin.AdminNotifications)
+			sB.POST("/notifications", admin.AdminNotificationsCreate)
+			sB.POST("/notifications/:id/delete", admin.AdminNotificationsDelete)
 		}
 
 		if config.C.HttpGit {

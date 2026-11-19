@@ -1,0 +1,59 @@
+{{ define "content" }}
+<div class="space-y-6">
+    {{ template "page_header" (dict "Locale" .locale "Title" (.locale.Tr "notifications.title") "Subtitle" (.locale.Tr "notifications.subtitle")) }}
+
+    <section class="bg-card overflow-hidden rounded-xl border">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b px-5 py-3">
+            <h2 class="text-sm font-medium">{{ .locale.Tr "notifications.all" }}</h2>
+            <div class="flex items-center gap-3">
+                {{ if gt .unreadCount 0 }}
+                <span class="text-muted-foreground text-xs tabular-nums">{{ .locale.Tr "notifications.unread" .unreadCount }}</span>
+                <form method="POST" action="{{ .c.ExternalUrl }}/notifications/read-all">
+                    {{ .csrfHtml }}
+                    <button type="submit" class="btn-sm-outline">{{ .locale.Tr "notifications.mark-all-read" }}</button>
+                </form>
+                {{ end }}
+            </div>
+        </div>
+
+        {{ if .notifications }}
+        <ul class="divide-y">
+            {{ range $notice := .notifications }}
+            <li class="hover:bg-muted/30 flex items-start gap-3 px-5 py-4 transition-colors">
+                <!-- Unread marker: a filled dot that collapses to empty space so
+                     read and unread rows keep the same text alignment. -->
+                <span class="mt-1.5 flex size-2 shrink-0 items-center justify-center">
+                    {{ if not $notice.Read }}<span class="bg-primary size-2 rounded-full" aria-hidden="true"></span>{{ end }}
+                </span>
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium break-words {{ if $notice.Read }}text-muted-foreground{{ end }}">{{ $notice.Title }}</p>
+                    {{ if $notice.Body }}<div class="markdown markdown-body og-md mt-1.5">{{ $notice.Body }}</div>{{ end }}
+                    <div class="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+                        <time datetime="{{ $notice.CreatedAt }}">{{ $notice.CreatedAt | humanDate }}</time>
+                        {{ if $notice.Link }}<a href="{{ $notice.Link }}" class="hover:text-foreground underline underline-offset-4">{{ $.locale.Tr "notifications.open" }}</a>{{ end }}
+                    </div>
+                </div>
+                {{ if not $notice.Read }}
+                <form method="POST" action="{{ $.c.ExternalUrl }}/notifications/{{ $notice.ID }}/read">
+                    {{ $.csrfHtml }}
+                    <button type="submit" class="btn-icon-ghost text-muted-foreground" title="{{ $.locale.Tr "notifications.mark-read" }}" aria-label="{{ $.locale.Tr "notifications.mark-read" }}">
+                        <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+                    </button>
+                </form>
+                {{ end }}
+            </li>
+            {{ end }}
+        </ul>
+        {{ else }}
+        <div class="text-muted-foreground flex flex-col items-center gap-3 px-5 py-16 text-center">
+            <span class="bg-muted flex size-12 items-center justify-center rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-5"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            </span>
+            <p class="text-sm">{{ .locale.Tr "notifications.empty" }}</p>
+        </div>
+        {{ end }}
+    </section>
+
+    {{ template "pagination" . }}
+</div>
+{{ end }}
