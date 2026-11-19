@@ -1,32 +1,63 @@
-# QingyuGist · 清羽Gist
+<div align="center">
 
-<img height="108px" src="https://raw.githubusercontent.com/LiuShen-Fork/QingyuGist/master/public/img/qingyugist.svg" alt="QingyuGist" align="right" />
+<img src="docs/public/qingyugist-mark.png" width="72" height="72" alt="QingyuGist">
 
-QingyuGist (清羽Gist) is a self-hosted pastebin powered by Git. Every snippet is
-a real Git repository, so it can be read and edited from the web interface or
-with ordinary `git clone`, `pull` and `push`.
+<h1>QingyuGist</h1>
 
-This repository is an independent hard fork. It keeps the data format of the
-upstream project, but the interface, defaults and deployment tooling have been
-reworked around a simpler, calmer experience.
+<p><strong>A calm, self-hosted home for your code snippets.</strong><br>
+Every gist is a real Git repository: write it in the browser, or clone it and push like any other project.</p>
 
-[Repository](https://github.com/LiuShen-Fork/QingyuGist) · [Documentation](docs/) · [Releases](https://github.com/LiuShen-Fork/QingyuGist/releases)
+<p>
+<a href="README.zh-CN.md">简体中文</a> ·
+<a href="docs/">Documentation</a> ·
+<a href="https://github.com/LiuShen-Fork/QingyuGist/releases/latest">Releases</a>
+</p>
 
-![CI](https://github.com/LiuShen-Fork/QingyuGist/actions/workflows/ci.yml/badge.svg)
-![License](https://img.shields.io/github/license/LiuShen-Fork/QingyuGist?color=blue)
+<p>
+<img alt="CI" src="https://github.com/LiuShen-Fork/QingyuGist/actions/workflows/ci.yml/badge.svg?branch=master">
+<img alt="Release" src="https://img.shields.io/github/v/release/LiuShen-Fork/QingyuGist?color=teal">
+<img alt="License" src="https://img.shields.io/github/license/LiuShen-Fork/QingyuGist?color=blue">
+<img alt="Go" src="https://img.shields.io/github/go-mod/go-version/LiuShen-Fork/QingyuGist">
+</p>
 
-## Features
+<a href="docs/public/qingyugist-demo.png"><img src="docs/public/qingyugist-demo.png" width="900" alt="A gist with a Markdown preview"></a>
 
-- Public, unlisted and private gists, with revisions, likes, forks and topics
-- Clone, pull and push over HTTP or SSH
-- Syntax highlighting, Markdown, CSV and notebook previews
-- Full-text search, including Chinese word segmentation, with a scheduled reindex
-- Explore feeds and contribution heatmaps, globally and per user
-- OAuth2 login with GitHub, GitLab, Gitea and OpenID Connect; passkeys and TOTP
-- Per-instance branding: name, description, logo, favicon, custom CSS and JavaScript
-- Admin panel with live settings, storage and runtime dashboard, and user management
-- Optional AI moderation for public gists, upload quotas and CORS controls
-- Responsive light/dark interface, English and Simplified Chinese out of the box
+</div>
+
+## What is this?
+
+GitHub Gist is great, but it lives on GitHub. QingyuGist is the same idea running on your
+own server: a small, quiet place to keep snippets, notes, config files and the occasional
+one-file program, with a web editor for quick edits and Git underneath for everything else.
+
+Because each gist *is* a Git repository, you are never locked in — `git clone` it, edit it
+in your own editor, push it back. Revisions, forks, likes, topics and search come for free.
+
+This project is an independent fork of [OpenGist](https://github.com/thomiceli/opengist).
+It keeps the same data format, so existing installations can be upgraded in place, while
+the interface, defaults and deployment have been reworked around a simpler, calmer
+experience.
+
+## Highlights
+
+- **Write in the browser.** Markdown, CSV and Jupyter notebooks render inline, and most
+  languages are highlighted, and files can be dragged straight into the editor.
+- **Real Git, both ways.** Clone, pull and push over HTTPS or SSH; every save is a commit,
+  and the whole revision history is browsable.
+- **Share on your terms.** Public, unlisted or private gists, with likes, forks, topics and
+  full-text search (Chinese word segmentation included).
+- **Sign-in that fits.** Password, passkeys, TOTP, or OAuth2 with GitHub, GitLab, Gitea and
+  anything speaking OpenID Connect.
+- **Keep it tidy.** Upload quotas, CORS controls, optional AI moderation for public gists,
+  in-app notifications and a site-wide announcement — all live from the admin panel.
+- **Ship one file.** Frontend assets are embedded, so the binary and a data directory are
+  the entire installation. SQLite by default, PostgreSQL and MySQL when you need them.
+
+<details>
+<summary>Dark mode</summary>
+<br>
+<img src="docs/public/qingyugist-demo-dark.png" width="900" alt="The same gist in dark mode">
+</details>
 
 ## Quick start
 
@@ -45,41 +76,35 @@ services:
     container_name: qingyugist
     restart: unless-stopped
     ports:
-      - "6157:6157"
-      - "2222:2222"
+      - "6157:6157" # web and HTTP Git
+      - "2222:2222" # Git over SSH
     volumes:
       - "$HOME/.qingyugist:/qingyugist"
+    # environment:
+    #   UID: 1001
+    #   GID: 1001
 ```
 
-Then open <http://localhost:6157>. The first account created becomes the
-instance administrator.
+Then open <http://localhost:6157>. The first account you create becomes the instance
+administrator.
 
-To run the container as a specific user, set `UID` and `GID`:
-
-```yaml
-    environment:
-      UID: 1001
-      GID: 1001
-```
-
-### Binary
+### Prebuilt binary
 
 Download the archive for your platform from the
-[latest release](https://github.com/LiuShen-Fork/QingyuGist/releases/latest),
-extract it and run the binary:
+[latest release](https://github.com/LiuShen-Fork/QingyuGist/releases/latest), then:
 
 ```shell
-tar xzf qingyugist-1.0.0-linux-amd64.tar.gz
+tar xzf qingyugist-<version>-linux-amd64.tar.gz
 ./qingyugist
 ```
 
-`qingyugist --config config.yml` uses an explicit YAML configuration file. All
-options can also be supplied through `QYG_*` environment variables; see
-[`config.yml`](config.yml) and the [configuration docs](docs/configuration/configure.md).
+The binary needs [Git](https://git-scm.com/download) 2.28 or newer, and OpenSSH if you want
+SSH access. It reads `config.yml` next to the working directory (`--config` to point
+elsewhere), and every option can also be set through a `QYG_*` environment variable.
 
 ### From source
 
-Requirements: Git 2.28+, Go 1.27+, Node.js 26+ and Make.
+Requirements: Go 1.27+, Node.js 26+, Git 2.28+ and Make.
 
 ```shell
 git clone https://github.com/LiuShen-Fork/QingyuGist.git
@@ -88,63 +113,59 @@ make
 ./qingyugist
 ```
 
-The frontend assets are embedded into the binary, so the single executable is
-the only runtime artifact.
-
 ## Configuration
 
-Most day-to-day options live in the admin panel at `/admin/settings` and take
-effect immediately: registration mode, upload limits, moderation, CORS, search
-reindexing, branding and the footer. A configuration file is still supported for
-bootstrap values such as the data directory, database URL, ports and OAuth
-providers.
+Everyday options live in the admin panel at `/admin/settings` and take effect immediately:
+registration mode, upload limits, moderation, CORS, search reindexing, branding, footer and
+announcement. Bootstrap values belong in `config.yml` or the environment:
 
-Data lives in `~/.qingyugist` by default. Set `QYG_HOME` to use another
-directory. Existing installations are migrated automatically: the old database,
-session key and SSH host key are detected, and the repository symlink used by
-existing Git hooks remains available under its historical name.
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `QYG_HOME` | `~/.qingyugist` | Data directory: repositories, database, logs, keys |
+| `QYG_EXTERNAL_URL` | — | Public URL, used for OAuth callbacks and clone links |
+| `QYG_DB_URI` | `qingyugist.db` | SQLite file, or a `postgres://` / `mysql://` URL |
+| `QYG_HTTP_PORT` | `6157` | HTTP port; SSH is separate (`ssh.port`) |
+| `QYG_SECRET_KEY` | generated | Session and MFA encryption key — back it up |
+
+See the [configuration reference](docs/configuration/configure.md) and the
+[environment cheat sheet](docs/configuration/cheat-sheet.md) for the full list.
 
 ## Upgrading from OpenGist
 
-Upgrading an existing OpenGist v1.15.x installation does not require a manual
-database conversion. Stop the old process, back up the data directory, then
-start QingyuGist with the same data:
+An existing OpenGist v1.15.x installation can be moved over without a manual database
+conversion. Stop the old process, back up the data directory, and start QingyuGist on the
+same data:
 
-- The old `~/.opengist` directory, `OG_*` environment variables, YAML keys
-  such as `opengist-home`, and the legacy Docker volume `/opengist` are
-  still accepted.
-- The SQLite database and search index are renamed in place; the session secret
-  and SSH host key are copied. Back up the data directory first, because rolling
-  back to the old binary means restoring that backup or renaming the database
-  back to its old name.
-- Existing repositories, Git hooks, SSH keys, access tokens, passwords and
-  gists are unchanged. Existing `/-/...` bookmarks redirect to the new routes,
-  and existing Git remotes continue to work.
-- Existing browser sessions are invalidated by the cookie rename; users simply
-  sign in again. The search index may be rebuilt in the background after the
-  first start.
+- The old `~/.opengist` directory, `OG_*` variables, YAML keys such as `opengist-home` and
+  the legacy `/opengist` volume are still accepted.
+- The SQLite database and search index are renamed in place, and the session secret, SSH
+  host key, repositories, tokens and passwords are carried over untouched.
+- Existing `/-/...` bookmarks redirect, and existing Git remotes keep working. Browser
+  sessions end with the cookie rename, so users simply sign in again.
 
-Two deployment details need a manual update: the executable is now named
-`qingyugist` (update systemd or other service units), and the container image is
-`ghcr.io/liushen-fork/qingyugist`. New installations should use the new names;
-the compatibility paths are intended for upgrades only.
+Two things need a manual update: the executable is now called `qingyugist` (check your
+systemd unit) and the image is `ghcr.io/liushen-fork/qingyugist`. To roll back, restore the
+backup or rename the database back to its previous name.
 
 ## Development
 
 ```shell
-make install
-make watch
-```
-
-Run the test suite with:
-
-```shell
+make install   # Go modules + frontend dependencies
+make watch     # Vite dev server with hot reload
 go test -p 1 ./internal/...
 ```
 
-See [development docs](docs/contributing/development.md) for the Vite workflow,
-database matrix and test environment.
+See the [development docs](docs/contributing/development.md) for the Vite workflow, the
+database matrix and the test environment.
+
+## Credits
+
+QingyuGist is a fork of [OpenGist](https://github.com/thomiceli/opengist) and keeps its
+data format and API compatibility. Thank you to everyone upstream who made that possible. It is built with [Go](https://go.dev), [Echo](https://echo.labstack.com),
+[Vite](https://vite.dev), [Tailwind CSS](https://tailwindcss.com) and
+[htmx](https://htmx.org).
 
 ## License
 
-QingyuGist is licensed under the [AGPL-3.0 license](LICENSE).
+[AGPL-3.0](LICENSE). If you run a modified version as a network service, the license asks
+you to publish those modifications.
