@@ -13,7 +13,7 @@
                 <thead class="text-muted-foreground bg-muted/40 text-left">
                     <tr>
                         <th scope="col" class="px-5 py-2.5 font-medium">{{ .locale.Tr "admin.user" }}</th>
-                        <th scope="col" class="px-5 py-2.5 font-medium">{{ .locale.Tr "admin.created_at" }}</th>
+                        <th scope="col" class="hidden px-5 py-2.5 font-medium whitespace-nowrap sm:table-cell">{{ .locale.Tr "admin.created_at" }}</th>
                         <th scope="col" class="w-16 px-5 py-2.5"><span class="sr-only">{{ .locale.Tr "admin.delete" }}</span></th>
                     </tr>
                 </thead>
@@ -32,7 +32,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="text-muted-foreground px-5 py-3">{{ $user.CreatedAt | humanDate }}</td>
+                        <td class="text-muted-foreground hidden px-5 py-3 whitespace-nowrap sm:table-cell">{{ $user.CreatedAt | humanDate }}</td>
                         <td class="px-5 py-3 text-right">
                             <form action="{{ $.c.ExternalUrl }}/admin/users/{{ $user.ID }}/delete" method="POST">
                                 {{ $.csrfHtml }}

@@ -17,7 +17,7 @@
                         <th scope="col" class="px-5 py-2.5 font-medium">{{ .locale.Tr "admin.gists.private" }}</th>
                         <th scope="col" class="hidden px-5 py-2.5 text-right font-medium sm:table-cell">{{ .locale.Tr "admin.gists.nb-files" }}</th>
                         <th scope="col" class="hidden px-5 py-2.5 text-right font-medium sm:table-cell">{{ .locale.Tr "admin.gists.nb-likes" }}</th>
-                        <th scope="col" class="hidden px-5 py-2.5 font-medium md:table-cell">{{ .locale.Tr "admin.created_at" }}</th>
+                        <th scope="col" class="hidden px-5 py-2.5 font-medium whitespace-nowrap md:table-cell">{{ .locale.Tr "admin.created_at" }}</th>
                         <th scope="col" class="w-16 px-5 py-2.5"><span class="sr-only">{{ .locale.Tr "admin.delete" }}</span></th>
                     </tr>
                 </thead>
@@ -45,7 +45,7 @@
                         </td>
                         <td class="text-muted-foreground hidden px-5 py-3 text-right tabular-nums sm:table-cell">{{ $gist.NbFiles }}</td>
                         <td class="text-muted-foreground hidden px-5 py-3 text-right tabular-nums sm:table-cell">{{ $gist.NbLikes }}</td>
-                        <td class="text-muted-foreground hidden px-5 py-3 md:table-cell">{{ $gist.CreatedAt | humanDate }}</td>
+                        <td class="text-muted-foreground hidden px-5 py-3 whitespace-nowrap md:table-cell">{{ $gist.CreatedAt | humanDate }}</td>
                         <td class="px-5 py-3 text-right">
                             <form action="{{ $.c.ExternalUrl }}/admin/gists/{{ $gist.ID }}/delete" method="POST">
                                 {{ $.csrfHtml }}

@@ -41,23 +41,23 @@
             <table class="w-full text-sm">
                 <thead class="text-muted-foreground bg-muted/40 text-left">
                     <tr>
-                        <th scope="col" class="px-5 py-2.5 font-medium">{{ .locale.Tr "admin.invitations.code" }}</th>
-                        <th scope="col" class="px-5 py-2.5 font-medium">{{ .locale.Tr "admin.invitations.uses" }}</th>
-                        <th scope="col" class="px-5 py-2.5 font-medium">{{ .locale.Tr "admin.invitations.expires_at" }}</th>
-                        <th scope="col" class="hidden px-5 py-2.5 font-medium sm:table-cell">{{ .locale.Tr "admin.invitations.copy_link" }}</th>
-                        <th scope="col" class="w-16 px-5 py-2.5"><span class="sr-only">{{ .locale.Tr "admin.delete" }}</span></th>
+                        <th scope="col" class="px-3 py-2.5 sm:px-5 font-medium whitespace-nowrap">{{ .locale.Tr "admin.invitations.code" }}</th>
+                        <th scope="col" class="hidden px-3 py-2.5 sm:px-5 font-medium whitespace-nowrap sm:table-cell">{{ .locale.Tr "admin.invitations.uses" }}</th>
+                        <th scope="col" class="px-3 py-2.5 sm:px-5 font-medium whitespace-nowrap">{{ .locale.Tr "admin.invitations.expires_at" }}</th>
+                        <th scope="col" class="hidden px-3 py-2.5 sm:px-5 font-medium sm:table-cell">{{ .locale.Tr "admin.invitations.copy_link" }}</th>
+                        <th scope="col" class="w-16 px-3 py-2.5 sm:px-5"><span class="sr-only">{{ .locale.Tr "admin.delete" }}</span></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y">
                     {{ range $invitation := .invitations }}
                     <tr class="hover:bg-muted/40 transition-colors {{ if not $invitation.IsUsable }}text-muted-foreground{{ end }}">
-                        <td class="px-5 py-3">
+                        <td class="px-3 py-3 sm:px-5">
                             <code class="font-mono text-xs">{{ $invitation.Code }}</code>
                             {{ if not $invitation.IsUsable }}<span class="badge ml-2 border-transparent bg-muted text-muted-foreground">{{ $.locale.Tr "admin.invitations.expired" }}</span>{{ end }}
                         </td>
-                        <td class="px-5 py-3 tabular-nums">{{ $invitation.NbUsed }}/{{ $invitation.NbMax }}</td>
-                        <td class="px-5 py-3">{{ $invitation.ExpiresAt | humanDate }}</td>
-                        <td class="hidden px-5 py-3 sm:table-cell">
+                        <td class="hidden px-3 py-3 sm:px-5 whitespace-nowrap tabular-nums sm:table-cell">{{ $invitation.NbUsed }}/{{ $invitation.NbMax }}</td>
+                        <td class="px-3 py-3 sm:px-5 whitespace-nowrap">{{ $invitation.ExpiresAt | humanDate }}</td>
+                        <td class="hidden px-3 py-3 sm:px-5 sm:table-cell">
                             {{ if $invitation.IsUsable }}
                             <button type="button" class="text-muted-foreground hover:bg-accent hover:text-foreground inline-flex size-8 items-center justify-center rounded-md transition-colors" title="{{ $.locale.Tr "admin.invitations.copy_link" }}"
                                     _="on click call navigator.clipboard.writeText('{{ $.baseHttpUrl }}/register?code={{ $invitation.Code }}')
@@ -67,7 +67,7 @@
                             </button>
                             {{ end }}
                         </td>
-                        <td class="px-5 py-3 text-right">
+                        <td class="px-3 py-3 sm:px-5 text-right">
                             <form action="{{ $.c.ExternalUrl }}/admin/invitations/{{ $invitation.ID }}/delete" method="POST">
                                 {{ $.csrfHtml }}
                                 <button type="submit" class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex size-8 items-center justify-center rounded-md transition-colors"

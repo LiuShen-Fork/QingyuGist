@@ -275,11 +275,13 @@ textarea.input:focus-visible {
 .og-number {
     position: relative;
     width: 100%;
-    max-width: 9rem;
 }
 
+/* Narrow enough to read as a number, wide enough to align with the other
+   controls in the column once the row goes two-column. */
 @media (min-width: 1024px) {
     .og-number {
+        max-width: 9rem;
         margin-left: auto;
     }
 }
