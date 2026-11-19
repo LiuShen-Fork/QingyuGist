@@ -40,7 +40,7 @@ func FinishWebAuthnBinding(ctx *context.Context) error {
 	ctx.Request().Body.Close()
 	ctx.Request().Body = io.NopCloser(bytes.NewBuffer(body))
 
-	dto := new(db.CrendentialDTO)
+	dto := new(db.CredentialDTO)
 	_ = gojson.Unmarshal(body, &dto)
 
 	if err = ctx.Validate(dto); err != nil {
@@ -56,7 +56,7 @@ func FinishWebAuthnBinding(ctx *context.Context) error {
 		return ctx.ErrorRes(403, "Failed binding attempt for passkey", err)
 	}
 
-	if _, err = db.CreateFromCrendential(user.ID, passkeyName, waCredential); err != nil {
+	if _, err = db.CreateFromCredential(user.ID, passkeyName, waCredential); err != nil {
 		return ctx.ErrorRes(500, "Cannot create WebAuthn credential on database", err)
 	}
 

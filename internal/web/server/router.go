@@ -83,8 +83,7 @@ func (s *Server) registerRoutes() {
 			sA.PUT("/username", settings.UsernameProcess)
 			sA.GET("/totp/generate", auth.BeginTotp)
 			sA.POST("/totp/generate", auth.FinishTotp)
-			sA.DELETE("/totp", auth.DisableTotp)
-			sA.POST("/totp/regenerate", auth.RegenerateTotpRecoveryCodes)
+			sA.POST("/totp", auth.UpdateTotp)
 		}
 
 		sB := r.SubGroup("/admin")

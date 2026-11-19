@@ -15,6 +15,7 @@ import (
 	"github.com/LiuShen-Fork/QingyuGist/internal/git"
 	"github.com/LiuShen-Fork/QingyuGist/internal/ipc"
 	validatorpkg "github.com/LiuShen-Fork/QingyuGist/internal/validator"
+	"github.com/rs/zerolog/log"
 )
 
 // PostReceive is the client side of the post-receive hook. It runs in the
@@ -145,7 +146,9 @@ func RunPostReceive(gist *db.Gist, repoDir, gistUrl string, refs []ipc.HookRefUp
 		}
 	}
 
-	_ = gist.SetLastActiveNow()
+	if err := gist.SetLastActiveNow(); err != nil {
+		log.Warn().Err(err).Msg("Failed to update gist last active time")
+	}
 	if err := gist.UpdatePreviewAndCount(true); err != nil {
 		return "", fmt.Errorf("failed to update gist: %w", err)
 	}

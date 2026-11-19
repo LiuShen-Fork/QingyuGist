@@ -55,15 +55,20 @@ func BeginBinding(dbUser *db.User) (credCreation *protocol.CredentialCreation, j
 		return nil, nil, err
 	}
 
-	jsonSession, _ = json.Marshal(session)
-	return
+	jsonSession, err = json.Marshal(session)
+	if err != nil {
+		return nil, nil, err
+	}
+	return credCreation, jsonSession, nil
 }
 
 func FinishBinding(dbUser *db.User, jsonSession []byte, response *http.Request) (*webauthn.Credential, error) {
 	waUser := &user{User: dbUser}
 
 	var session webauthn.SessionData
-	_ = json.Unmarshal(jsonSession, &session)
+	if err := json.Unmarshal(jsonSession, &session); err != nil {
+		return nil, err
+	}
 
 	return webAuthn.FinishRegistration(waUser, session, response)
 }
@@ -72,14 +77,22 @@ func BeginDiscoverableLogin() (credCreation *protocol.CredentialAssertion, jsonS
 	credCreation, session, err := webAuthn.BeginDiscoverableLogin(
 		webauthn.WithUserVerification(protocol.VerificationPreferred),
 	)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	jsonSession, _ = json.Marshal(session)
-	return
+	jsonSession, err = json.Marshal(session)
+	if err != nil {
+		return nil, nil, err
+	}
+	return credCreation, jsonSession, nil
 }
 
 func FinishDiscoverableLogin(jsonSession []byte, response *http.Request) (uint, error) {
 	var session webauthn.SessionData
-	_ = json.Unmarshal(jsonSession, &session)
+	if err := json.Unmarshal(jsonSession, &session); err != nil {
+		return 0, err
+	}
 
 	parsedResponse, err := protocol.ParseCredentialRequestResponse(response)
 	if err != nil {
@@ -108,16 +121,24 @@ func FinishDiscoverableLogin(jsonSession []byte, response *http.Request) (uint, 
 func BeginLogin(dbUser *db.User) (credCreation *protocol.CredentialAssertion, jsonSession []byte, err error) {
 	waUser := &user{User: dbUser}
 	credCreation, session, err := webAuthn.BeginLogin(waUser)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	jsonSession, _ = json.Marshal(session)
-	return
+	jsonSession, err = json.Marshal(session)
+	if err != nil {
+		return nil, nil, err
+	}
+	return credCreation, jsonSession, nil
 }
 
 func FinishLogin(dbUser *db.User, jsonSession []byte, response *http.Request) error {
 	waUser := &user{User: dbUser}
 
 	var session webauthn.SessionData
-	_ = json.Unmarshal(jsonSession, &session)
+	if err := json.Unmarshal(jsonSession, &session); err != nil {
+		return err
+	}
 
 	cred, err := webAuthn.FinishLogin(waUser, session, response)
 	if err != nil {

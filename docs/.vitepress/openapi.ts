@@ -362,7 +362,7 @@ export async function buildApiData(): Promise<ApiData> {
       const curlLines = [
         `curl -X ${method.toUpperCase()}`,
         `  --url "${url}"`,
-        `  -H "Authorization: Bearer og_xxxxxxxx"`
+        `  -H "Authorization: Bearer qyg_xxxxxxxx"`
       ]
       if (requestSchema) {
         curlLines.push(`  -H "Content-Type: application/json"`)

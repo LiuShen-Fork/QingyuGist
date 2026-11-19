@@ -46,6 +46,20 @@ func PasswordProcess(ctx *context.Context) error {
 		return ctx.RedirectTo("/settings/authentication")
 	}
 
+	// Changing an existing password requires the current one, so a lost session
+	// cannot be turned into a permanent account takeover. Accounts created
+	// through OAuth have no password yet and skip this step.
+	if user.Password != "" {
+		ok, verifyErr := passwordpkg.VerifyPassword(ctx.FormValue("current_password"), user.Password)
+		if verifyErr != nil {
+			return ctx.ErrorRes(500, "Cannot verify password", verifyErr)
+		}
+		if !ok {
+			ctx.AddFlash(ctx.Tr("flash.user.current-password-invalid"), "error")
+			return ctx.RedirectTo("/settings/authentication")
+		}
+	}
+
 	password, err := passwordpkg.HashPassword(dto.Password)
 	if err != nil {
 		return ctx.ErrorRes(500, "Cannot hash password", err)

@@ -11,11 +11,11 @@ info:
     Authentication uses a Personal Access Token sent in the `Authorization`
     header using the `Bearer` scheme:
 
-        Authorization: Bearer og_xxxxxxxx
+        Authorization: Bearer qyg_xxxxxxxx
 
     Example usage:
     
-        curl -H "Authorization: Bearer og_xxxxxxxx" https://qingyugist.local/api/gists
+        curl -H "Authorization: Bearer qyg_xxxxxxxx" https://qingyugist.local/api/gists
 
     Tokens are created from the web UI under Settings → Access Tokens and carry
     per-resource scopes (gist, user) at read or read/write level.
@@ -780,7 +780,7 @@ components:
       type: http
       scheme: bearer
       description: |
-        Personal Access Token. Send as `Authorization: Bearer og_<token>`.
+        Personal Access Token. Send as `Authorization: Bearer qyg_<token>`.
 
         Tokens carry per-resource scopes, granted at read or read/write level
         from the web UI (Settings → Access Tokens). Each operation lists the

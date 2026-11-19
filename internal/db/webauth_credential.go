@@ -110,7 +110,7 @@ func GetCredentialByID(id binaryData) (*WebAuthnCredential, error) {
 	return &cred, err
 }
 
-func CreateFromCrendential(userID uint, name string, cred *webauthn.Credential) (*WebAuthnCredential, error) {
+func CreateFromCredential(userID uint, name string, cred *webauthn.Credential) (*WebAuthnCredential, error) {
 	credDb := &WebAuthnCredential{
 		UserID:             userID,
 		Name:               name,
@@ -143,6 +143,6 @@ func (w *WebAuthnCredential) Delete() error {
 
 // -- DTO -- //
 
-type CrendentialDTO struct {
+type CredentialDTO struct {
 	PasskeyName string `json:"passkeyname" validate:"max=50"`
 }

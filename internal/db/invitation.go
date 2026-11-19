@@ -1,8 +1,10 @@
 package db
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
-	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -58,7 +60,11 @@ func InvitationCodeExists(code string) (bool, error) {
 }
 
 func (i *Invitation) Create() error {
-	i.Code = generateRandomCode()
+	code, err := generateRandomCode()
+	if err != nil {
+		return err
+	}
+	i.Code = code
 	return db.Create(&i).Error
 }
 
@@ -87,13 +93,13 @@ func (i *Invitation) Use() error {
 	return i.Update()
 }
 
-func generateRandomCode() string {
-	const charset = "0123456789ABCDEF"
-	var seededRand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	result := make([]byte, 16)
-
-	for i := range result {
-		result[i] = charset[seededRand.Intn(len(charset))]
+// generateRandomCode returns 16 hex characters from crypto/rand. Invitation
+// codes are the only gate on a closed instance, so they must not be
+// predictable from the time they were created.
+func generateRandomCode() (string, error) {
+	buf := make([]byte, 8)
+	if _, err := rand.Read(buf); err != nil {
+		return "", err
 	}
-	return string(result)
+	return strings.ToUpper(hex.EncodeToString(buf)), nil
 }

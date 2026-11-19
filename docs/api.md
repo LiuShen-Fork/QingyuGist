@@ -25,7 +25,7 @@ The API authenticates with a Personal Access Token. To create one:
 2. Select the **Access Tokens** menu
 3. Choose a name, select the scopes the token should grant and an optional
    expiration date, then click **Create Access Token**
-4. Copy the token (starting with `og_`). It is shown only once.
+4. Copy the token (starting with `qyg_`). It is shown only once.
 
 Tokens carry per-resource scopes, each at read or read/write level:
 
@@ -41,7 +41,7 @@ Tokens carry per-resource scopes, each at read or read/write level:
 Send the token in the `Authorization` header using the `Bearer` scheme:
 
 ```
-Authorization: Bearer og_xxxxxxxx
+Authorization: Bearer qyg_xxxxxxxx
 ```
 
 Each endpoint documents the scope it requires in its **Headers** section.

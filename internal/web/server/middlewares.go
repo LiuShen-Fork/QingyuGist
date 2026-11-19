@@ -634,18 +634,18 @@ func apiBindAuth(next Handler) Handler {
 		case strings.HasPrefix(h, "Token "):
 			plain = strings.TrimPrefix(h, "Token ")
 		default:
-			return ctx.ErrorJson(401, "Bad crendentials", nil)
+			return ctx.ErrorJson(401, "Bad credentials", nil)
 		}
 
 		tok, err := db.GetAccessTokenByToken(plain)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return ctx.ErrorJson(401, "Bad crendentials", nil)
+				return ctx.ErrorJson(401, "Bad credentials", nil)
 			}
 			return ctx.ErrorJson(500, "Error fetching access token", err)
 		}
 		if tok.IsExpired() {
-			return ctx.ErrorJson(401, "Bad crendentials", nil)
+			return ctx.ErrorJson(401, "Bad credentials", nil)
 		}
 
 		ctx.User = &tok.User

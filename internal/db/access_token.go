@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	"strings"
 	"time"
 )
 
@@ -17,6 +18,20 @@ const (
 	ReadPermission
 	ReadWritePermission
 )
+
+const (
+	// TokenPrefix marks a personal access token issued by QingyuGist.
+	TokenPrefix = "qyg_"
+	// legacyTokenPrefix was issued before the project was renamed. Such tokens
+	// stay valid so existing integrations keep working.
+	legacyTokenPrefix = "og_"
+)
+
+// IsAccessToken reports whether s looks like a personal access token, either
+// the current format or the legacy one. It says nothing about validity.
+func IsAccessToken(s string) bool {
+	return strings.HasPrefix(s, TokenPrefix) || strings.HasPrefix(s, legacyTokenPrefix)
+}
 
 type AccessToken struct {
 	ID         uint `gorm:"primaryKey"`
@@ -41,7 +56,7 @@ func (t *AccessToken) GenerateToken() (string, error) {
 		return "", err
 	}
 
-	plainToken := "og_" + hex.EncodeToString(bytes)
+	plainToken := TokenPrefix + hex.EncodeToString(bytes)
 
 	hash := sha256.Sum256([]byte(plainToken))
 	t.TokenHash = hex.EncodeToString(hash[:])
@@ -102,16 +117,8 @@ func (t *AccessToken) HasGistReadPermission() bool {
 	return t.ScopeGist >= ReadPermission
 }
 
-func (t *AccessToken) HasGistWritePermission() bool {
-	return t.ScopeGist >= ReadWritePermission
-}
-
 func (t *AccessToken) HasUserReadPermission() bool {
 	return t.ScopeUser >= ReadPermission
-}
-
-func (t *AccessToken) HasUserWritePermission() bool {
-	return t.ScopeUser >= ReadWritePermission
 }
 
 func (t *AccessToken) CheckForPermission(scope, permission uint) bool {

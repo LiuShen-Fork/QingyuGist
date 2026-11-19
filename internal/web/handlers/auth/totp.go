@@ -3,10 +3,30 @@ package auth
 import (
 	"net/url"
 
+	passwordpkg "github.com/LiuShen-Fork/QingyuGist/internal/auth/password"
 	"github.com/LiuShen-Fork/QingyuGist/internal/auth/totp"
 	"github.com/LiuShen-Fork/QingyuGist/internal/db"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 )
+
+// confirmCurrentPassword gates destructive MFA changes on the account password.
+// It reports whether the request may proceed; when it may not, the returned
+// error is the response to send back. Accounts created through OAuth have no
+// password yet, so there is nothing to confirm.
+func confirmCurrentPassword(ctx *context.Context, user *db.User) (bool, error) {
+	if user.Password == "" {
+		return true, nil
+	}
+	ok, err := passwordpkg.VerifyPassword(ctx.FormValue("password"), user.Password)
+	if err != nil {
+		return false, ctx.ErrorRes(500, "Cannot verify password", err)
+	}
+	if !ok {
+		ctx.AddFlash(ctx.Tr("flash.user.current-password-invalid"), "error")
+		return false, ctx.RedirectTo("/settings/authentication")
+	}
+	return true, nil
+}
 
 func BeginTotp(ctx *context.Context) error {
 	user := ctx.User
@@ -146,6 +166,23 @@ func AssertTotp(ctx *context.Context) error {
 	ctx.SaveSession(sess)
 
 	return ctx.RedirectTo(redirectUrl)
+}
+
+// UpdateTotp dispatches the two actions of the TOTP card. They share one form
+// so both can be gated on the account password.
+func UpdateTotp(ctx *context.Context) error {
+	if done, errRes := confirmCurrentPassword(ctx, ctx.User); !done {
+		return errRes
+	}
+
+	switch ctx.FormValue("action") {
+	case "disable":
+		return DisableTotp(ctx)
+	case "regenerate":
+		return RegenerateTotpRecoveryCodes(ctx)
+	default:
+		return ctx.ErrorRes(400, "Unknown action", nil)
+	}
 }
 
 func DisableTotp(ctx *context.Context) error {

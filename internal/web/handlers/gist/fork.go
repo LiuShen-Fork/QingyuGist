@@ -78,7 +78,9 @@ func Forks(ctx *context.Context) error {
 		return ctx.ErrorRes(500, "Error getting users who liked this gist", err)
 	}
 
-	if err = handlers.Paginate(ctx, forks, pageInt, 30, "forks", gist.User.Username+"/"+gist.Identifier()+"/forks", 2, nil); err != nil {
+	// 10 rows per page plus a sentinel: Paginate trims the sentinel and renders
+	// "older" only when it was present, so perPage must match the slice size.
+	if err = handlers.Paginate(ctx, forks, pageInt, 10, "forks", gist.User.Username+"/"+gist.Identifier()+"/forks", 2, nil); err != nil {
 		return ctx.ErrorRes(404, ctx.Tr("error.page-not-found"), nil)
 	}
 

@@ -231,6 +231,7 @@ settings.create-password-help: '创建您的密码以通过 HTTP 的方式登录
 settings.change-password: '修改密码'
 settings.change-password-help: '修改您通过 HTTP 登录到 QingyuGist 的密码'
 settings.password-label-title: '密码'
+settings.current-password: '当前密码'
 error.bad-request: '请求错误'
 error.signup-disabled: '注册已被禁用'
 error.signup-disabled-form: '通过用户名密码注册已被禁用'
@@ -272,6 +273,7 @@ flash.user.invalid-ssh-key: 'SSH 密钥无效'
 flash.user.ssh-key-added: 'SSH 密钥已添加'
 flash.user.ssh-key-deleted: 'SSH 密钥已删除'
 flash.user.password-updated: '密码已更新'
+flash.user.current-password-invalid: '当前密码不正确'
 flash.user.username-updated: '用户名已更新'
 validation.is-too-long: '字段 %s 太长'
 validation.should-not-be-empty: '字段 %s 不能为空'
@@ -312,6 +314,7 @@ auth.totp.code-used: 恢复代码 %s 已被使用且失效。您可能需要暂�
 auth.totp.invalid-code: 无效的 TOTP 代码
 auth.totp.disabled: 成功禁用 TOTP
 auth.totp.disable: 禁用 TOTP
+auth.totp.disable-confirm: 确定要禁用双因素认证吗？禁用后您将只能使用密码登录。
 auth.totp.enter-code: 请输入来自身份验证器应用程序的代码
 auth.totp.enter-recovery-key: 如果您丢失了设备，可以使用恢复密钥
 auth.totp.code: 代码

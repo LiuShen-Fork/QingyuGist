@@ -201,6 +201,7 @@ settings.create-password-help: Create your password to login to QingyuGist via H
 settings.change-password: Change password
 settings.change-password-help: Change your password to login to QingyuGist via HTTP
 settings.password-label-title: Password
+settings.current-password: Current password
 settings.header.account: Account settings
 settings.header.mfa: MFA
 settings.header.authentication: Authentication
@@ -289,6 +290,7 @@ auth.totp.invalid-code: Invalid TOTP code
 auth.totp.code-used: The recovery code %s was used, it is now invalid. You may want to disable MFA for now or regenerate your codes.
 auth.totp.disabled: TOTP successfully disabled
 auth.totp.disable: Disable TOTP
+auth.totp.disable-confirm: Disable two-factor authentication? You will only be able to sign in with your password.
 auth.totp.enter-code: Enter the code from the Authenticator app
 auth.totp.enter-recovery-key: or a recovery key if you lost your device
 auth.totp.code: Code
@@ -440,6 +442,7 @@ flash.user.invalid-ssh-key: Invalid SSH key
 flash.user.ssh-key-added: SSH key added
 flash.user.ssh-key-deleted: SSH key deleted
 flash.user.password-updated: Password updated
+flash.user.current-password-invalid: The current password is incorrect
 flash.user.username-updated: Username updated
 
 validation.is-too-long: Field %s is too long

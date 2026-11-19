@@ -1,11 +1,29 @@
 package db_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/LiuShen-Fork/QingyuGist/internal/db"
 	"github.com/stretchr/testify/require"
 )
+
+func TestGenerateToken(t *testing.T) {
+	tok := &db.AccessToken{}
+	plain, err := tok.GenerateToken()
+	require.NoError(t, err)
+	require.True(t, strings.HasPrefix(plain, db.TokenPrefix))
+	require.Len(t, plain, len(db.TokenPrefix)+64)
+	require.True(t, db.IsAccessToken(plain))
+	require.NotEmpty(t, tok.TokenHash)
+}
+
+func TestIsAccessToken(t *testing.T) {
+	require.True(t, db.IsAccessToken("qyg_abc"))
+	require.True(t, db.IsAccessToken("og_abc"), "legacy tokens stay accepted")
+	require.False(t, db.IsAccessToken("abc"))
+	require.False(t, db.IsAccessToken(""))
+}
 
 func TestAccessTokenScopeUser(t *testing.T) {
 	tok := &db.AccessToken{ScopeUser: db.ReadPermission}

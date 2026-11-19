@@ -2,7 +2,6 @@ package auth
 
 import (
 	"errors"
-	"strings"
 
 	"github.com/LiuShen-Fork/QingyuGist/internal/auth/ldap"
 	passwordpkg "github.com/LiuShen-Fork/QingyuGist/internal/auth/password"
@@ -41,7 +40,7 @@ func TryAuthentication(username, password string) (*db.User, error) {
 // TryAuthenticationWithAccessToken attempts to authenticate using a plain-text access token.
 // It verifies the token belongs to the given username, is not expired, and has the required scope/permission.
 func TryAuthenticationWithAccessToken(username, plainToken string, scope, permission uint) (*db.User, *db.AccessToken, error) {
-	if !strings.HasPrefix(plainToken, "og_") {
+	if !db.IsAccessToken(plainToken) {
 		return nil, nil, AuthError{"not an access token"}
 	}
 

@@ -307,12 +307,13 @@ func AdminSetConfig(ctx *context.Context) error {
 	value := ctx.FormValue("value")
 	key, value = settings.NormalizeLegacyValue(key, value)
 
-	if _, ok := settings.Define(key); ok {
-		if err := settings.Set(key, value); err != nil {
-			return ctx.ErrorRes(400, "Invalid setting", err)
-		}
-	} else if err := db.UpdateSetting(key, value); err != nil {
-		return ctx.ErrorRes(500, "Cannot set setting", err)
+	if _, ok := settings.Define(key); !ok {
+		// Only registry keys are accepted: an unknown key would be stored
+		// unvalidated and could surface as a stale value under a future setting.
+		return ctx.ErrorRes(400, "Unknown setting", nil)
+	}
+	if err := settings.Set(key, value); err != nil {
+		return ctx.ErrorRes(400, "Invalid setting", err)
 	}
 
 	return ctx.JSON(200, map[string]interface{}{
@@ -341,14 +342,30 @@ func AdminInvitationsCreate(ctx *context.Context) error {
 		nbMax = 10
 	}
 
-	expiresAtUnix, err := strconv.ParseInt(ctx.FormValue("expiredAtUnix"), 10, 64)
-	if err != nil {
-		expiresAtUnix = time.Now().Unix() + 604800 // 1 week
+	// The form sends a datetime-local value (no timezone, so read it as local
+	// time); the legacy dashboard sent a Unix timestamp. Empty means one week.
+	expiresAt := time.Now().Add(7 * 24 * time.Hour)
+	if raw := ctx.FormValue("expiresAt"); raw != "" {
+		parsed, parseErr := time.ParseInLocation("2006-01-02T15:04", raw, time.Local)
+		if parseErr != nil {
+			// Browsers include seconds when the input has a step finer than a minute.
+			parsed, parseErr = time.ParseInLocation("2006-01-02T15:04:05", raw, time.Local)
+		}
+		if parseErr != nil {
+			return ctx.ErrorRes(400, "Invalid expiration date", parseErr)
+		}
+		expiresAt = parsed
+	} else if raw := ctx.FormValue("expiredAtUnix"); raw != "" {
+		unix, parseErr := strconv.ParseInt(raw, 10, 64)
+		if parseErr != nil {
+			return ctx.ErrorRes(400, "Invalid expiration date", parseErr)
+		}
+		expiresAt = time.Unix(unix, 0)
 	}
 
 	invitation := &db.Invitation{
 		Code:      code,
-		ExpiresAt: expiresAtUnix,
+		ExpiresAt: expiresAt.Unix(),
 		NbMax:     uint(nbMax),
 	}
 

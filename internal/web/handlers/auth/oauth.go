@@ -152,8 +152,24 @@ func OauthCallback(ctx *context.Context) error {
 		}
 	}
 
+	// The password login path sends accounts with a second factor through /mfa;
+	// a provider login must do the same, otherwise linking an OAuth account
+	// silently downgrades the account to a single factor.
+	var hasWebauthn, hasTotp bool
+	if hasWebauthn, hasTotp, err = userDB.HasMFA(); err != nil {
+		return ctx.ErrorRes(500, "Cannot check for user MFA", err)
+	}
+
 	sess := ctx.GetSession()
+	if hasWebauthn || hasTotp {
+		sess.Values["mfaID"] = userDB.ID
+		sess.Options.MaxAge = 5 * 60 // 5 minutes
+		ctx.SaveSession(sess)
+		return ctx.RedirectTo("/mfa")
+	}
+
 	sess.Values["user"] = userDB.ID
+	sess.Options.MaxAge = 60 * 60 * 24 * 365 // 1 year
 	ctx.SaveSession(sess)
 	ctx.DeleteCsrfCookie()
 
