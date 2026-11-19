@@ -7,7 +7,7 @@
     {{ if ne (len .forks) 0 }}
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {{ range $gist := .forks }}
-            <a href="{{ $.c.ExternalUrl }}/{{ $gist.User.Username }}/{{ $gist.Identifier }}" class="bg-card hover:border-primary flex items-center gap-3 rounded-xl border p-3">
+            <a href="{{ $.c.ExternalUrl }}/{{ $gist.User.Username }}/{{ $gist.Identifier }}" class="bg-card hover:border-primary flex items-center gap-3 rounded-xl border p-3 transition-colors">
                 {{ if not (shouldGenerateAvatar $gist.User $.DisableGravatar) }}
                     <img class="size-10 shrink-0 rounded-full border object-cover" src="{{ avatarUrl $gist.User $.DisableGravatar }}" alt="{{ $gist.User.Username }}" />
                 {{ else }}
@@ -23,8 +23,8 @@
         {{ template "pagination" . }}
     {{ else }}
         <div class="text-muted-foreground flex flex-col items-center justify-center py-16 text-center">
-            <svg class="size-12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="6" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V9M12 15v3"/></svg>
-            <h3 class="text-foreground mt-3 text-sm font-medium">{{ .locale.Tr "gist.forks.no" }}</h3>
+            <span class="bg-muted flex size-14 items-center justify-center rounded-full"><svg class="size-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="6" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V9M12 15v3"/></svg></span>
+            <h3 class="text-foreground mt-4 text-sm font-medium">{{ .locale.Tr "gist.forks.no" }}</h3>
         </div>
     {{ end }}
 </div>

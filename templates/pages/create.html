@@ -44,22 +44,22 @@
             <aside class="space-y-4 lg:sticky lg:top-16">
                 <div class="bg-card space-y-4 rounded-xl border p-4">
                     <div class="space-y-1.5">
-                        <label for="title" class="text-xs font-medium">{{ .locale.Tr "gist.new.title" }}</label>
+                        <label for="title" class="text-sm font-medium">{{ .locale.Tr "gist.new.title" }}</label>
                         <input type="text" name="title" id="title" maxlength="250" value="{{ .dto.Title }}" placeholder="{{ .locale.Tr "gist.new.title" }}" class="input h-9 w-full" />
                     </div>
                     <div class="space-y-1.5">
-                        <label for="url" class="text-xs font-medium">{{ .locale.Tr "gist.new.url" }}</label>
+                        <label for="url" class="text-sm font-medium">{{ .locale.Tr "gist.new.url" }}</label>
                         <div class="flex">
                             <span class="border-input bg-muted text-muted-foreground inline-flex h-9 items-center whitespace-nowrap rounded-l-md border border-r-0 px-2 text-sm">{{ .userLogged.Username }}/</span>
                             <input type="text" name="url" id="url" maxlength="32" value="{{ .dto.URL }}" placeholder="{{ .locale.Tr "gist.new.url" }}" class="input h-9 w-full rounded-l-none" />
                         </div>
                     </div>
                     <div class="space-y-1.5">
-                        <label for="description" class="text-xs font-medium">{{ .locale.Tr "gist.new.description" }}</label>
+                        <label for="description" class="text-sm font-medium">{{ .locale.Tr "gist.new.description" }}</label>
                         <textarea name="description" id="description" maxlength="1000" rows="3" placeholder="{{ .locale.Tr "gist.new.description" }}" class="input w-full resize-y">{{ .dto.Description }}</textarea>
                     </div>
                     <div class="space-y-1.5">
-                        <label for="topics" class="text-xs font-medium">{{ .locale.Tr "gist.new.topics" }}</label>
+                        <label for="topics" class="text-sm font-medium">{{ .locale.Tr "gist.new.topics" }}</label>
                         <input type="text" name="topics" id="topics" value="{{ .dto.Topics }}" placeholder="{{ .locale.Tr "gist.new.topics" }}" class="input h-9 w-full" />
                     </div>
 

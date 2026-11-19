@@ -5,21 +5,25 @@
     <div class="space-y-6">
         <!-- Add key -->
         <section class="bg-card h-fit rounded-xl border">
-            <div class="space-y-1 border-b px-4 py-3">
+            <div class="space-y-1 border-b px-5 py-3">
                 <h2 class="font-semibold">{{ .locale.Tr "settings.add-ssh-key" }}</h2>
                 <p class="text-muted-foreground text-sm">{{ .locale.Tr "settings.add-ssh-key-help" }}</p>
             </div>
-            <form action="{{ .c.ExternalUrl }}/settings/ssh-keys" method="post" class="space-y-4 p-4">
+            <form action="{{ .c.ExternalUrl }}/settings/ssh-keys" method="post">
                 {{ .csrfHtml }}
-                <div class="space-y-1.5">
+                <div class="og-field">
                     <label for="title" class="text-sm font-medium">{{ .locale.Tr "settings.add-ssh-key-title" }}</label>
-                    <input id="title" name="title" type="text" required autocomplete="off" class="input h-9 w-full max-w-lg" />
+                    <div class="og-field-control">
+                        <input id="title" name="title" type="text" required autocomplete="off" class="input h-9 w-full" />
+                    </div>
                 </div>
-                <div class="space-y-1.5">
+                <div class="og-field og-field--top">
                     <label for="sshkey" class="text-sm font-medium">{{ .locale.Tr "settings.add-ssh-key-content" }}</label>
-                    <textarea id="sshkey" name="content" rows="4" required autocomplete="off" class="input w-full max-w-lg font-mono text-xs" placeholder="ssh-ed25519 AAAA..."></textarea>
+                    <div class="og-field-control">
+                        <textarea id="sshkey" name="content" rows="4" required autocomplete="off" class="input w-full font-mono text-xs" placeholder="ssh-ed25519 AAAA..."></textarea>
+                    </div>
                 </div>
-                <div class="flex">
+                <div class="flex justify-end border-t px-5 py-3">
                     <button type="submit" class="btn-sm">{{ .locale.Tr "settings.add-ssh-key" }}</button>
                 </div>
             </form>

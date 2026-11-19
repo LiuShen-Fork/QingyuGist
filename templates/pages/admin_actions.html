@@ -3,7 +3,7 @@
     {{ template "admin_header" (dict "Locale" .locale "Title" (.locale.Tr "admin.actions") "Subtitle" (.locale.Tr "admin.actions.subtitle")) }}
 
     <section class="bg-card overflow-hidden rounded-xl border">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b px-4 py-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b px-5 py-3">
             <h2 class="text-sm font-medium">{{ .locale.Tr "admin.actions.all" }}</h2>
             <p class="text-muted-foreground text-xs">{{ .locale.Tr "admin.actions.help" }}</p>
         </div>
@@ -13,7 +13,7 @@
              {{ if or .anyRunning .pollNow }}hx-get="{{ .c.ExternalUrl }}/admin/actions" hx-trigger="every 3s" hx-select="#actions-list" hx-target="this" hx-swap="outerHTML"{{ end }}>
             <ul class="divide-y">
                 {{ range .actions }}
-                <li class="hover:bg-muted/30 flex items-center justify-between gap-4 p-4 transition-colors">
+                <li class="hover:bg-muted/30 flex items-center justify-between gap-4 px-5 py-4 transition-colors">
                     <div class="flex min-w-0 items-start gap-3">
                         <span class="bg-muted text-muted-foreground flex size-9 shrink-0 items-center justify-center rounded-lg">
                             {{ if eq .Icon "folder" }}

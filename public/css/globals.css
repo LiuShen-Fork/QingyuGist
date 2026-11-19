@@ -217,6 +217,99 @@ textarea.input:focus-visible {
     outline: none;
 }
 
+/* Backend forms ---------------------------------------------------------- */
+/* One row rhythm for every admin/settings form: the label and its hint sit on
+   the left, the control sits in a 20rem column on the right, so every input,
+   select and toggle shares the same edges instead of each page picking its own
+   max-width. Below `lg` the row stacks and the control keeps that same width,
+   which is why the fields never end up "long and short" at intermediate sizes. */
+.og-field {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.875rem 1.25rem;
+}
+
+.og-field-control {
+    display: flex;
+    width: 100%;
+    max-width: 20rem;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+    .og-field {
+        grid-template-columns: minmax(0, 1fr) 20rem;
+        align-items: center;
+        column-gap: 2rem;
+    }
+
+    /* Tall controls (textareas, editors) read better top-aligned with the label. */
+    .og-field--top {
+        align-items: start;
+    }
+
+    .og-field-control {
+        max-width: none;
+        margin-left: auto;
+        justify-content: flex-end;
+    }
+
+    /* Collections that need real width (the footer-link editor) take the whole
+       row; their right edge still lands on the same line as the control column. */
+    .og-field--wide {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.og-field--wide .og-field-control {
+    max-width: none;
+    margin-left: 0;
+    justify-content: flex-start;
+}
+
+/* Number fields carry their unit inside the box so the right edge stays on the
+   control column's line; a unit printed after the input used to push the box
+   short and shift it off that line. Kept narrow: a count or a port number never
+   needs 20rem. */
+.og-number {
+    position: relative;
+    width: 100%;
+    max-width: 9rem;
+}
+
+@media (min-width: 1024px) {
+    .og-number {
+        margin-left: auto;
+    }
+}
+
+.og-number > .input {
+    padding-right: 3rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.og-number > .input::-webkit-outer-spin-button,
+.og-number > .input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.og-number > .input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.og-number-unit {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    translate: 0 -50%;
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    line-height: 1;
+    pointer-events: none;
+}
+
 /* github-markdown-css paints .markdown-body with its own canvas background
    (background-color: var(--bgColor-default)), and its stylesheet loads after
    this one, so a plain override loses the cascade. Force transparent so the

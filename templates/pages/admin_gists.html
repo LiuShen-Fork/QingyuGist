@@ -3,7 +3,7 @@
     {{ template "admin_header" (dict "Locale" .locale "Title" (.locale.Tr "admin.gists") "Subtitle" (.locale.Tr "admin.gists.subtitle")) }}
 
     <section class="bg-card overflow-hidden rounded-xl border">
-        <div class="flex items-center justify-between gap-3 border-b px-4 py-3">
+        <div class="flex items-center justify-between gap-3 border-b px-5 py-3">
             <h2 class="text-sm font-medium">{{ .locale.Tr "admin.gists.all" }}</h2>
             <span class="text-muted-foreground text-xs tabular-nums">{{ len .data }}</span>
         </div>
@@ -12,19 +12,19 @@
             <table class="w-full text-sm">
                 <thead class="text-muted-foreground bg-muted/40 text-left">
                     <tr>
-                        <th scope="col" class="px-4 py-2.5 font-medium">{{ .locale.Tr "admin.gists.title" }}</th>
-                        <th scope="col" class="px-4 py-2.5 font-medium">{{ .locale.Tr "admin.user" }}</th>
-                        <th scope="col" class="px-4 py-2.5 font-medium">{{ .locale.Tr "admin.gists.private" }}</th>
-                        <th scope="col" class="hidden px-4 py-2.5 text-right font-medium sm:table-cell">{{ .locale.Tr "admin.gists.nb-files" }}</th>
-                        <th scope="col" class="hidden px-4 py-2.5 text-right font-medium sm:table-cell">{{ .locale.Tr "admin.gists.nb-likes" }}</th>
-                        <th scope="col" class="hidden px-4 py-2.5 font-medium md:table-cell">{{ .locale.Tr "admin.created_at" }}</th>
-                        <th scope="col" class="w-16 px-4 py-2.5"><span class="sr-only">{{ .locale.Tr "admin.delete" }}</span></th>
+                        <th scope="col" class="px-5 py-2.5 font-medium">{{ .locale.Tr "admin.gists.title" }}</th>
+                        <th scope="col" class="px-5 py-2.5 font-medium">{{ .locale.Tr "admin.user" }}</th>
+                        <th scope="col" class="px-5 py-2.5 font-medium">{{ .locale.Tr "admin.gists.private" }}</th>
+                        <th scope="col" class="hidden px-5 py-2.5 text-right font-medium sm:table-cell">{{ .locale.Tr "admin.gists.nb-files" }}</th>
+                        <th scope="col" class="hidden px-5 py-2.5 text-right font-medium sm:table-cell">{{ .locale.Tr "admin.gists.nb-likes" }}</th>
+                        <th scope="col" class="hidden px-5 py-2.5 font-medium md:table-cell">{{ .locale.Tr "admin.created_at" }}</th>
+                        <th scope="col" class="w-16 px-5 py-2.5"><span class="sr-only">{{ .locale.Tr "admin.delete" }}</span></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y">
                     {{ range $gist := .data }}
                     <tr class="hover:bg-muted/40 transition-colors">
-                        <td class="px-4 py-3">
+                        <td class="px-5 py-3">
                             <div class="flex items-start gap-1.5">
                                 <div class="min-w-0">
                                     <a href="{{ $.c.ExternalUrl }}/{{ $gist.User.Username }}/{{ $gist.Identifier }}" class="text-foreground hover:text-primary block max-w-[24rem] truncate font-medium hover:underline">{{ if $gist.Title }}{{ $gist.Title }}{{ else }}{{ $gist.Identifier }}{{ end }}</a>
@@ -37,16 +37,16 @@
                                 {{ end }}
                             </div>
                         </td>
-                        <td class="px-4 py-3">
+                        <td class="px-5 py-3">
                             <a href="{{ $.c.ExternalUrl }}/{{ profilePath $gist.User.Username }}" class="text-muted-foreground hover:text-foreground hover:underline">{{ $gist.User.Username }}</a>
                         </td>
-                        <td class="px-4 py-3">
+                        <td class="px-5 py-3">
                             <span class="badge border-transparent {{ if eq $gist.VisibilityStr "public" }}bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300{{ else }}bg-muted text-muted-foreground{{ end }}">{{ $.locale.Tr (printf "gist.%s" $gist.VisibilityStr) }}</span>
                         </td>
-                        <td class="text-muted-foreground hidden px-4 py-3 text-right tabular-nums sm:table-cell">{{ $gist.NbFiles }}</td>
-                        <td class="text-muted-foreground hidden px-4 py-3 text-right tabular-nums sm:table-cell">{{ $gist.NbLikes }}</td>
-                        <td class="text-muted-foreground hidden px-4 py-3 md:table-cell">{{ $gist.CreatedAt | humanDate }}</td>
-                        <td class="px-4 py-3 text-right">
+                        <td class="text-muted-foreground hidden px-5 py-3 text-right tabular-nums sm:table-cell">{{ $gist.NbFiles }}</td>
+                        <td class="text-muted-foreground hidden px-5 py-3 text-right tabular-nums sm:table-cell">{{ $gist.NbLikes }}</td>
+                        <td class="text-muted-foreground hidden px-5 py-3 md:table-cell">{{ $gist.CreatedAt | humanDate }}</td>
+                        <td class="px-5 py-3 text-right">
                             <form action="{{ $.c.ExternalUrl }}/admin/gists/{{ $gist.ID }}/delete" method="POST">
                                 {{ $.csrfHtml }}
                                 <button type="submit" class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex size-8 items-center justify-center rounded-md transition-colors"
@@ -63,7 +63,7 @@
             </table>
         </div>
         {{ else }}
-        <div class="text-muted-foreground flex flex-col items-center gap-3 px-4 py-16 text-center">
+        <div class="text-muted-foreground flex flex-col items-center gap-3 px-5 py-16 text-center">
             <span class="bg-muted flex size-12 items-center justify-center rounded-full">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-5"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m10 13-2 2 2 2"/><path d="m14 17 2-2-2-2"/></svg>
             </span>

@@ -4,11 +4,11 @@
 
     <!-- Avatar -->
     <section class="bg-card rounded-xl border">
-        <div class="space-y-1 border-b px-4 py-3">
+        <div class="space-y-1 border-b px-5 py-3">
             <h2 class="font-semibold">{{ .locale.Tr "settings.avatar" }}</h2>
             <p class="text-muted-foreground text-sm">{{ .locale.Tr "settings.avatar-help" }}</p>
         </div>
-        <div class="flex items-center gap-4 p-4">
+        <div class="flex items-center gap-4 px-5 py-4">
             <div class="shrink-0">
                 {{ if not (shouldGenerateAvatar .userLogged .DisableGravatar) }}
                     <img class="size-16 rounded-full border" src="{{ avatarUrl .userLogged .DisableGravatar }}" alt="{{ .userLogged.Username }}" />
@@ -35,17 +35,19 @@
 
     <!-- Username -->
     <section class="bg-card rounded-xl border">
-        <div class="border-b px-4 py-3">
+        <div class="border-b px-5 py-3">
             <h2 class="font-semibold">{{ .locale.Tr "settings.change-username" }}</h2>
         </div>
-        <form action="{{ .c.ExternalUrl }}/settings/username" method="post" class="space-y-4 p-4">
+        <form action="{{ .c.ExternalUrl }}/settings/username" method="post">
             {{ .csrfHtml }}
             <input type="hidden" name="_method" value="PUT" />
-            <div class="space-y-1.5">
+            <div class="og-field">
                 <label for="username-change" class="text-sm font-medium">{{ .locale.Tr "auth.username" }}</label>
-                <input id="username-change" name="username" type="text" required autocomplete="off" value="{{ .userLogged.Username }}" class="input h-9 w-full max-w-sm" />
+                <div class="og-field-control">
+                    <input id="username-change" name="username" type="text" required autocomplete="off" value="{{ .userLogged.Username }}" class="input h-9 w-full" />
+                </div>
             </div>
-            <div class="flex">
+            <div class="flex justify-end border-t px-5 py-3">
                 <button type="submit" class="btn-sm">{{ .locale.Tr "settings.change-username" }}</button>
             </div>
         </form>
@@ -53,17 +55,19 @@
 
     <!-- Email -->
     <section class="bg-card rounded-xl border">
-        <div class="space-y-1 border-b px-4 py-3">
+        <div class="space-y-1 border-b px-5 py-3">
             <h2 class="font-semibold">{{ .locale.Tr "settings.email" }}</h2>
             <p class="text-muted-foreground text-sm">{{ .locale.Tr "settings.email-help" }}</p>
         </div>
-        <form action="{{ .c.ExternalUrl }}/settings/email" method="post" class="space-y-4 p-4">
+        <form action="{{ .c.ExternalUrl }}/settings/email" method="post">
             {{ .csrfHtml }}
-            <div class="space-y-1.5">
+            <div class="og-field">
                 <label for="email" class="text-sm font-medium">{{ .locale.Tr "settings.email" }}</label>
-                <input id="email" name="email" type="email" value="{{ .userLogged.Email }}" autocomplete="off" class="input h-9 w-full max-w-sm" />
+                <div class="og-field-control">
+                    <input id="email" name="email" type="email" value="{{ .userLogged.Email }}" autocomplete="off" class="input h-9 w-full" />
+                </div>
             </div>
-            <div class="flex">
+            <div class="flex justify-end border-t px-5 py-3">
                 <button type="submit" class="btn-sm">{{ .locale.Tr "settings.email-set" }}</button>
             </div>
         </form>
@@ -71,10 +75,10 @@
 
     <!-- Danger zone -->
     <section class="border-destructive/40 overflow-hidden rounded-xl border">
-        <div class="border-destructive/30 og-red border-b px-4 py-2">
+        <div class="border-destructive/30 og-red border-b px-5 py-2">
             <h2 class="text-sm font-semibold">{{ .locale.Tr "settings.delete-account" }}</h2>
         </div>
-        <div class="bg-card flex flex-wrap items-center justify-between gap-4 p-4">
+        <div class="bg-card flex flex-wrap items-center justify-between gap-4 px-5 py-4">
             <p class="text-muted-foreground text-sm">{{ .locale.Tr "settings.delete-account" }}</p>
             <form action="{{ .c.ExternalUrl }}/settings/account" method="post" class="shrink-0">
                 {{ .csrfHtml }}

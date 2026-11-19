@@ -4,29 +4,35 @@
 
     <!-- Create invitation -->
     <section class="bg-card rounded-xl border">
-        <div class="border-b px-4 py-3">
+        <div class="border-b px-5 py-3">
             <h2 class="text-sm font-medium">{{ .locale.Tr "admin.invitations.create" }}</h2>
             <p class="text-muted-foreground mt-1 text-xs">{{ .locale.Tr "admin.invitations.help" }}</p>
         </div>
-        <form method="POST" class="p-4">
+        <form method="POST">
             {{ .csrfHtml }}
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-end">
-                <div class="flex-1 space-y-1.5">
-                    <label for="nbMax" class="text-sm font-medium">{{ .locale.Tr "admin.invitations.max_uses" }}</label>
-                    <input type="number" id="nbMax" name="nbMax" value="10" min="1" max="100" class="input h-9 w-full" />
+            <div class="og-field">
+                <label for="nbMax" class="text-sm font-medium">{{ .locale.Tr "admin.invitations.max_uses" }}</label>
+                <div class="og-field-control">
+                    <div class="og-number">
+                        <input type="number" id="nbMax" name="nbMax" value="10" min="1" max="100" class="input h-9 w-full" />
+                    </div>
                 </div>
-                <div class="flex-1 space-y-1.5">
-                    <label for="expiresAt" class="text-sm font-medium">{{ .locale.Tr "admin.invitations.expires_at" }}</label>
+            </div>
+            <div class="og-field">
+                <label for="expiresAt" class="text-sm font-medium">{{ .locale.Tr "admin.invitations.expires_at" }}</label>
+                <div class="og-field-control">
                     <input type="datetime-local" id="expiresAt" name="expiresAt" class="input h-9 w-full" />
                 </div>
-                <button type="submit" class="btn-sm h-9 w-full shrink-0 sm:w-auto">{{ .locale.Tr "admin.invitations.generate" }}</button>
+            </div>
+            <div class="flex justify-end border-t px-5 py-3">
+                <button type="submit" class="btn-sm">{{ .locale.Tr "admin.invitations.generate" }}</button>
             </div>
         </form>
     </section>
 
     <!-- Invitation list -->
     <section class="bg-card overflow-hidden rounded-xl border">
-        <div class="flex items-center justify-between gap-3 border-b px-4 py-3">
+        <div class="flex items-center justify-between gap-3 border-b px-5 py-3">
             <h2 class="text-sm font-medium">{{ .locale.Tr "admin.invitations.all" }}</h2>
             <span class="text-muted-foreground text-xs tabular-nums">{{ len .invitations }}</span>
         </div>
@@ -35,23 +41,23 @@
             <table class="w-full text-sm">
                 <thead class="text-muted-foreground bg-muted/40 text-left">
                     <tr>
-                        <th scope="col" class="px-4 py-2.5 font-medium">{{ .locale.Tr "admin.invitations.code" }}</th>
-                        <th scope="col" class="px-4 py-2.5 font-medium">{{ .locale.Tr "admin.invitations.uses" }}</th>
-                        <th scope="col" class="px-4 py-2.5 font-medium">{{ .locale.Tr "admin.invitations.expires_at" }}</th>
-                        <th scope="col" class="hidden px-4 py-2.5 font-medium sm:table-cell">{{ .locale.Tr "admin.invitations.copy_link" }}</th>
-                        <th scope="col" class="w-16 px-4 py-2.5"><span class="sr-only">{{ .locale.Tr "admin.delete" }}</span></th>
+                        <th scope="col" class="px-5 py-2.5 font-medium">{{ .locale.Tr "admin.invitations.code" }}</th>
+                        <th scope="col" class="px-5 py-2.5 font-medium">{{ .locale.Tr "admin.invitations.uses" }}</th>
+                        <th scope="col" class="px-5 py-2.5 font-medium">{{ .locale.Tr "admin.invitations.expires_at" }}</th>
+                        <th scope="col" class="hidden px-5 py-2.5 font-medium sm:table-cell">{{ .locale.Tr "admin.invitations.copy_link" }}</th>
+                        <th scope="col" class="w-16 px-5 py-2.5"><span class="sr-only">{{ .locale.Tr "admin.delete" }}</span></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y">
                     {{ range $invitation := .invitations }}
                     <tr class="hover:bg-muted/40 transition-colors {{ if not $invitation.IsUsable }}text-muted-foreground{{ end }}">
-                        <td class="px-4 py-3">
+                        <td class="px-5 py-3">
                             <code class="font-mono text-xs">{{ $invitation.Code }}</code>
                             {{ if not $invitation.IsUsable }}<span class="badge ml-2 border-transparent bg-muted text-muted-foreground">{{ $.locale.Tr "admin.invitations.expired" }}</span>{{ end }}
                         </td>
-                        <td class="px-4 py-3 tabular-nums">{{ $invitation.NbUsed }}/{{ $invitation.NbMax }}</td>
-                        <td class="px-4 py-3">{{ $invitation.ExpiresAt | humanDate }}</td>
-                        <td class="hidden px-4 py-3 sm:table-cell">
+                        <td class="px-5 py-3 tabular-nums">{{ $invitation.NbUsed }}/{{ $invitation.NbMax }}</td>
+                        <td class="px-5 py-3">{{ $invitation.ExpiresAt | humanDate }}</td>
+                        <td class="hidden px-5 py-3 sm:table-cell">
                             {{ if $invitation.IsUsable }}
                             <button type="button" class="text-muted-foreground hover:bg-accent hover:text-foreground inline-flex size-8 items-center justify-center rounded-md transition-colors" title="{{ $.locale.Tr "admin.invitations.copy_link" }}"
                                     _="on click call navigator.clipboard.writeText('{{ $.baseHttpUrl }}/register?code={{ $invitation.Code }}')
@@ -61,7 +67,7 @@
                             </button>
                             {{ end }}
                         </td>
-                        <td class="px-4 py-3 text-right">
+                        <td class="px-5 py-3 text-right">
                             <form action="{{ $.c.ExternalUrl }}/admin/invitations/{{ $invitation.ID }}/delete" method="POST">
                                 {{ $.csrfHtml }}
                                 <button type="submit" class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex size-8 items-center justify-center rounded-md transition-colors"
@@ -78,7 +84,7 @@
             </table>
         </div>
         {{ else }}
-        <div class="text-muted-foreground flex flex-col items-center gap-3 px-4 py-16 text-center">
+        <div class="text-muted-foreground flex flex-col items-center gap-3 px-5 py-16 text-center">
             <span class="bg-muted flex size-12 items-center justify-center rounded-full">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
             </span>
