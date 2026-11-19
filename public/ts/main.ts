@@ -1,5 +1,8 @@
 import '../css/main.css';
+import '../img/favicon.svg';
 import '../img/favicon-32.png';
+import '../img/favicon-180.png';
+import '../img/favicon-512.png';
 import '../img/qingyugist.svg';
 
 import 'htmx.org';
