@@ -25,8 +25,10 @@ env:
   NODE_VERSION: "26"
 
 jobs:
-  lint:
-    name: Lint
+  # Static analysis and the translation check share one job: they each take
+  # under a minute and would otherwise pay for three separate runners.
+  static:
+    name: Static
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -44,21 +46,10 @@ jobs:
           version: v2.15
           args: --timeout=20m --disable=errcheck
 
+      # Formatting, module tidiness and vet all fail the same way a lint error
+      # does, so they run here rather than on runners of their own.
       - name: Format
         run: make fmt check_changes
-
-  check:
-    name: Check
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Set up Go ${{ env.GO_VERSION }}
-        uses: actions/setup-go@v7
-        with:
-          go-version: ${{ env.GO_VERSION }}
 
       - name: Check Go modules
         run: make go_mod check_changes
@@ -87,21 +78,39 @@ jobs:
         run: npm ci
 
       # Vite strips types without checking them, so a broken annotation would
-      # otherwise only surface at runtime. tsc is the only gate for that.
+      # otherwise only surface at runtime. tsc is the only gate for that. The
+      # asset build itself is covered by the build job.
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Build assets
-        run: npm run build
+  # The fast leg every push and pull request runs. Keeping the full matrix off
+  # the pull-request path takes the feedback loop from ~11 minutes (dominated
+  # by the macOS test runner) to roughly two.
+  test:
+    name: Test (sqlite)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
 
-  test-db:
-    name: Test
+      - name: Set up Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v7
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Run tests
+        run: make test TEST_DB_TYPE=sqlite
+
+  # PostgreSQL and MySQL only guard SQL that is about to be tagged, so they
+  # stop running on every pull request.
+  test-databases:
+    name: Test (${{ matrix.database }})
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/master')
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest"]
-        go: ["1.27"]
         database: [postgres, mysql]
         include:
           - database: postgres
@@ -111,7 +120,7 @@ jobs:
             image: mysql:8
             port: 3306:3306
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     services:
       database:
         image: ${{ matrix.image }}
@@ -143,60 +152,60 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Set up Go ${{ matrix.go }}
+      - name: Set up Go ${{ env.GO_VERSION }}
         uses: actions/setup-go@v7
         with:
-          go-version: ${{ matrix.go }}
+          go-version: ${{ env.GO_VERSION }}
 
       - name: Run tests
         run: make test TEST_DB_TYPE=${{ matrix.database }}
         env:
           QYG_TEST_MEILI_HOST: http://localhost:47700
 
-  test:
-    name: Test
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        # macOS arm64 hosted runners are capacity-constrained and jobs queued
-        # for them are cancelled after 15 minutes with "The job was not
-        # acquired by Runner of type hosted". Pin the Intel image so the macOS
-        # leg actually runs; revisit once arm64 capacity is dependable.
-        os: ["ubuntu-latest", "macos-26-intel"]
-        go: ["1.27"]
-        database: ["sqlite"]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Set up Go ${{ matrix.go }}
-        uses: actions/setup-go@v7
-        with:
-          go-version: ${{ matrix.go }}
-
-      - name: Run tests
-        run: make test TEST_DB_TYPE=${{ matrix.database }}
-
   build:
-    name: Build
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        # See the note on the test job: Intel avoids the arm64 queue.
-        os: ["ubuntu-latest", "macos-26-intel", "windows-latest"]
-        go: ["1.27"]
-    runs-on: ${{ matrix.os }}
+    name: Build (linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Set up Go ${{ matrix.go }}
+      - name: Set up Go ${{ env.GO_VERSION }}
         uses: actions/setup-go@v7
         with:
-          go-version: ${{ matrix.go }}
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Build
+        run: make
+
+  # Cross-platform compilation is checked before a release, not on every
+  # commit: the release workflow builds all five targets anyway.
+  build-platforms:
+    name: Build (${{ matrix.os }})
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/master')
+    # macOS arm64 hosted runners are capacity-constrained and jobs queued for
+    # them are cancelled after 15 minutes with "The job was not acquired by
+    # Runner of type hosted". Pin the Intel image so the macOS leg actually
+    # runs; revisit once arm64 capacity is dependable.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["macos-26-intel", "windows-latest"]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v7
+        with:
+          go-version: ${{ env.GO_VERSION }}
 
       - name: Set up Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v7
