@@ -1,0 +1,106 @@
+{{ define "content" }}
+<div class="space-y-6">
+    {{ template "admin_header" (dict "Locale" .locale "Title" (.locale.Tr "admin.moderation.title") "Subtitle" (.locale.Tr "admin.moderation.subtitle")) }}
+
+    <!-- Last seven days at a glance -->
+    <section class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div class="bg-card rounded-xl border px-4 py-3">
+            <p class="text-muted-foreground text-xs">{{ .locale.Tr "admin.moderation.stat.approved" }}</p>
+            <p class="mt-1 text-xl font-semibold tabular-nums">{{ index .stats "approved" }}</p>
+        </div>
+        <div class="bg-card rounded-xl border px-4 py-3">
+            <p class="text-muted-foreground text-xs">{{ .locale.Tr "admin.moderation.stat.rejected" }}</p>
+            <p class="mt-1 text-xl font-semibold tabular-nums">{{ index .stats "rejected" }}</p>
+        </div>
+        <div class="bg-card rounded-xl border px-4 py-3">
+            <p class="text-muted-foreground text-xs">{{ .locale.Tr "admin.moderation.stat.error" }}</p>
+            <p class="mt-1 text-xl font-semibold tabular-nums">{{ index .stats "error" }}</p>
+        </div>
+        <div class="bg-card rounded-xl border px-4 py-3">
+            <p class="text-muted-foreground text-xs">{{ .locale.Tr "admin.moderation.stat.deferred" }}</p>
+            <p class="mt-1 text-xl font-semibold tabular-nums">{{ index .stats "deferred" }}</p>
+        </div>
+    </section>
+
+    {{ if gt .pendingCount 0 }}
+    <section class="og-orange flex flex-wrap items-center justify-between gap-3 rounded-xl border px-5 py-3 text-sm">
+        <span>{{ .locale.Tr "admin.moderation.waiting" .pendingCount }}</span>
+        <form method="POST" action="{{ .c.ExternalUrl }}/admin/moderation/retry">
+            {{ .csrfHtml }}
+            <button type="submit" class="btn-sm-outline">{{ .locale.Tr "admin.moderation.retry" }}</button>
+        </form>
+    </section>
+    {{ end }}
+
+    <!-- Every attempt, newest first -->
+    <section class="bg-card overflow-hidden rounded-xl border">
+        <div class="flex items-center justify-between gap-3 border-b px-5 py-3">
+            <h2 class="text-sm font-medium">{{ .locale.Tr "admin.moderation.history" }}</h2>
+            <span class="text-muted-foreground text-xs tabular-nums">{{ .reviewTotal }}</span>
+        </div>
+        {{ if .reviews }}
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="text-muted-foreground bg-muted/40 text-left">
+                    <tr>
+                        <th scope="col" class="px-3 py-2.5 font-medium whitespace-nowrap sm:px-5">{{ .locale.Tr "admin.moderation.attempted_at" }}</th>
+                        <th scope="col" class="px-3 py-2.5 font-medium whitespace-nowrap sm:px-5">{{ .locale.Tr "admin.moderation.result" }}</th>
+                        <th scope="col" class="px-3 py-2.5 font-medium whitespace-nowrap sm:px-5">{{ .locale.Tr "admin.moderation.gist" }}</th>
+                        <th scope="col" class="px-3 py-2.5 font-medium sm:px-5">{{ .locale.Tr "admin.moderation.reason" }}</th>
+                        <th scope="col" class="hidden px-3 py-2.5 font-medium whitespace-nowrap sm:px-5 lg:table-cell">{{ .locale.Tr "admin.moderation.model" }}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    {{ range $review := .reviews }}
+                    <tr class="hover:bg-muted/40 transition-colors">
+                        <td class="px-3 py-3 whitespace-nowrap text-muted-foreground tabular-nums sm:px-5">
+                            <time datetime="{{ $review.AttemptedAt }}">{{ $review.AttemptedAt | humanDate }}</time>
+                        </td>
+                        <td class="px-3 py-3 sm:px-5">
+                            {{ if eq $review.Result "approved" }}
+                            <span class="badge og-green border-transparent">{{ $.locale.Tr "admin.moderation.result.approved" }}</span>
+                            {{ else if eq $review.Result "rejected" }}
+                            <span class="badge og-red border-transparent">{{ $.locale.Tr "admin.moderation.result.rejected" }}</span>
+                            {{ else if eq $review.Result "deferred" }}
+                            <span class="badge og-orange border-transparent">{{ $.locale.Tr "admin.moderation.result.deferred" }}</span>
+                            {{ else }}
+                            <span class="badge border-transparent bg-muted text-muted-foreground">{{ $.locale.Tr "admin.moderation.result.error" }}</span>
+                            {{ end }}
+                        </td>
+                        <td class="px-3 py-3 sm:px-5">
+                            <div class="flex min-w-0 flex-col">
+                                <a href="{{ $review.GistURL }}" class="max-w-[16rem] truncate font-medium hover:underline underline-offset-4">{{ $review.GistTitle }}</a>
+                                <span class="text-muted-foreground text-xs">{{ $review.Username }}</span>
+                            </div>
+                        </td>
+                        <td class="px-3 py-3 sm:px-5">
+                            {{ if $review.Reason }}
+                            <p class="text-muted-foreground line-clamp-2 max-w-[26rem] break-words" title="{{ $review.Reason }}">{{ $review.Reason }}</p>
+                            {{ else }}
+                            <span class="text-muted-foreground">—</span>
+                            {{ end }}
+                        </td>
+                        <td class="hidden px-3 py-3 text-muted-foreground sm:px-5 lg:table-cell">
+                            <div class="flex flex-col whitespace-nowrap">
+                                <span class="text-xs">{{ $review.Model }}</span>
+                                <span class="text-xs tabular-nums">{{ $review.LatencyMs }} ms</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+        </div>
+        {{ else }}
+        <div class="text-muted-foreground flex flex-col items-center gap-3 px-5 py-16 text-center">
+            <span class="bg-muted flex size-12 items-center justify-center rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-5"><path d="M12 3 4 6v6c0 4.4 3.4 8.3 8 9 4.6-.7 8-4.6 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg>
+            </span>
+            <p class="text-sm">{{ .locale.Tr "admin.moderation.empty" }}</p>
+        </div>
+        {{ end }}
+    </section>
+
+    {{ template "pagination" . }}
+</div>
+{{ end }}

@@ -188,7 +188,12 @@ func UpdateGist(ctx *context.Context) error {
 	awaitingModeration := false
 	if req.Visibility != nil {
 		g.Private = db.ParseVisibility(*req.Visibility)
-		awaitingModeration = moderation.Gate(g)
+		if g.Private == db.PublicVisibility {
+			awaitingModeration = moderation.Gate(g)
+		} else {
+			// Private gists are not reviewed, so drop any pending check.
+			moderation.Release(g)
+		}
 	}
 
 	// File patch: only rebuild the working tree if `files` carried at least
@@ -213,6 +218,12 @@ func UpdateGist(ctx *context.Context) error {
 		if err := g.AddAndCommitFiles(&dto.Files); err != nil {
 			return ctx.ErrorJson(500, "failed to commit files", err)
 		}
+	}
+
+	// Content of an already-published gist is checked again, but it stays
+	// online until the verdict arrives.
+	if moderation.Recheck(g) {
+		awaitingModeration = true
 	}
 
 	if err := g.Update(); err != nil {

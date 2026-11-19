@@ -72,19 +72,20 @@ func Categories() []Category {
 // Setting keys. Dotted names are used in forms and templates; the legacy
 // dash-only keys written by older releases are kept in sync for compatibility.
 const (
-	KeySiteName        = "site.name"
-	KeySiteDescription = "site.description"
-	KeySiteExternalURL = "site.external-url"
-	KeySiteLogo        = "site.logo"
-	KeySiteFavicon     = "site.favicon"
-	KeySiteCustomCSS   = "site.custom-css"
-	KeySiteCustomJS    = "site.custom-js"
-	KeySiteRepository  = "site.repository-url"
-	KeySiteHomepage    = "site.homepage-url"
-	KeySiteEmail       = "site.contact-email"
-	KeySiteICP         = "site.icp"
-	KeySitePolice      = "site.police-record"
-	KeySiteLinks       = "site.links"
+	KeySiteName         = "site.name"
+	KeySiteDescription  = "site.description"
+	KeySiteExternalURL  = "site.external-url"
+	KeySiteLogo         = "site.logo"
+	KeySiteFavicon      = "site.favicon"
+	KeySiteCustomCSS    = "site.custom-css"
+	KeySiteCustomJS     = "site.custom-js"
+	KeySiteRepository   = "site.repository-url"
+	KeySiteHomepage     = "site.homepage-url"
+	KeySiteEmail        = "site.contact-email"
+	KeySiteICP          = "site.icp"
+	KeySitePolice       = "site.police-record"
+	KeySiteLinks        = "site.links"
+	KeySiteAnnouncement = "site.announcement"
 
 	KeyRegistrationMode       = "auth.registration-mode"
 	KeyRequireLogin           = "auth.require-login"
@@ -112,6 +113,18 @@ const (
 	KeyModerationPrompt   = "moderation.prompt"
 	KeyModerationTimeout  = "moderation.timeout"
 	KeyModerationFailSafe = "moderation.fail-closed"
+	// KeyModerationReasoning is the provider's reasoning effort. The "none"
+	// value leaves the field out of the request, which is what models without
+	// reasoning support need.
+	KeyModerationReasoning = "moderation.reasoning"
+	// KeyModerationMaxOutput bounds the answer so one runaway response cannot
+	// consume the whole context window or the bill.
+	KeyModerationMaxOutput = "moderation.max-output-tokens"
+	// KeyModerationMaxInputKB bounds the document sent to the provider.
+	KeyModerationMaxInputKB = "moderation.max-input-size"
+	// KeyModerationDailyLimit caps provider calls per calendar day. Gists that
+	// arrive after the cap stay pending and are checked later; 0 means no cap.
+	KeyModerationDailyLimit = "moderation.daily-limit"
 
 	KeyGitDefaultBranch = "git.default-branch"
 	KeyAPIEnabled       = "api.enabled"
@@ -132,7 +145,7 @@ Decide whether the submitted gist may be published publicly.
 Reject content that is illegal, sexual, hateful, harassing, promotes violence, contains
 malware, phishing pages, credential dumps or spam. Code snippets are allowed even when
 they are dual-use; reject only content that is clearly malicious or abusive.
-Answer with JSON only: {"allowed": true|false, "reason": "one short sentence"}.`
+The answer format is enforced by the request, so explain the verdict in one short sentence.`
 
 // SecretPlaceholder is rendered in place of a stored secret. Submitting it
 // unchanged keeps the existing value.
@@ -178,6 +191,7 @@ var definitions = []Definition{
 	{Key: KeySiteCustomJS, Kind: KindText, Category: CategorySite, Label: "settings.site.custom_js", Help: "settings.site.custom_js_help", Rows: 6},
 	{Key: KeySiteRepository, Kind: KindURL, Default: DefaultRepositoryURL, Category: CategorySite, Label: "settings.site.repository_url", Help: "settings.site.repository_url_help", Placeholder: DefaultRepositoryURL, Max: 300},
 	{Key: KeySiteLinks, Kind: KindText, Category: CategorySite, Label: "settings.site.links", Help: "settings.site.links_help", Placeholder: "[]", Rows: 4},
+	{Key: KeySiteAnnouncement, Kind: KindText, Category: CategorySite, Label: "settings.site.announcement", Help: "settings.site.announcement_help", Rows: 5},
 
 	// Authentication & registration
 	{Key: KeyRegistrationMode, Kind: KindEnum, Category: CategoryAuth, Default: RegistrationModeOpen, Label: "settings.auth.registration_mode", Help: "settings.auth.registration_mode_help", Options: []Option{
@@ -207,9 +221,18 @@ var definitions = []Definition{
 
 	// AI moderation
 	{Key: KeyModerationEnabled, Kind: KindBool, Default: "0", Category: CategoryModeration, Label: "settings.moderation.enabled", Help: "settings.moderation.enabled_help"},
-	{Key: KeyModerationEndpoint, Kind: KindURL, Category: CategoryModeration, Label: "settings.moderation.endpoint", Help: "settings.moderation.endpoint_help", Placeholder: "https://api.openai.com/v1/chat/completions", Max: 500},
+	{Key: KeyModerationEndpoint, Kind: KindURL, Category: CategoryModeration, Label: "settings.moderation.endpoint", Help: "settings.moderation.endpoint_help", Placeholder: "https://api.openai.com/v1/responses", Max: 500},
 	{Key: KeyModerationAPIKey, Kind: KindSecret, Category: CategoryModeration, Label: "settings.moderation.api_key", Help: "settings.moderation.api_key_help", Max: 500},
 	{Key: KeyModerationModel, Kind: KindString, Default: "gpt-4o-mini", Category: CategoryModeration, Label: "settings.moderation.model", Help: "settings.moderation.model_help", Max: 120},
+	{Key: KeyModerationReasoning, Kind: KindEnum, Default: "none", Category: CategoryModeration, Label: "settings.moderation.reasoning", Help: "settings.moderation.reasoning_help", Options: []Option{
+		{Value: "none", Label: "settings.moderation.reasoning_default"},
+		{Value: "low", Label: "settings.moderation.reasoning_low"},
+		{Value: "medium", Label: "settings.moderation.reasoning_medium"},
+		{Value: "high", Label: "settings.moderation.reasoning_high"},
+	}},
+	{Key: KeyModerationMaxOutput, Kind: KindInt, Default: "400", Category: CategoryModeration, Label: "settings.moderation.max_output", Help: "settings.moderation.max_output_help", Min: 64, Max: 8192, Unit: "settings.unit.tokens"},
+	{Key: KeyModerationMaxInputKB, Kind: KindInt, Default: "16", Category: CategoryModeration, Label: "settings.moderation.max_input", Help: "settings.moderation.max_input_help", Min: 1, Max: 256, Unit: "settings.unit.kb"},
+	{Key: KeyModerationDailyLimit, Kind: KindInt, Default: "200", Category: CategoryModeration, Label: "settings.moderation.daily_limit", Help: "settings.moderation.daily_limit_help", Min: 0, Max: 100000, Unit: "settings.unit.per_day"},
 	{Key: KeyModerationTimeout, Kind: KindInt, Default: "45", Category: CategoryModeration, Label: "settings.moderation.timeout", Help: "settings.moderation.timeout_help", Min: 5, Max: 300, Unit: "settings.unit.seconds"},
 	{Key: KeyModerationFailSafe, Kind: KindBool, Default: "1", Category: CategoryModeration, Label: "settings.moderation.fail_closed", Help: "settings.moderation.fail_closed_help"},
 	{Key: KeyModerationPrompt, Kind: KindText, Default: DefaultModerationPrompt, Category: CategoryModeration, Label: "settings.moderation.prompt", Help: "settings.moderation.prompt_help", Rows: 8},
@@ -650,6 +673,10 @@ func SiteICP() string { return strings.TrimSpace(Get(KeySiteICP)) }
 
 func SitePoliceRecord() string { return strings.TrimSpace(Get(KeySitePolice)) }
 
+// SiteAnnouncement is the markdown banner shown across the site. Empty means
+// no banner.
+func SiteAnnouncement() string { return strings.TrimSpace(Get(KeySiteAnnouncement)) }
+
 // SiteLink is an administrator-defined link shown at the bottom of the sidebar.
 type SiteLink struct {
 	Label string `json:"label"`
@@ -849,5 +876,22 @@ func ModerationTimeout() time.Duration {
 	return time.Duration(Int(KeyModerationTimeout)) * time.Second
 }
 func ModerationFailClosed() bool { return Bool(KeyModerationFailSafe) }
+
+// ModerationReasoning is the reasoning effort sent to the provider, or "" when
+// the field should be left out entirely for models without reasoning support.
+func ModerationReasoning() string {
+	if v := strings.TrimSpace(Get(KeyModerationReasoning)); v != "" && v != "none" {
+		return v
+	}
+	return ""
+}
+
+func ModerationMaxOutputTokens() int { return Int(KeyModerationMaxOutput) }
+
+// ModerationMaxInputBytes is the document budget converted from the KB setting.
+func ModerationMaxInputBytes() int { return Int(KeyModerationMaxInputKB) * 1024 }
+
+// ModerationDailyLimit is the provider-call cap per calendar day; 0 disables it.
+func ModerationDailyLimit() int { return Int(KeyModerationDailyLimit) }
 
 func APIEnabled() bool { return Bool(KeyAPIEnabled) }

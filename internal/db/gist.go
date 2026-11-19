@@ -571,15 +571,15 @@ func CountGistsByVisibility(visibility Visibility) (int64, error) {
 }
 
 // SetModerationResult records the outcome of an asynchronous compliance check.
-// When publish is true the gist is made public; otherwise it stays private.
-func (gist *Gist) SetModerationResult(status ModerationStatus, reason string, publish bool, checkedAt int64) error {
+// The visibility is written together with the verdict: an approval publishes
+// the gist, a rejection takes it back down, including after a recheck of a gist
+// that was already online.
+func (gist *Gist) SetModerationResult(status ModerationStatus, reason string, visibility Visibility, checkedAt int64) error {
 	updates := map[string]any{
 		"moderation_status":     status,
 		"moderation_reason":     reason,
 		"moderation_checked_at": checkedAt,
-	}
-	if publish {
-		updates["private"] = PublicVisibility
+		"private":               visibility,
 	}
 	return db.Model(&Gist{}).Where("id = ?", gist.ID).Updates(updates).Error
 }

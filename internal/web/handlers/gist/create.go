@@ -168,13 +168,28 @@ func ProcessCreate(ctx *context.Context) error {
 		}
 	}
 
+	awaitingModeration := false
 	if isCreate {
 		gist = dto.ToGist()
 		gist.ExpiresAt = dto.ExpiresAtTimestamp()
+		// A gist submitted as public is held private until the asynchronous AI
+		// check approves it. Everything else is stored as requested.
+		awaitingModeration = moderation.Gate(gist)
 	} else if ctx.FormValue("_edit_metadata") == "1" {
 		// The legacy editor still edits files and metadata in one form. The new
 		// editor omits this marker because metadata has its own settings page.
 		gist = dto.ToExistingGist(gist)
+		if gist.Private == db.PublicVisibility {
+			awaitingModeration = moderation.Gate(gist)
+		} else {
+			moderation.Release(gist)
+		}
+	}
+
+	// Editing the files of an already-published gist starts another review, but
+	// the gist stays online until the verdict arrives.
+	if !isCreate && !awaitingModeration && moderation.Recheck(gist) {
+		awaitingModeration = true
 	}
 
 	user := ctx.User
@@ -198,10 +213,6 @@ func ProcessCreate(ctx *context.Context) error {
 			gist.Title = dto.Files[0].Filename
 		}
 	}
-
-	// A gist submitted as public is held private until the asynchronous AI check
-	// approves it. Everything else is stored as requested.
-	awaitingModeration := isCreate && moderation.Gate(gist)
 
 	if err = gist.InitRepository(); err != nil {
 		return ctx.ErrorRes(500, "Error creating the repository", err)

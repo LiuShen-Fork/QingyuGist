@@ -14,6 +14,7 @@ import (
 	"github.com/LiuShen-Fork/QingyuGist/internal/db"
 	"github.com/LiuShen-Fork/QingyuGist/internal/git"
 	"github.com/LiuShen-Fork/QingyuGist/internal/ipc"
+	"github.com/LiuShen-Fork/QingyuGist/internal/moderation"
 	validatorpkg "github.com/LiuShen-Fork/QingyuGist/internal/validator"
 	"github.com/rs/zerolog/log"
 )
@@ -138,6 +139,16 @@ func RunPostReceive(gist *db.Gist, repoDir, gistUrl string, refs []ipc.HookRefUp
 		}
 	}
 
+	// Moderation never blocks a push. A public gist is held private until the
+	// review passes, and a push that changes a published gist starts a new
+	// review in the background.
+	awaitingModeration := false
+	if gist.Private == db.PublicVisibility {
+		awaitingModeration = moderation.Gate(gist) || moderation.Recheck(gist)
+	} else {
+		moderation.Release(gist)
+	}
+
 	if hasNoCommits, err := git.HasNoCommits(gist.User.Username, gist.Uuid); err != nil {
 		return "", fmt.Errorf("failed to check if gist has no commits: %w", err)
 	} else if hasNoCommits {
@@ -154,6 +165,13 @@ func RunPostReceive(gist *db.Gist, repoDir, gistUrl string, refs []ipc.HookRefUp
 	}
 
 	gist.AddInIndex()
+
+	if awaitingModeration {
+		moderation.Enqueue(gist.ID)
+		if gist.Private != db.PublicVisibility {
+			fmt.Fprintf(&outputSb, "This gist is waiting for the moderation review; it stays private until it is approved.\n\n")
+		}
+	}
 
 	if newGist {
 		fmt.Fprintf(&outputSb, "Your new gist has been created here: %s\n", gistUrl)

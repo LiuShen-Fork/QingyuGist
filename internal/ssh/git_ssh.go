@@ -9,6 +9,7 @@ import (
 	"github.com/LiuShen-Fork/QingyuGist/internal/auth"
 	"github.com/LiuShen-Fork/QingyuGist/internal/db"
 	"github.com/LiuShen-Fork/QingyuGist/internal/git"
+	"github.com/LiuShen-Fork/QingyuGist/internal/moderation"
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
@@ -127,6 +128,9 @@ func RunGitCommand(in io.Reader, out, errOut io.Writer, gitCmd string, key strin
 
 	// updatedAt is updated only if serviceType is receive-pack
 	if verb == "receive-pack" {
+		// A push to a published gist starts a new review, but the gist stays
+		// online until the verdict arrives.
+		recheck := moderation.Recheck(gist)
 		if err := gist.SetLastActiveNow(); err != nil {
 			log.Warn().Err(err).Msg("Failed to update gist last active time")
 		}
@@ -134,6 +138,9 @@ func RunGitCommand(in io.Reader, out, errOut io.Writer, gitCmd string, key strin
 			log.Warn().Err(err).Msg("Failed to update gist preview and count")
 		}
 		gist.AddInIndex()
+		if recheck {
+			moderation.Enqueue(gist.ID)
+		}
 	}
 
 	return nil

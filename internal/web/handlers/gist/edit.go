@@ -6,7 +6,6 @@ import (
 	"github.com/LiuShen-Fork/QingyuGist/internal/db"
 	"github.com/LiuShen-Fork/QingyuGist/internal/moderation"
 	"github.com/LiuShen-Fork/QingyuGist/internal/render"
-	"github.com/LiuShen-Fork/QingyuGist/internal/settings"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 )
 
@@ -86,12 +85,13 @@ func EditVisibility(ctx *context.Context) error {
 	gist.Private = dto.Private
 
 	// Publishing always goes through moderation when it is enabled, including
-	// visibility changes made after the gist was created.
+	// visibility changes made after the gist was created. Going the other way
+	// drops any pending check: private and unlisted gists are not reviewed.
 	awaitingModeration := false
-	if settings.ModerationEnabled() && dto.Private == db.PublicVisibility && gist.ModerationStatus != db.ModerationApproved {
-		gist.Private = db.PrivateVisibility
-		gist.ModerationStatus = db.ModerationPending
-		awaitingModeration = true
+	if dto.Private == db.PublicVisibility {
+		awaitingModeration = moderation.Gate(gist)
+	} else {
+		moderation.Release(gist)
 	}
 
 	if err := gist.UpdateNoTimestamps(); err != nil {
