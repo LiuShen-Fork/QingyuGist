@@ -148,10 +148,12 @@ func dataInit(next Handler) Handler {
 			return ctx.ErrorRes(500, "Cannot load settings", err)
 		}
 
-		ctx.SetData("githubOauth", config.C.GithubClientKey != "" && config.C.GithubSecret != "")
-		ctx.SetData("gitlabOauth", config.C.GitlabClientKey != "" && config.C.GitlabSecret != "")
-		ctx.SetData("giteaOauth", config.C.GiteaClientKey != "" && config.C.GiteaSecret != "")
-		ctx.SetData("oidcOauth", config.C.OIDCClientKey != "" && config.C.OIDCSecret != "" && config.C.OIDCDiscoveryUrl != "")
+		ctx.SetData("githubOauth", config.C.GithubOAuthEnabled())
+		ctx.SetData("googleOauth", config.C.GoogleOAuthEnabled())
+		ctx.SetData("gitlabOauth", config.C.GitlabOAuthEnabled())
+		ctx.SetData("giteaOauth", config.C.GiteaOAuthEnabled())
+		ctx.SetData("oidcOauth", config.C.OpenIDConnectEnabled())
+		ctx.SetData("oauth2Oauth", config.C.OAuth2OAuthEnabled())
 
 		httpProtocol := "http"
 		if ctx.Request().TLS != nil || ctx.Request().Header.Get("X-Forwarded-Proto") == "https" {

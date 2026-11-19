@@ -1,3 +1,103 @@
+{{ define "settingField" }}
+{{ $page := .page }}
+{{ $field := .field }}
+{{ $value := index $page.settingValues $field.Key }}
+<div class="og-field{{ if eq $field.Key "site.links" }} og-field--wide{{ end }}{{ if eq (printf "%s" $field.Kind) "text" }} og-field--wide{{ end }}">
+    <div class="min-w-0 space-y-1">
+        <label for="{{ $field.Key }}" class="text-sm font-medium">{{ $page.locale.Tr $field.Label }}</label>
+        {{ if $field.Help }}<p class="text-muted-foreground text-xs leading-relaxed">{{ $page.locale.Tr $field.Help }}</p>{{ end }}
+        {{ if $field.ApplyAfterRestart }}<p class="text-xs font-medium text-amber-600 dark:text-amber-400">{{ $page.locale.Tr "admin.restart-required" }}</p>{{ end }}
+    </div>
+
+    <div class="og-field-control">
+        {{ if eq (printf "%s" $field.Kind) "bool" }}
+        <label class="relative inline-flex cursor-pointer items-center">
+            <input type="checkbox" id="{{ $field.Key }}" name="{{ $field.Key }}" value="1" class="peer sr-only" {{ if eq $value "1" }}checked{{ end }} {{ if and $field.Provider (eq $field.Key (printf "oauth.%s.enabled" $field.Provider)) }}data-oauth-toggle="{{ $field.Provider }}"{{ end }} />
+            <span class="bg-input peer-checked:bg-primary peer-focus-visible:ring-ring h-6 w-11 rounded-full transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background"></span>
+            <span class="pointer-events-none absolute left-0.5 top-0.5 size-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5"></span>
+        </label>
+
+        {{ else if eq (printf "%s" $field.Kind) "enum" }}
+        <select id="{{ $field.Key }}" name="{{ $field.Key }}" class="input h-9 w-full">
+            {{ range $field.Options }}
+            <option value="{{ .Value }}" {{ if eq $value .Value }}selected{{ end }}>{{ $page.locale.Tr .Label }}</option>
+            {{ end }}
+        </select>
+
+        {{ else if eq $field.Key "site.links" }}
+        <input type="hidden" id="{{ $field.Key }}" name="{{ $field.Key }}" value="{{ $value }}" data-links-value />
+        <div class="w-full space-y-2" data-link-editor>
+            <div class="space-y-2" data-link-rows>
+                {{ range $page.SiteLinks }}
+                {{ $link := . }}
+                <div class="og-link-row" data-link-row>
+                    <select data-link-icon class="input h-9 w-full" aria-label="{{ $page.locale.Tr "admin.links.icon" }}">
+                        {{ range $page.SiteLinkIcons }}
+                        <option value="{{ . }}" {{ if eq . $link.Icon }}selected{{ end }}>{{ $page.locale.Tr (printf "site.icon.%s" .) }}</option>
+                        {{ end }}
+                    </select>
+                    <input data-link-label value="{{ $link.Label }}" maxlength="40" class="input h-9 w-full" placeholder="{{ $page.locale.Tr "admin.links.label" }}" aria-label="{{ $page.locale.Tr "admin.links.label" }}" />
+                    <input data-link-url type="text" value="{{ $link.URL }}" maxlength="500" class="input h-9 w-full" placeholder="https://example.com" aria-label="{{ $page.locale.Tr "admin.links.url" }}" />
+                    <button type="button" data-link-remove class="og-icon-button text-muted-foreground hover:text-destructive" aria-label="{{ $page.locale.Tr "admin.links.remove" }}" title="{{ $page.locale.Tr "admin.links.remove" }}">
+                        <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"/></svg>
+                    </button>
+                </div>
+                {{ end }}
+            </div>
+            <div class="flex justify-end">
+                <button type="button" data-link-add class="btn-sm-outline">
+                    <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    {{ $page.locale.Tr "admin.links.add" }}
+                </button>
+            </div>
+            <template data-link-template>
+                <div class="og-link-row" data-link-row>
+                    <select data-link-icon class="input h-9 w-full" aria-label="{{ $page.locale.Tr "admin.links.icon" }}">
+                        {{ range $page.SiteLinkIcons }}
+                        <option value="{{ . }}">{{ $page.locale.Tr (printf "site.icon.%s" .) }}</option>
+                        {{ end }}
+                    </select>
+                    <input data-link-label maxlength="40" class="input h-9 w-full" placeholder="{{ $page.locale.Tr "admin.links.label" }}" aria-label="{{ $page.locale.Tr "admin.links.label" }}" />
+                    <input data-link-url type="text" maxlength="500" class="input h-9 w-full" placeholder="https://example.com" aria-label="{{ $page.locale.Tr "admin.links.url" }}" />
+                    <button type="button" data-link-remove class="og-icon-button text-muted-foreground hover:text-destructive" aria-label="{{ $page.locale.Tr "admin.links.remove" }}" title="{{ $page.locale.Tr "admin.links.remove" }}">
+                        <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"/></svg>
+                    </button>
+                </div>
+            </template>
+        </div>
+
+        {{ else if eq (printf "%s" $field.Kind) "text" }}
+        <textarea id="{{ $field.Key }}" name="{{ $field.Key }}" rows="{{ if $field.Rows }}{{ $field.Rows }}{{ else }}4{{ end }}"
+                  placeholder="{{ $field.Placeholder }}"
+                  class="input min-h-24 w-full resize-y py-2 font-mono text-xs leading-relaxed">{{ $value }}</textarea>
+
+        {{ else if eq (printf "%s" $field.Kind) "int" }}
+        <div class="og-number">
+            <input id="{{ $field.Key }}" name="{{ $field.Key }}" type="number" value="{{ $value }}"
+                   min="{{ $field.Min }}" max="{{ $field.Max }}" step="1"
+                   class="input h-9 w-full" />
+            {{ if $field.Unit }}<span class="og-number-unit">{{ $page.locale.Tr $field.Unit }}</span>{{ end }}
+        </div>
+
+        {{ else if eq (printf "%s" $field.Kind) "secret" }}
+        <input id="{{ $field.Key }}" name="{{ $field.Key }}" type="password" value="{{ $value }}"
+               placeholder="{{ $page.secretPlaceholder }}" autocomplete="new-password"
+               class="input h-9 w-full" />
+
+        {{ else if eq (printf "%s" $field.Kind) "url" }}
+        <input id="{{ $field.Key }}" name="{{ $field.Key }}" type="url" value="{{ $value }}"
+               placeholder="{{ $field.Placeholder }}"
+               class="input h-9 w-full" />
+
+        {{ else }}
+        <input id="{{ $field.Key }}" name="{{ $field.Key }}" type="text" value="{{ $value }}"
+               placeholder="{{ $field.Placeholder }}"
+               class="input h-9 w-full" />
+        {{ end }}
+    </div>
+</div>
+{{ end }}
+
 {{ define "content" }}
 <div class="space-y-6">
     <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -12,17 +112,20 @@
     <form method="post" action="{{ .c.ExternalUrl }}/admin/settings" class="grid items-start gap-6 xl:grid-cols-[210px_minmax(0,1fr)]">
         {{ .csrfHtml }}
 
+        {{/* The page sets <base href> to the external URL, so fragment-only links
+             would leave this page; the sections are addressed in full instead. */}}
+        {{ $self := printf "%s/admin/settings" .c.ExternalUrl }}
         <nav class="hidden xl:sticky xl:top-20 xl:block" aria-label="{{ .locale.Tr "admin.configuration" }}">
             <ul class="space-y-1">
                 {{ range .settingSections }}
                 <li>
-                    <a href="#{{ .Key }}" class="text-muted-foreground hover:bg-accent hover:text-foreground flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors">
+                    <a href="{{ $self }}#{{ .Key }}" class="text-muted-foreground hover:bg-accent hover:text-foreground flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors">
                         <span>{{ $.locale.Tr .Label }}</span>
-                        <span class="text-muted-foreground/70 text-xs">{{ len .Fields }}</span>
+                        <span class="text-muted-foreground/70 text-xs">{{ if .Tabs }}{{ len .Tabs }}{{ else }}{{ len .Fields }}{{ end }}</span>
                     </a>
                 </li>
                 {{ end }}
-                <li class="pt-1"><a href="#instance" class="text-muted-foreground hover:bg-accent hover:text-foreground flex rounded-md px-3 py-2 text-sm transition-colors">{{ .locale.Tr "admin.instance" }}</a></li>
+                <li class="pt-1"><a href="{{ $self }}#instance" class="text-muted-foreground hover:bg-accent hover:text-foreground flex rounded-md px-3 py-2 text-sm transition-colors">{{ .locale.Tr "admin.instance" }}</a></li>
             </ul>
         </nav>
 
@@ -31,106 +134,41 @@
             <section id="{{ .Key }}" class="bg-card scroll-mt-20 overflow-hidden rounded-xl border">
                 <div class="border-b px-5 py-4">
                     <h2 class="text-sm font-semibold tracking-tight">{{ $.locale.Tr .Label }}</h2>
+                    {{ if .Tabs }}<p class="text-muted-foreground mt-1 text-xs">{{ $.locale.Tr "admin.oauth-description" }}</p>{{ end }}
                 </div>
-                <div class="divide-y">
-                    {{ range .Fields }}
-                    {{ $value := index $.settingValues .Key }}
-                    <div class="og-field{{ if eq .Key "site.links" }} og-field--wide{{ end }}{{ if eq (printf "%s" .Kind) "text" }} og-field--wide{{ end }}">
-                        <div class="min-w-0 space-y-1">
-                            <label for="{{ .Key }}" class="text-sm font-medium">{{ $.locale.Tr .Label }}</label>
-                            {{ if .Help }}<p class="text-muted-foreground text-xs leading-relaxed">{{ $.locale.Tr .Help }}</p>{{ end }}
-                            {{ if .ApplyAfterRestart }}<p class="text-xs font-medium text-amber-600 dark:text-amber-400">{{ $.locale.Tr "admin.restart-required" }}</p>{{ end }}
-                        </div>
 
-                        <div class="og-field-control">
-                            {{ if eq (printf "%s" .Kind) "bool" }}
-                            <label class="relative inline-flex cursor-pointer items-center">
-                                <input type="checkbox" id="{{ .Key }}" name="{{ .Key }}" value="1" class="peer sr-only" {{ if eq $value "1" }}checked{{ end }} />
-                                <span class="bg-input peer-checked:bg-primary peer-focus-visible:ring-ring h-6 w-11 rounded-full transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background"></span>
-                                <span class="pointer-events-none absolute left-0.5 top-0.5 size-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5"></span>
-                            </label>
-
-                            {{ else if eq (printf "%s" .Kind) "enum" }}
-                            <select id="{{ .Key }}" name="{{ .Key }}" class="input h-9 w-full">
-                                {{ range .Options }}
-                                <option value="{{ .Value }}" {{ if eq $value .Value }}selected{{ end }}>{{ $.locale.Tr .Label }}</option>
-                                {{ end }}
-                            </select>
-
-                            {{ else if eq .Key "site.links" }}
-                            <input type="hidden" id="{{ .Key }}" name="{{ .Key }}" value="{{ $value }}" data-links-value />
-                            <div class="w-full space-y-2" data-link-editor>
-                                <div class="space-y-2" data-link-rows>
-                                    {{ range $.SiteLinks }}
-                                    {{ $link := . }}
-                                    <div class="og-link-row" data-link-row>
-                                        <select data-link-icon class="input h-9 w-full" aria-label="{{ $.locale.Tr "admin.links.icon" }}">
-                                            {{ range $.SiteLinkIcons }}
-                                            <option value="{{ . }}" {{ if eq . $link.Icon }}selected{{ end }}>{{ $.locale.Tr (printf "site.icon.%s" .) }}</option>
-                                            {{ end }}
-                                        </select>
-                                        <input data-link-label value="{{ $link.Label }}" maxlength="40" class="input h-9 w-full" placeholder="{{ $.locale.Tr "admin.links.label" }}" aria-label="{{ $.locale.Tr "admin.links.label" }}" />
-                                        <input data-link-url type="text" value="{{ $link.URL }}" maxlength="500" class="input h-9 w-full" placeholder="https://example.com" aria-label="{{ $.locale.Tr "admin.links.url" }}" />
-                                        <button type="button" data-link-remove class="og-icon-button text-muted-foreground hover:text-destructive" aria-label="{{ $.locale.Tr "admin.links.remove" }}" title="{{ $.locale.Tr "admin.links.remove" }}">
-                                            <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"/></svg>
-                                        </button>
-                                    </div>
-                                    {{ end }}
-                                </div>
-                                <div class="flex justify-end">
-                                    <button type="button" data-link-add class="btn-sm-outline">
-                                        <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                                        {{ $.locale.Tr "admin.links.add" }}
-                                    </button>
-                                </div>
-                                <template data-link-template>
-                                    <div class="og-link-row" data-link-row>
-                                        <select data-link-icon class="input h-9 w-full" aria-label="{{ $.locale.Tr "admin.links.icon" }}">
-                                            {{ range $.SiteLinkIcons }}
-                                            <option value="{{ . }}">{{ $.locale.Tr (printf "site.icon.%s" .) }}</option>
-                                            {{ end }}
-                                        </select>
-                                        <input data-link-label maxlength="40" class="input h-9 w-full" placeholder="{{ $.locale.Tr "admin.links.label" }}" aria-label="{{ $.locale.Tr "admin.links.label" }}" />
-                                        <input data-link-url type="text" maxlength="500" class="input h-9 w-full" placeholder="https://example.com" aria-label="{{ $.locale.Tr "admin.links.url" }}" />
-                                        <button type="button" data-link-remove class="og-icon-button text-muted-foreground hover:text-destructive" aria-label="{{ $.locale.Tr "admin.links.remove" }}" title="{{ $.locale.Tr "admin.links.remove" }}">
-                                            <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"/></svg>
-                                        </button>
-                                    </div>
-                                </template>
-                            </div>
-
-                            {{ else if eq (printf "%s" .Kind) "text" }}
-                            <textarea id="{{ .Key }}" name="{{ .Key }}" rows="{{ if .Rows }}{{ .Rows }}{{ else }}4{{ end }}"
-                                      placeholder="{{ .Placeholder }}"
-                                      class="input min-h-24 w-full resize-y py-2 font-mono text-xs leading-relaxed">{{ $value }}</textarea>
-
-                            {{ else if eq (printf "%s" .Kind) "int" }}
-                            <div class="og-number">
-                                <input id="{{ .Key }}" name="{{ .Key }}" type="number" value="{{ $value }}"
-                                       min="{{ .Min }}" max="{{ .Max }}" step="1"
-                                       class="input h-9 w-full" />
-                                {{ if .Unit }}<span class="og-number-unit">{{ $.locale.Tr .Unit }}</span>{{ end }}
-                            </div>
-
-                            {{ else if eq (printf "%s" .Kind) "secret" }}
-                            <input id="{{ .Key }}" name="{{ .Key }}" type="password" value="{{ $value }}"
-                                   placeholder="{{ $.secretPlaceholder }}" autocomplete="new-password"
-                                   class="input h-9 w-full" />
-
-                            {{ else if eq (printf "%s" .Kind) "url" }}
-                            <input id="{{ .Key }}" name="{{ .Key }}" type="url" value="{{ $value }}"
-                                   placeholder="{{ .Placeholder }}"
-                                   class="input h-9 w-full" />
-
-                            {{ else }}
-                            <input id="{{ .Key }}" name="{{ .Key }}" type="text" value="{{ $value }}"
-                                   placeholder="{{ .Placeholder }}"
-                                   class="input h-9 w-full" />
-                            {{ end }}
-                        </div>
+                {{ if .Tabs }}
+                {{ $first := true }}
+                <div class="border-b px-3">
+                    <div class="flex gap-1 overflow-x-auto" role="tablist">
+                        {{ range .Tabs }}
+                        <button type="button" role="tab" data-oauth-tab="{{ .Key }}"
+                                aria-selected="{{ if $first }}true{{ else }}false{{ end }}"
+                                class="-mb-px flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-2.5 text-sm font-medium transition-colors {{ if $first }}border-primary text-foreground{{ else }}text-muted-foreground hover:text-foreground border-transparent{{ end }}">
+                            <span>{{ $.locale.Tr .Label }}</span>
+                            <span data-oauth-dot="{{ .Key }}" class="size-1.5 shrink-0 rounded-full bg-emerald-500 {{ if not .Enabled }}hidden{{ end }}" aria-hidden="true"></span>
+                        </button>
+                        {{ $first = false }}
+                        {{ end }}
                     </div>
+                </div>
+                {{ $firstPanel := true }}
+                {{ range .Tabs }}
+                <div data-oauth-panel="{{ .Key }}" class="{{ if not $firstPanel }}hidden {{ end }}divide-y">
+                    {{ range .Fields }}
+                    {{ template "settingField" (dict "page" $ "field" .) }}
                     {{ end }}
                 </div>
+                {{ $firstPanel = false }}
+                {{ end }}
+
+                {{ else }}
+                <div class="divide-y">
+                    {{ range .Fields }}
+                    {{ template "settingField" (dict "page" $ "field" .) }}
+                    {{ end }}
+                </div>
+                {{ end }}
             </section>
             {{ end }}
 
@@ -172,4 +210,39 @@
         </div>
     </form>
 </div>
+
+<script nonce="{{ .cspNonce }}">
+    (() => {
+        const tabs = Array.from(document.querySelectorAll('[data-oauth-tab]'));
+        const panels = Array.from(document.querySelectorAll('[data-oauth-panel]'));
+
+        tabs.forEach((tab) => {
+            tab.addEventListener('click', () => {
+                tabs.forEach((other) => {
+                    const active = other === tab;
+                    other.setAttribute('aria-selected', active ? 'true' : 'false');
+                    other.classList.toggle('border-primary', active);
+                    other.classList.toggle('text-foreground', active);
+                    other.classList.toggle('border-transparent', !active);
+                    other.classList.toggle('text-muted-foreground', !active);
+                });
+                panels.forEach((panel) => {
+                    panel.classList.toggle('hidden', panel.dataset.oauthPanel !== tab.dataset.oauthTab);
+                });
+            });
+        });
+
+        // The tab bar shows a green dot while a provider is switched on.
+        document.addEventListener('change', (event) => {
+            const toggle = event.target.closest('[data-oauth-toggle]');
+            if (!toggle) {
+                return;
+            }
+            const dot = document.querySelector(`[data-oauth-dot="${toggle.dataset.oauthToggle}"]`);
+            if (dot) {
+                dot.classList.toggle('hidden', !toggle.checked);
+            }
+        });
+    })();
+</script>
 {{ end }}

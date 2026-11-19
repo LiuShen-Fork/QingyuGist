@@ -13,6 +13,7 @@ import (
 
 	"github.com/LiuShen-Fork/QingyuGist/internal/config"
 	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/settings"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/test"
 	"github.com/oauth2-proxy/mockoidc"
 	"github.com/stretchr/testify/require"
@@ -48,6 +49,7 @@ func TestOIDCLoginPKCE(t *testing.T) {
 	config.C.OIDCSecret = m.ClientSecret
 	config.C.OIDCDiscoveryUrl = m.DiscoveryEndpoint()
 	config.C.OIDCGroupClaimName = "groups"
+	require.NoError(t, settings.Set("oauth.oidc.enabled", "1"), "Could not enable the OIDC provider")
 
 	base := s.StartHttpServer(t)
 

@@ -12,11 +12,19 @@ import (
 	"github.com/LiuShen-Fork/QingyuGist/internal/i18n"
 	"github.com/LiuShen-Fork/QingyuGist/internal/validator"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
+	"github.com/gorilla/sessions"
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
 
 const oauthInvitationSessionKey = "oauthInvitation"
+
+// sessionProvider is the provider string stored while the oauth registration
+// form is open, or "" when the session has already been cleaned up.
+func sessionProvider(sess *sessions.Session) string {
+	provider, _ := sess.Values["oauthProvider"].(string)
+	return provider
+}
 
 // allowed is false after a rejection, even when writing the redirect succeeds.
 func allowOauthSignup(ctx *context.Context) (*db.Invitation, bool, error) {
@@ -40,6 +48,13 @@ func allowOauthSignup(ctx *context.Context) (*db.Invitation, bool, error) {
 
 func Oauth(ctx *context.Context) error {
 	providerStr := ctx.Param("provider")
+
+	// A provider switched off in the admin panel must not start a login, even
+	// when its credentials are still stored or present in the environment.
+	if !oauth.ProviderEnabled(providerStr) {
+		ctx.AddFlash(ctx.Tr("error.oauth-unsupported"), "error")
+		return ctx.Redirect(302, "/login")
+	}
 
 	httpProtocol := "http"
 	if ctx.Request().TLS != nil || ctx.Request().Header.Get("X-Forwarded-Proto") == "https" {
@@ -96,7 +111,7 @@ func OauthCallback(ctx *context.Context) error {
 		// check if this OAuth account is already linked to another user
 		if existingUser, err := db.GetUserByProvider(user.UserID, provider.GetProvider()); err == nil && existingUser != nil {
 			if existingUser.ID != currUser.ID {
-				ctx.AddFlash(ctx.Tr("flash.auth.oauth-already-linked", config.C.OIDCProviderName), "error")
+				ctx.AddFlash(ctx.Tr("flash.auth.oauth-already-linked", oauth.ProviderDisplayName(provider.GetProvider())), "error")
 				return ctx.RedirectTo("/settings")
 			}
 
@@ -108,10 +123,10 @@ func OauthCallback(ctx *context.Context) error {
 		provider.UpdateUserDB(currUser)
 
 		if err = currUser.Update(); err != nil {
-			return ctx.ErrorRes(500, "Cannot update user "+config.C.OIDCProviderName+" id", err)
+			return ctx.ErrorRes(500, "Cannot update user "+oauth.ProviderDisplayName(provider.GetProvider())+" id", err)
 		}
 
-		ctx.AddFlash(ctx.Tr("flash.auth.account-linked-oauth", config.C.OIDCProviderName), "success")
+		ctx.AddFlash(ctx.Tr("flash.auth.account-linked-oauth", oauth.ProviderDisplayName(provider.GetProvider())), "success")
 		return ctx.RedirectTo("/settings")
 	}
 
@@ -185,7 +200,7 @@ func OauthRegister(ctx *context.Context) error {
 
 	ctx.SetData("title", ctx.TrH("auth.oauth.complete-registration"))
 	ctx.SetData("htmlTitle", ctx.TrH("auth.oauth.complete-registration"))
-	ctx.SetData("oauthProvider", config.C.OIDCProviderName)
+	ctx.SetData("oauthProvider", oauth.ProviderDisplayName(sessionProvider(sess)))
 	ctx.SetData("oauthNickname", sess.Values["oauthNickname"])
 	ctx.SetData("oauthEmail", sess.Values["oauthEmail"])
 	ctx.SetData("oauthAvatarURL", sess.Values["oauthAvatarURL"])
@@ -207,7 +222,7 @@ func ProcessOauthRegister(ctx *context.Context) error {
 	setOauthRegisterData := func(dto *db.OAuthRegisterDTO) {
 		ctx.SetData("title", ctx.TrH("auth.oauth.complete-registration"))
 		ctx.SetData("htmlTitle", ctx.TrH("auth.oauth.complete-registration"))
-		ctx.SetData("oauthProvider", config.C.OIDCProviderName)
+		ctx.SetData("oauthProvider", oauth.ProviderDisplayName(providerStr))
 		if dto != nil {
 			ctx.SetData("oauthNickname", dto.Username)
 			ctx.SetData("oauthEmail", dto.Email)
@@ -238,7 +253,7 @@ func ProcessOauthRegister(ctx *context.Context) error {
 
 	// Check if OAuth account is already linked to another user (race condition protection)
 	if existingUser, err := db.GetUserByProvider(oauthUserID, providerStr); err == nil && existingUser != nil {
-		ctx.AddFlash(ctx.Tr("flash.auth.oauth-already-linked", config.C.OIDCProviderName), "error")
+		ctx.AddFlash(ctx.Tr("flash.auth.oauth-already-linked", oauth.ProviderDisplayName(providerStr)), "error")
 		setOauthRegisterData(dto)
 		return ctx.Html("oauth_register.html")
 	}
@@ -336,10 +351,10 @@ func OauthUnlink(ctx *context.Context) error {
 
 	if provider.UserHasProvider(currUser) {
 		if err := currUser.DeleteProviderID(providerStr); err != nil {
-			return ctx.ErrorRes(500, "Cannot unlink account from "+config.C.OIDCProviderName, err)
+			return ctx.ErrorRes(500, "Cannot unlink account from "+oauth.ProviderDisplayName(providerStr), err)
 		}
 
-		ctx.AddFlash(ctx.Tr("flash.auth.account-unlinked-oauth", config.C.OIDCProviderName), "success")
+		ctx.AddFlash(ctx.Tr("flash.auth.account-unlinked-oauth", oauth.ProviderDisplayName(providerStr)), "success")
 		return ctx.RedirectTo("/settings")
 	}
 

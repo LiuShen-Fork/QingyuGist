@@ -98,9 +98,13 @@ settings.email-help: 用于提交和 Gravatar 头像
 settings.email-set: 设置邮箱地址
 settings.link-accounts: 关联账号
 settings.link-github-account: 关联 GitHub 账号
+settings.link-google-account: 关联 Google 账号
 settings.link-gitea-account: 关联 Gitea 账号
+settings.link-oauth2-account: 关联 OAuth 2.0 账号
 settings.unlink-github-account: 解除关联 GitHub 账号
+settings.unlink-google-account: 解除关联 Google 账号
 settings.unlink-gitea-account: 解除关联 Gitea 账号
+settings.unlink-oauth2-account: 解除关联 OAuth 2.0 账号
 settings.delete-account: 删除账号
 settings.delete-account-confirm: 您确认要删除您的账号吗？
 settings.add-ssh-key: 添加 SSH 密钥
@@ -385,9 +389,10 @@ admin.dashboard-subtitle: 实例的实时运行状态。
 admin.back-to-dashboard: 返回概览
 admin.config-description: 配置保存在数据库中并即时生效，无需重启或修改配置文件。
 admin.config-save-hint: 所有字段会先校验，再统一写入。
+admin.oauth-description: 每个提供商都有独立的开关，开启后标签右上角会亮起绿点。请先在服务商处登记回调地址，再打开开关。
 admin.restart-required: 需要重启生效
 admin.instance: 实例信息
-admin.instance-description: 启动时从配置文件与环境变量读取的值。
+admin.instance-description: 进程启动时从环境变量读取的值。
 admin.database: 数据库
 admin.database-name: 数据库名称
 admin.search-index: 搜索索引
@@ -413,6 +418,8 @@ admin.save-changes: 保存更改
 
 settings.category.site: 站点
 settings.category.auth: 认证
+settings.category.oauth: 第三方登录
+settings.category.ldap: LDAP
 settings.category.upload: 上传
 settings.category.search: 搜索
 settings.category.security: 安全
@@ -462,6 +469,96 @@ settings.auth.disable_login_form: 禁用密码登录
 settings.auth.disable_login_form_help: 仅保留第三方登录入口。
 settings.auth.disable_gravatar: 禁用 Gravatar
 settings.auth.disable_gravatar_help: 始终使用生成的头像，不请求 Gravatar。
+settings.oauth.tab_github: GitHub
+settings.oauth.github_enabled: 允许 GitHub 登录
+settings.oauth.github_enabled_help: 填写客户端信息后，登录页会显示 GitHub 按钮。
+settings.oauth.github_name: 提供商名称
+settings.oauth.github_name_help: 登录页上显示的名称。
+settings.oauth.github_client_key: Client ID
+settings.oauth.github_client_key_help: GitHub OAuth 应用的 Client ID，回调地址为 <外部地址>/oauth/github/callback。
+settings.oauth.github_secret: Client Secret
+settings.oauth.github_secret_help: 同一个 OAuth 应用的 Client Secret。
+settings.oauth.tab_google: Google
+settings.oauth.google_enabled: 允许 Google 登录
+settings.oauth.google_enabled_help: 填写客户端信息后，登录页会显示 Google 按钮。
+settings.oauth.google_name: 提供商名称
+settings.oauth.google_name_help: 登录页上显示的名称。
+settings.oauth.google_client_key: Client ID
+settings.oauth.google_client_key_help: Google Cloud 控制台创建的 OAuth 客户端 ID，回调地址为 <外部地址>/oauth/google/callback。
+settings.oauth.google_secret: Client Secret
+settings.oauth.google_secret_help: 同一个 OAuth 客户端的 Client Secret。
+settings.oauth.tab_gitlab: GitLab
+settings.oauth.gitlab_enabled: 允许 GitLab 登录
+settings.oauth.gitlab_enabled_help: 填写客户端信息后，登录页会显示 GitLab 按钮。
+settings.oauth.gitlab_name: 提供商名称
+settings.oauth.gitlab_name_help: 登录页上显示的名称。
+settings.oauth.gitlab_client_key: Client ID
+settings.oauth.gitlab_client_key_help: GitLab OAuth 应用的 Application ID，回调地址为 <外部地址>/oauth/gitlab/callback。
+settings.oauth.gitlab_secret: Client Secret
+settings.oauth.gitlab_secret_help: 同一个 GitLab 应用的 Secret。
+settings.oauth.gitlab_url: GitLab 地址
+settings.oauth.gitlab_url_help: 实例的基础地址，例如 https://gitlab.com。
+settings.oauth.tab_gitea: Gitea
+settings.oauth.gitea_enabled: 允许 Gitea 登录
+settings.oauth.gitea_enabled_help: 填写客户端信息后，登录页会显示 Gitea 按钮。
+settings.oauth.gitea_name: 提供商名称
+settings.oauth.gitea_name_help: 登录页上显示的名称。
+settings.oauth.gitea_client_key: Client ID
+settings.oauth.gitea_client_key_help: Gitea OAuth2 应用的 Client ID，回调地址为 <外部地址>/oauth/gitea/callback。
+settings.oauth.gitea_secret: Client Secret
+settings.oauth.gitea_secret_help: 同一个 Gitea 应用的 Secret。
+settings.oauth.gitea_url: Gitea 地址
+settings.oauth.gitea_url_help: 实例的基础地址，例如 https://gitea.com。
+settings.oauth.tab_oidc: OpenID Connect
+settings.oauth.oidc_enabled: 允许 OpenID Connect 登录
+settings.oauth.oidc_enabled_help: 配置完成后，登录页会显示对应的登录按钮。
+settings.oauth.oidc_name: 提供商名称
+settings.oauth.oidc_name_help: 登录页上显示的名称，可以填写公司或统一认证平台的名称。
+settings.oauth.oidc_client_key: Client ID
+settings.oauth.oidc_client_key_help: 在身份提供商处登记的 Client ID，回调地址为 <外部地址>/oauth/openid-connect/callback。
+settings.oauth.oidc_secret: Client Secret
+settings.oauth.oidc_secret_help: 同一个客户端的 Client Secret。
+settings.oauth.oidc_discovery_url: 发现地址
+settings.oauth.oidc_discovery_url_help: 提供商的 well-known OpenID 配置文档地址。
+settings.oauth.oidc_group_claim: 分组字段
+settings.oauth.oidc_group_claim_help: 携带用户分组的 claim 名称，留空则不做分组映射。
+settings.oauth.oidc_admin_group: 管理员分组
+settings.oauth.oidc_admin_group_help: 登录时属于该分组的用户会被授予管理员权限。
+settings.oauth.tab_oauth2: 通用 OAuth 2.0
+settings.oauth.oauth2_enabled: 允许 OAuth 2.0 登录
+settings.oauth.oauth2_enabled_help: 适用于任何提供 JSON 用户信息接口的 OAuth 2.0 服务。
+settings.oauth.oauth2_name: 提供商名称
+settings.oauth.oauth2_name_help: 登录页上显示的名称。
+settings.oauth.oauth2_client_key: Client ID
+settings.oauth.oauth2_client_key_help: 在服务端登记的 Client ID，回调地址为 <外部地址>/oauth/oauth2/callback。
+settings.oauth.oauth2_secret: Client Secret
+settings.oauth.oauth2_secret_help: 同一个客户端的 Client Secret。
+settings.oauth.oauth2_auth_url: 授权地址
+settings.oauth.oauth2_auth_url_help: 浏览器跳转的授权端点，例如 https://server.example.com/oauth/authorize。
+settings.oauth.oauth2_token_url: 令牌地址
+settings.oauth.oauth2_token_url_help: 用授权码换取访问令牌的端点。
+settings.oauth.oauth2_userinfo_url: 用户信息地址
+settings.oauth.oauth2_userinfo_url_help: 返回登录用户 JSON 文档的端点。
+settings.oauth.oauth2_scopes: 授权范围
+settings.oauth.oauth2_scopes_help: 登录时申请的 scope，用空格或逗号分隔。
+settings.oauth.oauth2_id_field: ID 字段
+settings.oauth.oauth2_id_field_help: 用户 JSON 中表示唯一标识的字段，嵌套字段用点号，例如 user.id。
+settings.oauth.oauth2_name_field: 名称字段
+settings.oauth.oauth2_name_field_help: 用户 JSON 中表示昵称或用户名的字段。
+settings.oauth.oauth2_email_field: 邮箱字段
+settings.oauth.oauth2_email_field_help: 用户 JSON 中表示邮箱的字段。
+settings.oauth.oauth2_avatar_field: 头像字段
+settings.oauth.oauth2_avatar_field_help: 用户 JSON 中表示头像地址的字段。
+settings.ldap.url: 服务器地址
+settings.ldap.url_help: 例如 ldap://localhost:389 或 ldaps://ldap.example.com:636，留空则关闭 LDAP 登录。
+settings.ldap.bind_dn: 绑定 DN
+settings.ldap.bind_dn_help: 用于检索目录的账号，留空则匿名查询。
+settings.ldap.bind_password: 绑定密码
+settings.ldap.bind_password_help: 绑定账号的密码。
+settings.ldap.search_base: 检索基准
+settings.ldap.search_base_help: 包含用户条目的基准 DN。
+settings.ldap.search_filter: 检索过滤器
+settings.ldap.search_filter_help: 以登录名为条件的过滤器，%s 会被替换为用户名。
 settings.upload.enabled: 允许上传附件
 settings.upload.enabled_help: 创建或编辑 Gist 时允许上传文件。
 settings.upload.max_file_size: 单文件大小上限
@@ -472,6 +569,17 @@ settings.upload.allow_media: 允许媒体文件
 settings.upload.allow_media_help: 接受图片、音频与视频。关闭可节省磁盘空间。
 settings.upload.blocked_extensions: 禁止的扩展名
 settings.upload.blocked_extensions_help: 以逗号分隔，永远不会被接受的扩展名列表。
+settings.search.index_type: 搜索索引
+settings.search.index_type_help: Bleve 在进程内运行，Meilisearch 需要可访问的服务端。
+settings.search.index_bleve: Bleve（内置）
+settings.search.index_meilisearch: Meilisearch
+settings.search.index_none: 关闭
+settings.search.meili_host: Meilisearch 地址
+settings.search.meili_host_help: Meilisearch 服务端的基础地址。
+settings.search.meili_api_key: Meilisearch API 密钥
+settings.search.meili_api_key_help: 用于建索引和搜索的密钥。
+settings.search.default_fields: 默认搜索字段
+settings.search.default_fields_help: 普通查询命中的字段，用逗号分隔，例如 content 或 all。
 settings.search.reindex_days: 重建索引间隔
 settings.search.reindex_days_help: 每隔 N 天自动重建搜索索引，0 表示关闭定时任务。
 settings.security.cors_enabled: 启用跨域
@@ -508,6 +616,8 @@ settings.moderation.daily_limit: 每日审核上限
 settings.moderation.daily_limit_help: 超过上限的 gist 会保持待审状态，之后自动重试。0 表示不限制。
 settings.git.default_branch: 默认分支
 settings.git.default_branch_help: 新仓库使用的分支名称。
+settings.git.http_enabled: HTTP Git 访问
+settings.git.http_enabled_help: 允许通过 HTTP(S) 克隆和推送。
 settings.api.enabled: 启用 API
 settings.api.enabled_help: 开放 REST API 与访问令牌。
 

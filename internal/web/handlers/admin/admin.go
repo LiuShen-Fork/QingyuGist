@@ -182,6 +182,37 @@ type configSection struct {
 	Label  string
 	Icon   string
 	Fields []settings.Definition
+	// Tabs is set instead of Fields for the third-party sign-in section: one
+	// panel per provider, shown one at a time behind a tab bar.
+	Tabs []configOAuthTab
+}
+
+// configOAuthTab is one provider of the third-party sign-in section.
+type configOAuthTab struct {
+	Key     string
+	Label   string // i18n key of the tab label
+	Enabled bool
+	Fields  []settings.Definition
+}
+
+// oauthTabs groups the third-party definitions by provider, keeping the
+// declaration order of settings/oauth.go.
+func oauthTabs(values map[string]string) []configOAuthTab {
+	tabs := make([]configOAuthTab, 0, 6)
+	index := make(map[string]int, 6)
+	for _, d := range settings.DefinitionsByCategory(settings.CategoryOAuth) {
+		i, ok := index[d.Provider]
+		if !ok {
+			i = len(tabs)
+			index[d.Provider] = i
+			tabs = append(tabs, configOAuthTab{Key: d.Provider, Label: "settings.oauth.tab_" + d.Provider})
+		}
+		if settings.IsOAuthEnabledKey(d.Key) {
+			tabs[i].Enabled = values[d.Key] == "1"
+		}
+		tabs[i].Fields = append(tabs[i].Fields, d)
+	}
+	return tabs
 }
 
 var configSectionMeta = map[settings.Category]struct {
@@ -190,6 +221,8 @@ var configSectionMeta = map[settings.Category]struct {
 }{
 	settings.CategorySite:       {"settings.category.site", "layout-template"},
 	settings.CategoryAuth:       {"settings.category.auth", "key-round"},
+	settings.CategoryOAuth:      {"settings.category.oauth", "log-in"},
+	settings.CategoryLDAP:       {"settings.category.ldap", "users"},
 	settings.CategoryUpload:     {"settings.category.upload", "upload"},
 	settings.CategorySearch:     {"settings.category.search", "search"},
 	settings.CategorySecurity:   {"settings.category.security", "shield-check"},
@@ -205,12 +238,17 @@ func adminConfigData(ctx *context.Context, values map[string]string) {
 	sections := make([]configSection, 0)
 	for _, category := range settings.Categories() {
 		meta := configSectionMeta[category]
-		sections = append(sections, configSection{
+		section := configSection{
 			Key:    string(category),
 			Label:  meta.label,
 			Icon:   meta.icon,
 			Fields: settings.DefinitionsByCategory(category),
-		})
+		}
+		if category == settings.CategoryOAuth {
+			section.Fields = nil
+			section.Tabs = oauthTabs(values)
+		}
+		sections = append(sections, section)
 	}
 	ctx.SetData("settingSections", sections)
 	ctx.SetData("settingValues", values)

@@ -22,9 +22,11 @@ type User struct {
 	MD5Hash            string // for gravatar, if no Email is specified, the value is random
 	AvatarURL          string // an absolute URL (from an OAuth provider) or a bare filename for a manually uploaded avatar stored under {home}/avatars/users
 	GithubID           string
+	GoogleID           string
 	GitlabID           string
 	GiteaID            string
 	OIDCID             string `gorm:"column:oidc_id"`
+	OAuth2ID           string `gorm:"column:oauth2_id"`
 	StylePreferences   string
 
 	Gists               []Gist               `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID"`
@@ -252,12 +254,16 @@ func GetUserByProvider(id string, provider string) (*User, error) {
 	switch provider {
 	case "github":
 		err = db.Where("github_id = ?", id).First(&user).Error
+	case "google":
+		err = db.Where("google_id = ?", id).First(&user).Error
 	case "gitlab":
 		err = db.Where("gitlab_id = ?", id).First(&user).Error
 	case "gitea":
 		err = db.Where("gitea_id = ?", id).First(&user).Error
 	case "openid-connect":
 		err = db.Where("oidc_id = ?", id).First(&user).Error
+	case "oauth2":
+		err = db.Where("oauth2_id = ?", id).First(&user).Error
 	}
 
 	return user, err
@@ -294,9 +300,11 @@ func (user *User) HasLiked(gist *Gist) (bool, error) {
 func (user *User) DeleteProviderID(provider string) error {
 	providerIDFields := map[string]string{
 		"github":         "github_id",
+		"google":         "google_id",
 		"gitlab":         "gitlab_id",
 		"gitea":          "gitea_id",
 		"openid-connect": "oidc_id",
+		"oauth2":         "oauth2_id",
 	}
 
 	if providerIDField, ok := providerIDFields[provider]; ok {

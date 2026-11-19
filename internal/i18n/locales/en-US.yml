@@ -178,11 +178,15 @@ settings.email-help: Used for commits and Gravatar
 settings.email-set: Set email
 settings.link-accounts: Link accounts
 settings.link-github-account: Link GitHub account
+settings.link-google-account: Link Google account
 settings.link-gitlab-account: Link GitLab account
 settings.link-gitea-account: Link Gitea account
+settings.link-oauth2-account: Link OAuth 2.0 account
 settings.unlink-github-account: Unlink GitHub account
+settings.unlink-google-account: Unlink Google account
 settings.unlink-gitlab-account: Unlink GitLab account
 settings.unlink-gitea-account: Unlink Gitea account
+settings.unlink-oauth2-account: Unlink OAuth 2.0 account
 settings.delete-account: Delete account
 settings.delete-account-confirm: Are you sure you want to delete your account ?
 settings.add-ssh-key: Add SSH key
@@ -506,9 +510,10 @@ admin.dashboard-subtitle: A live overview of this instance.
 admin.back-to-dashboard: Back to dashboard
 admin.config-description: Stored in the database and applied instantly — no restart or configuration file needed.
 admin.config-save-hint: Every field is validated before anything is written.
+admin.oauth-description: Every provider has its own switch. A green dot marks the providers that are on; register the client with the provider before switching it on.
 admin.restart-required: Requires a restart
 admin.instance: Instance
-admin.instance-description: Boot-time values read from the configuration file and environment.
+admin.instance-description: Boot-time values read from the environment when the process starts.
 admin.database: Database
 admin.database-name: Database name
 admin.search-index: Search index
@@ -535,6 +540,8 @@ admin.save-changes: Save changes
 # Settings registry
 settings.category.site: Site
 settings.category.auth: Authentication
+settings.category.oauth: Third-party sign-in
+settings.category.ldap: LDAP
 settings.category.upload: Uploads
 settings.category.search: Search
 settings.category.security: Security
@@ -584,6 +591,96 @@ settings.auth.disable_login_form: Disable sign-in form
 settings.auth.disable_login_form_help: Only third-party sign-in is offered.
 settings.auth.disable_gravatar: Disable Gravatar
 settings.auth.disable_gravatar_help: Always use generated avatars instead of Gravatar.
+settings.oauth.tab_github: GitHub
+settings.oauth.github_enabled: Allow GitHub sign-in
+settings.oauth.github_enabled_help: Shows a GitHub button on the sign-in page once a client is configured.
+settings.oauth.github_name: Provider name
+settings.oauth.github_name_help: Label shown on the sign-in page.
+settings.oauth.github_client_key: Client ID
+settings.oauth.github_client_key_help: Client ID of a GitHub OAuth app. The callback URL is <external URL>/oauth/github/callback.
+settings.oauth.github_secret: Client secret
+settings.oauth.github_secret_help: Client secret of the same OAuth app.
+settings.oauth.tab_google: Google
+settings.oauth.google_enabled: Allow Google sign-in
+settings.oauth.google_enabled_help: Shows a Google button on the sign-in page once a client is configured.
+settings.oauth.google_name: Provider name
+settings.oauth.google_name_help: Label shown on the sign-in page.
+settings.oauth.google_client_key: Client ID
+settings.oauth.google_client_key_help: OAuth client ID from the Google Cloud console. The callback URL is <external URL>/oauth/google/callback.
+settings.oauth.google_secret: Client secret
+settings.oauth.google_secret_help: Client secret of the same OAuth client.
+settings.oauth.tab_gitlab: GitLab
+settings.oauth.gitlab_enabled: Allow GitLab sign-in
+settings.oauth.gitlab_enabled_help: Shows a GitLab button on the sign-in page once a client is configured.
+settings.oauth.gitlab_name: Provider name
+settings.oauth.gitlab_name_help: Label shown on the sign-in page.
+settings.oauth.gitlab_client_key: Client ID
+settings.oauth.gitlab_client_key_help: Application ID of a GitLab OAuth application. The callback URL is <external URL>/oauth/gitlab/callback.
+settings.oauth.gitlab_secret: Client secret
+settings.oauth.gitlab_secret_help: Secret of the same GitLab application.
+settings.oauth.gitlab_url: GitLab URL
+settings.oauth.gitlab_url_help: Base URL of the instance, for example https://gitlab.com.
+settings.oauth.tab_gitea: Gitea
+settings.oauth.gitea_enabled: Allow Gitea sign-in
+settings.oauth.gitea_enabled_help: Shows a Gitea button on the sign-in page once a client is configured.
+settings.oauth.gitea_name: Provider name
+settings.oauth.gitea_name_help: Label shown on the sign-in page.
+settings.oauth.gitea_client_key: Client ID
+settings.oauth.gitea_client_key_help: Client ID of a Gitea OAuth2 application. The callback URL is <external URL>/oauth/gitea/callback.
+settings.oauth.gitea_secret: Client secret
+settings.oauth.gitea_secret_help: Secret of the same Gitea application.
+settings.oauth.gitea_url: Gitea URL
+settings.oauth.gitea_url_help: Base URL of the instance, for example https://gitea.com.
+settings.oauth.tab_oidc: OpenID Connect
+settings.oauth.oidc_enabled: Allow OpenID Connect sign-in
+settings.oauth.oidc_enabled_help: Shows a sign-in button for your identity provider once it is configured.
+settings.oauth.oidc_name: Provider name
+settings.oauth.oidc_name_help: Label shown on the sign-in page, for example the name of your company.
+settings.oauth.oidc_client_key: Client ID
+settings.oauth.oidc_client_key_help: Client ID registered with the identity provider. The callback URL is <external URL>/oauth/openid-connect/callback.
+settings.oauth.oidc_secret: Client secret
+settings.oauth.oidc_secret_help: Client secret of the same client.
+settings.oauth.oidc_discovery_url: Discovery URL
+settings.oauth.oidc_discovery_url_help: Well-known OpenID configuration document of the provider.
+settings.oauth.oidc_group_claim: Group claim
+settings.oauth.oidc_group_claim_help: Claim that carries the groups of a user. Leave empty to skip group mapping.
+settings.oauth.oidc_admin_group: Administrator group
+settings.oauth.oidc_admin_group_help: Members of this group are granted administrator rights on sign-in.
+settings.oauth.tab_oauth2: Generic OAuth 2.0
+settings.oauth.oauth2_enabled: Allow OAuth 2.0 sign-in
+settings.oauth.oauth2_enabled_help: Shows a sign-in button for any OAuth 2.0 server that exposes a JSON user-info endpoint.
+settings.oauth.oauth2_name: Provider name
+settings.oauth.oauth2_name_help: Label shown on the sign-in page.
+settings.oauth.oauth2_client_key: Client ID
+settings.oauth.oauth2_client_key_help: Client ID registered with the server. The callback URL is <external URL>/oauth/oauth2/callback.
+settings.oauth.oauth2_secret: Client secret
+settings.oauth.oauth2_secret_help: Client secret of the same client.
+settings.oauth.oauth2_auth_url: Authorize URL
+settings.oauth.oauth2_auth_url_help: Endpoint the browser is sent to, for example https://server.example.com/oauth/authorize.
+settings.oauth.oauth2_token_url: Token URL
+settings.oauth.oauth2_token_url_help: Endpoint that exchanges the code for an access token.
+settings.oauth.oauth2_userinfo_url: User-info URL
+settings.oauth.oauth2_userinfo_url_help: Endpoint returning the JSON document of the signed-in user.
+settings.oauth.oauth2_scopes: Scopes
+settings.oauth.oauth2_scopes_help: Space or comma separated scopes requested during sign-in.
+settings.oauth.oauth2_id_field: ID field
+settings.oauth.oauth2_id_field_help: JSON field holding the stable user id. Nested fields use dots, for example user.id.
+settings.oauth.oauth2_name_field: Name field
+settings.oauth.oauth2_name_field_help: JSON field holding the display name or login name.
+settings.oauth.oauth2_email_field: Email field
+settings.oauth.oauth2_email_field_help: JSON field holding the email address.
+settings.oauth.oauth2_avatar_field: Avatar field
+settings.oauth.oauth2_avatar_field_help: JSON field holding the avatar URL.
+settings.ldap.url: Server URL
+settings.ldap.url_help: For example ldap://localhost:389 or ldaps://ldap.example.com:636. Leave empty to disable LDAP sign-in.
+settings.ldap.bind_dn: Bind DN
+settings.ldap.bind_dn_help: Account used to search the directory. Leave empty to query it anonymously.
+settings.ldap.bind_password: Bind password
+settings.ldap.bind_password_help: Password of the bind account.
+settings.ldap.search_base: Search base
+settings.ldap.search_base_help: Base DN that contains the user entries.
+settings.ldap.search_filter: Search filter
+settings.ldap.search_filter_help: Filter matched against the login name; %s is replaced with the username.
 settings.upload.enabled: Allow uploads
 settings.upload.enabled_help: Permit file attachments when creating or editing gists.
 settings.upload.max_file_size: Max file size
@@ -594,6 +691,17 @@ settings.upload.allow_media: Allow media files
 settings.upload.allow_media_help: Accept images, audio and video. Disable to save disk space.
 settings.upload.blocked_extensions: Blocked extensions
 settings.upload.blocked_extensions_help: Comma-separated list of file extensions that are never accepted.
+settings.search.index_type: Search index
+settings.search.index_type_help: Bleve runs inside the process; Meilisearch needs a reachable server.
+settings.search.index_bleve: Bleve (built in)
+settings.search.index_meilisearch: Meilisearch
+settings.search.index_none: Disabled
+settings.search.meili_host: Meilisearch URL
+settings.search.meili_host_help: Base URL of the Meilisearch server.
+settings.search.meili_api_key: Meilisearch API key
+settings.search.meili_api_key_help: Key used for indexing and searching.
+settings.search.default_fields: Default search fields
+settings.search.default_fields_help: Comma-separated columns searched by a plain query, for example content or all.
 settings.search.reindex_days: Reindex interval
 settings.search.reindex_days_help: Rebuild the search index automatically every N days. 0 disables the schedule.
 settings.security.cors_enabled: Enable CORS
@@ -630,6 +738,8 @@ settings.moderation.daily_limit: Daily review limit
 settings.moderation.daily_limit_help: Gists that arrive after the limit stay pending and are retried later. 0 removes the limit.
 settings.git.default_branch: Default branch
 settings.git.default_branch_help: Branch created for new repositories.
+settings.git.http_enabled: HTTP Git access
+settings.git.http_enabled_help: Allow clone and push over HTTP(S).
 settings.api.enabled: Enable API
 settings.api.enabled_help: Expose the REST API and access tokens.
 

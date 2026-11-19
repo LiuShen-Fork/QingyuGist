@@ -47,6 +47,8 @@ type Category string
 const (
 	CategorySite       Category = "site"
 	CategoryAuth       Category = "auth"
+	CategoryOAuth      Category = "oauth"
+	CategoryLDAP       Category = "ldap"
 	CategoryUpload     Category = "upload"
 	CategorySearch     Category = "search"
 	CategorySecurity   Category = "security"
@@ -60,6 +62,8 @@ func Categories() []Category {
 	return []Category{
 		CategorySite,
 		CategoryAuth,
+		CategoryOAuth,
+		CategoryLDAP,
 		CategoryUpload,
 		CategorySearch,
 		CategorySecurity,
@@ -93,6 +97,16 @@ const (
 	KeyDisableLoginForm       = "auth.disable-login-form"
 	KeyDisableGravatar        = "auth.disable-gravatar"
 
+	// Third-party sign-in. Every provider has an enable switch plus the fields it
+	// needs; keys are derived with oauthKey so the surrounding code stays uniform.
+	// A provider is offered once its switch is on and its credentials exist.
+
+	KeyLDAPURL          = "ldap.url"
+	KeyLDAPBindDN       = "ldap.bind-dn"
+	KeyLDAPBindPassword = "ldap.bind-credentials"
+	KeyLDAPSearchBase   = "ldap.search-base"
+	KeyLDAPSearchFilter = "ldap.search-filter"
+
 	KeyUploadEnabled    = "upload.enabled"
 	KeyUploadMaxFileMB  = "upload.max-file-size"
 	KeyUploadMaxTotalMB = "upload.max-total-size"
@@ -101,6 +115,10 @@ const (
 
 	KeySearchReindexDays = "search.reindex-days"
 	KeySearchLastIndex   = "search.last-index" // internal, not exposed in the UI
+	KeySearchDefault     = "search.default"
+	KeyIndexType         = "index.type"
+	KeyMeiliHost         = "index.meili.host"
+	KeyMeiliAPIKey       = "index.meili.api-key"
 
 	KeyCORSEnabled     = "security.cors-enabled"
 	KeyCORSOrigins     = "security.cors-origins"
@@ -127,6 +145,7 @@ const (
 	KeyModerationDailyLimit = "moderation.daily-limit"
 
 	KeyGitDefaultBranch = "git.default-branch"
+	KeyGitHTTPEnabled   = "git.http-enabled"
 	KeyAPIEnabled       = "api.enabled"
 
 	// Registration modes.
@@ -138,6 +157,14 @@ const (
 // DefaultRepositoryURL is the project this instance is built from. It is shown
 // as a source-code icon in the public sidebar and can be changed per instance.
 const DefaultRepositoryURL = "https://github.com/LiuShen-Fork/QingyuGist"
+
+// DefaultGitLabURL is used when neither the setting nor the environment names
+// a GitLab instance; without it the provider would build relative endpoints.
+const DefaultGitLabURL = "https://gitlab.com"
+
+// DefaultLDAPSearchFilter matches the username against the uid attribute. The
+// single %s is replaced with the login name.
+const DefaultLDAPSearchFilter = "(uid=%s)"
 
 // DefaultModerationPrompt is used when the administrator has not customised it.
 const DefaultModerationPrompt = `You are the content moderation system of a self-hosted code snippet site.
@@ -159,12 +186,15 @@ type Option struct {
 
 // Definition describes one configurable setting.
 type Definition struct {
-	Key         string
-	Kind        Kind
-	Default     string
-	Category    Category
-	Label       string // i18n key
-	Help        string // i18n key
+	Key      string
+	Kind     Kind
+	Default  string
+	Category Category
+	Label    string // i18n key
+	Help     string // i18n key
+	// Provider is set on third-party sign-in fields only, to the provider key
+	// ("github", "oidc", …). The admin panel groups those fields into tabs.
+	Provider    string
 	Placeholder string
 	Options     []Option
 	Min         int
@@ -176,7 +206,7 @@ type Definition struct {
 	ApplyAfterRestart bool
 }
 
-var definitions = []Definition{
+var baseDefinitions = []Definition{
 	// Site / branding
 	{Key: KeySiteName, Kind: KindString, Category: CategorySite, Label: "settings.site.name", Help: "settings.site.name_help", Placeholder: "QingyuGist", Max: 80},
 	{Key: KeySiteDescription, Kind: KindString, Category: CategorySite, Label: "settings.site.description", Help: "settings.site.description_help", Max: 200},
@@ -204,6 +234,16 @@ var definitions = []Definition{
 	{Key: KeyDisableLoginForm, Kind: KindBool, Category: CategoryAuth, Label: "settings.auth.disable_login_form", Help: "settings.auth.disable_login_form_help"},
 	{Key: KeyDisableGravatar, Kind: KindBool, Category: CategoryAuth, Label: "settings.auth.disable_gravatar", Help: "settings.auth.disable_gravatar_help"},
 
+	// Third-party sign-in lives in oauth.go: one enable switch plus credentials
+	// per provider, appended to the definitions below.
+
+	// LDAP. Sign-in through LDAP is enabled as soon as the URL is set.
+	{Key: KeyLDAPURL, Kind: KindString, Category: CategoryLDAP, Label: "settings.ldap.url", Help: "settings.ldap.url_help", Placeholder: "ldap://localhost:389", Max: 300},
+	{Key: KeyLDAPBindDN, Kind: KindString, Category: CategoryLDAP, Label: "settings.ldap.bind_dn", Help: "settings.ldap.bind_dn_help", Placeholder: "cn=admin,dc=example,dc=com", Max: 300},
+	{Key: KeyLDAPBindPassword, Kind: KindSecret, Category: CategoryLDAP, Label: "settings.ldap.bind_password", Help: "settings.ldap.bind_password_help", Max: 300},
+	{Key: KeyLDAPSearchBase, Kind: KindString, Category: CategoryLDAP, Label: "settings.ldap.search_base", Help: "settings.ldap.search_base_help", Placeholder: "ou=users,dc=example,dc=com", Max: 300},
+	{Key: KeyLDAPSearchFilter, Kind: KindString, Default: DefaultLDAPSearchFilter, Category: CategoryLDAP, Label: "settings.ldap.search_filter", Help: "settings.ldap.search_filter_help", Placeholder: DefaultLDAPSearchFilter, Max: 300},
+
 	// Uploads & storage
 	{Key: KeyUploadEnabled, Kind: KindBool, Default: "1", Category: CategoryUpload, Label: "settings.upload.enabled", Help: "settings.upload.enabled_help"},
 	{Key: KeyUploadMaxFileMB, Kind: KindInt, Default: "32", Category: CategoryUpload, Label: "settings.upload.max_file_size", Help: "settings.upload.max_file_size_help", Min: 1, Max: 4096, Unit: "settings.unit.mb"},
@@ -212,6 +252,14 @@ var definitions = []Definition{
 	{Key: KeyUploadBlockedExt, Kind: KindText, Default: "exe,msi,dll,so,dylib,iso,dmg,img,bin,apk,ipa,zip,7z,rar,tar,gz,bz2,xz,zst", Category: CategoryUpload, Label: "settings.upload.blocked_extensions", Help: "settings.upload.blocked_extensions_help", Rows: 2},
 
 	// Search & index
+	{Key: KeyIndexType, Kind: KindEnum, Default: "bleve", ApplyAfterRestart: true, Category: CategorySearch, Label: "settings.search.index_type", Help: "settings.search.index_type_help", Options: []Option{
+		{Value: "bleve", Label: "settings.search.index_bleve"},
+		{Value: "meilisearch", Label: "settings.search.index_meilisearch"},
+		{Value: "none", Label: "settings.search.index_none"},
+	}},
+	{Key: KeyMeiliHost, Kind: KindURL, ApplyAfterRestart: true, Category: CategorySearch, Label: "settings.search.meili_host", Help: "settings.search.meili_host_help", Placeholder: "http://localhost:7700", Max: 300},
+	{Key: KeyMeiliAPIKey, Kind: KindSecret, ApplyAfterRestart: true, Category: CategorySearch, Label: "settings.search.meili_api_key", Help: "settings.search.meili_api_key_help", Max: 300},
+	{Key: KeySearchDefault, Kind: KindString, Default: "content", Category: CategorySearch, Label: "settings.search.default_fields", Help: "settings.search.default_fields_help", Placeholder: "content", Max: 200},
 	{Key: KeySearchReindexDays, Kind: KindInt, Default: "7", Category: CategorySearch, Label: "settings.search.reindex_days", Help: "settings.search.reindex_days_help", Min: 0, Max: 365, Unit: "settings.unit.days"},
 
 	// Security
@@ -239,8 +287,11 @@ var definitions = []Definition{
 
 	// Git / API
 	{Key: KeyGitDefaultBranch, Kind: KindString, Category: CategoryGit, Label: "settings.git.default_branch", Help: "settings.git.default_branch_help", Placeholder: "main", Max: 100},
+	{Key: KeyGitHTTPEnabled, Kind: KindBool, Default: "1", ApplyAfterRestart: true, Category: CategoryGit, Label: "settings.git.http_enabled", Help: "settings.git.http_enabled_help"},
 	{Key: KeyAPIEnabled, Kind: KindBool, Default: "1", Category: CategoryAPI, Label: "settings.api.enabled", Help: "settings.api.enabled_help"},
 }
+
+var definitions = append(baseDefinitions, oauthDefinitions()...)
 
 var (
 	byKey = make(map[string]*Definition, len(definitions))
@@ -421,7 +472,19 @@ func defaultValues() map[string]string {
 		return fallback
 	}
 
-	return map[string]string{
+	nonEmpty := func(value, fallback string) string {
+		if value != "" {
+			return value
+		}
+		return fallback
+	}
+
+	httpGit := "0"
+	if config.C.HttpGit {
+		httpGit = "1"
+	}
+
+	values := map[string]string{
 		KeySiteName:               config.C.CustomName,
 		KeySiteExternalURL:        config.C.ExternalUrl,
 		KeySiteLogo:               config.C.CustomLogo,
@@ -433,8 +496,31 @@ func defaultValues() map[string]string {
 		KeyDisableGravatar:        boolFromLegacy(db.SettingDisableGravatar, "0"),
 		KeyUploadEnabled:          uploadEnabled,
 		KeyGitDefaultBranch:       config.C.GitDefaultBranch,
+		KeyGitHTTPEnabled:         httpGit,
 		KeyAPIEnabled:             apiEnabled,
+
+		KeyLDAPURL:          config.C.LDAPUrl,
+		KeyLDAPBindDN:       config.C.LDAPBindDn,
+		KeyLDAPBindPassword: config.C.LDAPBindCredentials,
+		KeyLDAPSearchBase:   config.C.LDAPSearchBase,
+		KeyLDAPSearchFilter: nonEmpty(config.C.LDAPSearchFilter, DefaultLDAPSearchFilter),
+
+		KeyIndexType:     nonEmpty(config.C.Index, "none"),
+		KeyMeiliHost:     config.C.MeiliHost,
+		KeyMeiliAPIKey:   config.C.MeiliAPIKey,
+		KeySearchDefault: config.C.SearchDefault,
 	}
+
+	// Third-party sign-in: seed every provider from whatever the environment
+	// provided, so an env-only deployment keeps working after the upgrade.
+	for _, d := range oauthDefinitions() {
+		field := strings.TrimPrefix(d.Key, "oauth."+d.Provider+".")
+		if value, ok := oauthConfigValue(config.C, d.Provider, field); ok {
+			values[d.Key] = value
+		}
+	}
+
+	return values
 }
 
 func mirrorLegacy(v map[string]string) error {
@@ -466,13 +552,15 @@ func mirrorLegacy(v map[string]string) error {
 // they observe either the old or the new snapshot, never a half-written value.
 func applyLocked(v map[string]string) {
 	next := *config.C
+	trimmed := func(key string) string { return strings.TrimSpace(v[key]) }
+
 	next.CustomName = v[KeySiteName]
 	next.CustomLogo = v[KeySiteLogo]
 	next.CustomFavicon = v[KeySiteFavicon]
 	if u := strings.TrimRight(strings.TrimSpace(v[KeySiteExternalURL]), "/"); u != "" {
 		next.ExternalUrl = u
 	}
-	if d := strings.TrimSpace(v[KeySearchDefault()]); d != "" {
+	if d := strings.TrimSpace(v[KeySearchDefault]); d != "" {
 		next.SearchDefault = d
 	}
 	if b := strings.TrimSpace(v[KeyGitDefaultBranch]); b != "" {
@@ -480,13 +568,45 @@ func applyLocked(v map[string]string) {
 	}
 	next.ApiEnabled = v[KeyAPIEnabled] == "1"
 	next.DisableFileUpload = v[KeyUploadEnabled] != "1"
+	next.HttpGit = v[KeyGitHTTPEnabled] != "0"
+
+	applyOAuthSettings(&next, v)
+
+	// LDAP
+	if s := trimmed(KeyLDAPURL); s != "" {
+		next.LDAPUrl = s
+	}
+	if s := trimmed(KeyLDAPBindDN); s != "" {
+		next.LDAPBindDn = s
+	}
+	if s := v[KeyLDAPBindPassword]; s != "" {
+		next.LDAPBindCredentials = s
+	}
+	if s := trimmed(KeyLDAPSearchBase); s != "" {
+		next.LDAPSearchBase = s
+	}
+	if s := trimmed(KeyLDAPSearchFilter); s != "" {
+		next.LDAPSearchFilter = s
+	}
+
+	// Search index
+	if s := trimmed(KeyMeiliHost); s != "" {
+		next.MeiliHost = s
+	}
+	if s := v[KeyMeiliAPIKey]; s != "" {
+		next.MeiliAPIKey = s
+	}
+	switch trimmed(KeyIndexType) {
+	case "bleve":
+		next.Index = "bleve"
+	case "meilisearch":
+		next.Index = "meilisearch"
+	case "none":
+		next.Index = ""
+	}
+
 	config.C = &next
 }
-
-// KeySearchDefault is not a user-visible setting yet; search.default remains a
-// boot option. It is referenced here so applyLocked keeps compiling if it
-// becomes editable.
-func KeySearchDefault() string { return "search.default" }
 
 // Validate checks a candidate value against its definition.
 func Validate(key, value string) error {
