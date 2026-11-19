@@ -23,9 +23,10 @@ New gists update the heatmap automatically.
 ## Configuration
 
 Settings changed here are stored in the database and apply without restarting
-the instance. They take precedence over the corresponding values in
-`config.yml`, so the configuration file is optional for these options. Secrets
-are shown masked; leaving a masked value untouched keeps the stored secret.
+the instance. They take precedence over the `QYG_*` environment variables the
+process started with, so anything you change here no longer needs an environment
+variable. Secrets are shown masked; leaving a masked value untouched keeps the
+stored secret.
 
 ### Site
 

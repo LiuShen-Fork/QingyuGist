@@ -61,10 +61,15 @@ var CmdStart = cli.Command{
 	},
 }
 
+// ConfigFlag is accepted and ignored. Git hooks installed by earlier releases
+// invoke the binary with `--config=<home>/symlinks/config.yml`; keeping the flag
+// lets repositories created before the switch to environment-only configuration
+// keep pushing. The home directory is resolved from QYG_HOME_INTERNAL, which the
+// server exports for every child process.
 var ConfigFlag = cli.StringFlag{
 	Name:    "config",
 	Aliases: []string{"c"},
-	Usage:   "Path to a config file in YAML format",
+	Usage:   "Deprecated and ignored; configuration comes from QYG_* environment variables",
 }
 
 func App() error {
@@ -84,7 +89,7 @@ func App() error {
 func Initialize(ctx *cli.Context) {
 	fmt.Println("QingyuGist (清羽Gist) " + config.QingyuGistVersion)
 
-	if err := config.InitConfig(ctx.String("config"), os.Stdout); err != nil {
+	if err := config.InitConfig(os.Stdout); err != nil {
 		panic(err)
 	}
 	if err := os.MkdirAll(filepath.Join(config.GetHomeDir()), 0755); err != nil {
@@ -114,7 +119,7 @@ func Initialize(ctx *cli.Context) {
 		log.Warn().Err(err).Msgf("Failed to change the host's git global config, ensure to add to `safe.directory` the path %s, and `receive.advertisePushOptions` is set to true.", homePath)
 	}
 
-	if err := createSymlink(homePath, ctx.String("config")); err != nil {
+	if err := createSymlink(homePath); err != nil {
 		log.Fatal().Err(err).Msg("Failed to create symlinks")
 	}
 
@@ -180,7 +185,7 @@ func shutdown(httpServer *server.Server, metricsServer *metrics.Server) {
 	log.Info().Msg("Shutdown complete")
 }
 
-func createSymlink(homePath string, configPath string) error {
+func createSymlink(homePath string) error {
 	if err := os.MkdirAll(filepath.Join(homePath, "symlinks"), 0755); err != nil {
 		return err
 	}
@@ -217,22 +222,11 @@ func createSymlink(homePath string, configPath string) error {
 		}
 	}
 
-	if configPath == "" {
-		return nil
-	}
-
-	configPath, _ = filepath.Abs(configPath)
-	configPath = filepath.Clean(configPath)
+	// Releases before the environment-only config kept a config.yml symlink here
+	// for the git hooks. Remove a leftover copy so it cannot mislead anyone.
 	symlinkConfigPath := path.Join(config.GetHomeDir(), "symlinks", "config.yml")
 	if _, err := os.Lstat(symlinkConfigPath); err == nil {
-		if err := os.Remove(symlinkConfigPath); err != nil {
-			return err
-		}
-	}
-	if err = os.Symlink(configPath, symlinkConfigPath); err != nil {
-		if copyErr := copyExecutable(configPath, symlinkConfigPath); copyErr != nil {
-			return err
-		}
+		_ = os.Remove(symlinkConfigPath)
 	}
 
 	return nil

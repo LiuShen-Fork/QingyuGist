@@ -1,38 +1,17 @@
 # Configuration
 
-QingyuGist provides flexible configuration options through either a YAML file and/or environment variables.
-You would only need to specify the configuration options you want to change — for any config option left untouched, 
-QingyuGist will simply apply the default values.
+QingyuGist has no configuration file. Every option ships with a default compiled
+into the binary, so a fresh instance starts without any configuration at all.
+Anything you need to change is set through an environment variable; site-level
+settings — name, registration, uploads, OAuth providers, links — live in the
+[admin panel](admin-panel.md) and are stored in the database.
 
-The [configuration cheat sheet](cheat-sheet.md) lists all available configuration options.
+The [configuration cheat sheet](cheat-sheet.md) lists every option, its
+environment variable and its default value.
 
+## Environment Variables
 
-## Configuration via YAML file
-
-The configuration file must be specified when launching the application, using the `--config` flag followed by the path 
-to your YAML file.
-
-Usage with Docker Compose :
-```yml
-services:
-  qingyugist:
-    # ...
-    volumes:
-    # ...
-    - "/path/to/config.yml:/config.yml"
-```
-
-Usage via command line :
-```shell
-./qingyugist --config /path/to/config.yml
-```
-
-You can start by copying and/or modifying the provided [config.yml](https://github.com/LiuShen-Fork/QingyuGist/blob/master/config.yml) file.
-
-
-## Configuration via Environment Variables
-
-Usage with Docker Compose :
+Usage with Docker Compose:
 ```yml
 services:
   qingyugist:
@@ -42,10 +21,13 @@ services:
       # etc.
 ```
 
-Usage via command line :
+Usage via command line:
 ```shell
 QYG_LOG_LEVEL=info ./qingyugist
 ```
+
+The data directory is the only option worth setting explicitly in most
+deployments: `QYG_HOME` points at it, and defaults to `~/.qingyugist`.
 
 ### Using Docker Compose secrets
 
@@ -70,3 +52,20 @@ secrets:
   qingyugist_secrets:
     file: ./secrets.env
 ```
+
+The image loads `/run/secrets/qingyugist_secrets` at startup when it exists, so
+the file above needs no further wiring.
+
+## Admin panel
+
+Settings made in the admin panel are written to the database and apply
+immediately, without a restart. They take precedence over the corresponding
+`QYG_*` environment variables, which stay useful as bootstrap values for a
+fresh instance.
+
+## Upgrading from a configuration file
+
+Releases before 1.0.4 read a YAML `config.yml`. That file is no longer loaded:
+rename each option to its `QYG_*` environment variable (the cheat sheet maps
+one to the other) and delete the file. `--config` is still accepted so the git
+hooks installed by older releases keep working, but its value is ignored.

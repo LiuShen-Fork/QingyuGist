@@ -15,7 +15,7 @@ import (
 func SetupTest(t *testing.T) {
 	_ = os.Setenv("QINGYUGIST_SKIP_GIT_HOOKS", "1")
 
-	err := config.InitConfig("", io.Discard)
+	err := config.InitConfig(io.Discard)
 	require.NoError(t, err, "Could not init config")
 	// The repository's tests assume the historical master default; pin it so
 	// they do not depend on the developer's global init.defaultBranch.

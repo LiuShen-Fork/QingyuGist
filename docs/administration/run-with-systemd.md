@@ -2,21 +2,19 @@
 
 For non-Docker users, you could run QingyuGist as a systemd service.
 
+QingyuGist takes everything from its environment and from the admin panel; there
+is no configuration file to install. Only the home directory has to be set at
+boot time, with `QYG_HOME`.
+
 ## As root
 On Unix distributions with systemd, place the QingyuGist binary like:
 
 ```shell
 sudo cp qingyugist /usr/local/bin
-sudo mkdir -p /var/lib/qingyugist
-sudo cp config.yml /etc/qingyugist
 ```
 
-Edit the QingyuGist home directory configuration in `/etc/qingyugist/config.yml` like:
-```shell
-qingyugist-home: /var/lib/qingyugist
-```
+Create a new user to run QingyuGist and its home directory:
 
-Create a new user to run QingyuGist:
 ```shell
 sudo useradd --system qingyugist
 sudo mkdir -p /var/lib/qingyugist
@@ -24,6 +22,7 @@ sudo chown -R qingyugist:qingyugist /var/lib/qingyugist
 ```
 
 Then create a service file at `/etc/systemd/system/qingyugist.service`:
+
 ```ini
 [Unit]
 Description=qingyugist Server
@@ -33,14 +32,20 @@ After=network.target
 Type=simple
 User=qingyugist
 Group=qingyugist
-ExecStart=qingyugist --config /etc/qingyugist/config.yml
+Environment=QYG_HOME=/var/lib/qingyugist
+ExecStart=/usr/local/bin/qingyugist
 Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
 ```
 
+Add any other boot-time options as `Environment=` lines (see
+[Configuration](/configuration/configure)); everything else is changed in the
+admin panel at `/admin/settings`.
+
 Finally, start the service:
+
 ```shell
 systemctl daemon-reload
 systemctl enable --now qingyugist
@@ -77,7 +82,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/home/pastebin/qingyugist/qingyugist --config /home/pastebin/qingyugist/config.yml
+ExecStart=/home/pastebin/qingyugist/qingyugist
 Restart=on-failure
 
 [Install]

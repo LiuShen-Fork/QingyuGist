@@ -10,7 +10,7 @@ import (
 )
 
 func TestHardenCookieSecureFollowsExternalUrl(t *testing.T) {
-	require.NoError(t, config.InitConfig("", io.Discard))
+	require.NoError(t, config.InitConfig(io.Discard))
 
 	tests := []struct {
 		externalUrl string

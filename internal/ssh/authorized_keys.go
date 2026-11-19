@@ -34,14 +34,10 @@ var authorizedKeysMu sync.Mutex
 //
 // It is shared by the `keys` command (AuthorizedKeysCommand mode) and the
 // managed authorized_keys file writer. execPath is the absolute path to the
-// QingyuGist binary and configPath the optional --config to propagate.
-func AuthorizedKeysLine(execPath, configPath string, keyID uint, pubKey string) string {
+// QingyuGist binary.
+func AuthorizedKeysLine(execPath string, keyID uint, pubKey string) string {
 	var cmd strings.Builder
 	cmd.WriteString(execPath)
-	if configPath != "" {
-		cmd.WriteString(" --config ")
-		cmd.WriteString(configPath)
-	}
 	cmd.WriteString(" shell ")
 	cmd.WriteString(strconv.FormatUint(uint64(keyID), 10))
 
@@ -68,12 +64,11 @@ func SyncAuthorizedKeys() error {
 	// Reuse the stable symlinks (as the Git hooks do) so the forced command keeps
 	// working across binary upgrades.
 	exe := filepath.Join(config.GetHomeDir(), "symlinks", "qingyugist")
-	cfg := filepath.Join(config.GetHomeDir(), "symlinks", "config.yml")
 
 	var block strings.Builder
 	block.WriteString(authorizedKeysBegin + "\n")
 	for _, k := range keys {
-		block.WriteString(AuthorizedKeysLine(exe, cfg, k.ID, k.Content) + "\n")
+		block.WriteString(AuthorizedKeysLine(exe, k.ID, k.Content) + "\n")
 	}
 	block.WriteString(authorizedKeysEnd + "\n")
 

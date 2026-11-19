@@ -19,10 +19,9 @@ import (
 // key line there — never logs or errors (those go to stderr). The default log
 // output includes stdout, so it deliberately avoids the global logger.
 //
-// Configure sshd with, e.g. (--config is a global flag, so it precedes the
-// subcommand):
+// Configure sshd with, e.g.:
 //
-//	AuthorizedKeysCommand /usr/local/bin/qingyugist --config /etc/qingyugist/config.yml keys -t %t -k %k
+//	AuthorizedKeysCommand /usr/local/bin/qingyugist keys -t %t -k %k
 //	AuthorizedKeysCommandUser qingyugist
 var CmdKeys = cli.Command{
 	Name:   "keys",
@@ -59,7 +58,7 @@ var CmdKeys = cli.Command{
 			return nil
 		}
 
-		fmt.Println(ssh.AuthorizedKeysLine(exe, ctx.String("config"), resp.KeyID, pubKey))
+		fmt.Println(ssh.AuthorizedKeysLine(exe, resp.KeyID, pubKey))
 		return nil
 	},
 }

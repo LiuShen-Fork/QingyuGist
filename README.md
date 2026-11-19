@@ -99,8 +99,8 @@ tar xzf qingyugist-<version>-linux-amd64.tar.gz
 ```
 
 The binary needs [Git](https://git-scm.com/download) 2.28 or newer, and OpenSSH if you want
-SSH access. It reads `config.yml` next to the working directory (`--config` to point
-elsewhere), and every option can also be set through a `QYG_*` environment variable.
+SSH access. There is no configuration file: everyday options live in the admin panel, and
+boot-time values are read from `QYG_*` environment variables.
 
 ### From source
 
@@ -116,8 +116,8 @@ make
 ## Configuration
 
 Everyday options live in the admin panel at `/admin/settings` and take effect immediately:
-registration mode, upload limits, moderation, CORS, search reindexing, branding, footer and
-announcement. Bootstrap values belong in `config.yml` or the environment:
+registration mode, third-party sign-in providers, upload limits, moderation, CORS, search
+reindexing, branding, footer and announcement. Boot-time values are read from the environment:
 
 | Variable | Default | Purpose |
 | --- | --- | --- |

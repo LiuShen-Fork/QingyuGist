@@ -42,7 +42,6 @@ for TARGET in $TARGETS; do
     env GOOS=$GOOS GOARCH=$GOARCH GOARM=$GOARM CGO_ENABLED=0 go build -tags fs_embed -ldflags "-X $VERSION_PKG=v$VERSION" -o $OUTPUT_FILE
     cp README.md $OUTPUT_DIR
     cp LICENSE $OUTPUT_DIR
-    cp config.yml $OUTPUT_DIR
 
     if [ $? -ne 0 ]; then
         echo "Error building for $GOOS/$GOARCH${GOARM:+v$GOARM}. Exiting..."

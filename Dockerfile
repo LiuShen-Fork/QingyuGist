@@ -76,7 +76,6 @@ RUN addgroup -S qingyugist && \
 
 WORKDIR /app/qingyugist
 
-COPY --from=build --chown=qingyugist:qingyugist /qingyugist/config.yml /config.yml
 COPY --from=build --chown=qingyugist:qingyugist /qingyugist/qingyugist .
 COPY --from=build --chown=qingyugist:qingyugist /qingyugist/docker ./docker
 

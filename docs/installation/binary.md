@@ -9,6 +9,6 @@ wget https://github.com/LiuShen-Fork/QingyuGist/releases/download/v1.15.3/qingyu
 tar xzvf qingyugist1.15.3-linux-amd64.tar.gz
 cd qingyugist
 chmod +x qingyugist
-./qingyugist # with or without `--config config.yml`
+./qingyugist
 ```
 

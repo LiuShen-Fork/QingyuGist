@@ -17,12 +17,16 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"gopkg.in/yaml.v3"
 )
 
 var QingyuGistVersion = ""
 
 var C *config
+
+// Config is the runtime configuration snapshot. C always points at the current
+// one; the type is aliased so other packages can hold or copy it (the settings
+// package overlays stored values onto a copy before publishing it).
+type Config = config
 
 var SecretKey []byte
 
@@ -34,90 +38,115 @@ const (
 	SshServerDisabled = "disabled" // no SSH git access
 )
 
-// Not using nested structs because the library
-// doesn't support dot notation in this case sadly
+// The struct stays flat: every option is read from a single flat QYG_* variable.
 type config struct {
-	SecretKey string `yaml:"secret-key" env:"QYG_SECRET_KEY"`
+	SecretKey string `env:"QYG_SECRET_KEY"`
 
-	LogLevel       string `yaml:"log-level" env:"QYG_LOG_LEVEL"`
-	LogOutput      string `yaml:"log-output" env:"QYG_LOG_OUTPUT"`
-	LogPath        string `yaml:"log-path" env:"QYG_LOG_PATH"`
-	ExternalUrl    string `yaml:"external-url" env:"QYG_EXTERNAL_URL"`
-	QingyuGistHome string `yaml:"qingyugist-home" env:"QYG_HOME"`
-	// LegacyHome accepts the pre-fork YAML key so an existing config.yml keeps
-	// pointing at the original data directory during upgrades.
-	LegacyHome string `yaml:"opengist-home"`
+	LogLevel       string `env:"QYG_LOG_LEVEL"`
+	LogOutput      string `env:"QYG_LOG_OUTPUT"`
+	LogPath        string `env:"QYG_LOG_PATH"`
+	ExternalUrl    string `env:"QYG_EXTERNAL_URL"`
+	QingyuGistHome string `env:"QYG_HOME"`
 
-	DBUri      string `yaml:"db-uri" env:"QYG_DB_URI"`
-	DBFilename string `yaml:"db-filename" env:"QYG_DB_FILENAME"` // deprecated
+	DBUri      string `env:"QYG_DB_URI"`
+	DBFilename string `env:"QYG_DB_FILENAME"` // deprecated
 
-	IndexEnabled  bool   `yaml:"index.enabled" env:"QYG_INDEX_ENABLED"` // deprecated
-	Index         string `yaml:"index" env:"QYG_INDEX"`
-	BleveDirname  string `yaml:"index.dirname" env:"QYG_INDEX_DIRNAME"` // deprecated
-	MeiliHost     string `yaml:"index.meili.host" env:"QYG_MEILI_HOST"`
-	MeiliAPIKey   string `yaml:"index.meili.api-key" env:"QYG_MEILI_API_KEY"`
-	SearchDefault string `yaml:"search.default" env:"QYG_SEARCH_DEFAULT"`
+	IndexEnabled  bool   `env:"QYG_INDEX_ENABLED"` // deprecated
+	Index         string `env:"QYG_INDEX"`
+	BleveDirname  string `env:"QYG_INDEX_DIRNAME"` // deprecated
+	MeiliHost     string `env:"QYG_MEILI_HOST"`
+	MeiliAPIKey   string `env:"QYG_MEILI_API_KEY"`
+	SearchDefault string `env:"QYG_SEARCH_DEFAULT"`
 
-	GitDefaultBranch string `yaml:"git.default-branch" env:"QYG_GIT_DEFAULT_BRANCH"`
+	GitDefaultBranch string `env:"QYG_GIT_DEFAULT_BRANCH"`
 
-	SqliteJournalMode string `yaml:"sqlite.journal-mode" env:"QYG_SQLITE_JOURNAL_MODE"`
+	SqliteJournalMode string `env:"QYG_SQLITE_JOURNAL_MODE"`
 
-	HttpHost string `yaml:"http.host" env:"QYG_HTTP_HOST"`
-	HttpPort string `yaml:"http.port" env:"QYG_HTTP_PORT"`
-	HttpGit  bool   `yaml:"http.git-enabled" env:"QYG_HTTP_GIT_ENABLED"`
+	HttpHost string `env:"QYG_HTTP_HOST"`
+	HttpPort string `env:"QYG_HTTP_PORT"`
+	HttpGit  bool   `env:"QYG_HTTP_GIT_ENABLED"`
 
-	ApiEnabled bool `yaml:"api.enabled" env:"QYG_API_ENABLED"`
+	ApiEnabled bool `env:"QYG_API_ENABLED"`
 
-	DisableFileUpload bool `yaml:"disable-file-upload" env:"QYG_DISABLE_FILE_UPLOAD"`
+	DisableFileUpload bool `env:"QYG_DISABLE_FILE_UPLOAD"`
 
-	UnixSocketPermissions string `yaml:"unix-socket-permissions" env:"QYG_UNIX_SOCKET_PERMISSIONS"`
+	UnixSocketPermissions string `env:"QYG_UNIX_SOCKET_PERMISSIONS"`
 
-	SshGit                string `yaml:"ssh.git-enabled" env:"QYG_SSH_GIT_ENABLED"` // builtin | host | disabled (true → builtin, false → disabled)
-	SshAuthorizedKeysFile string `yaml:"ssh.authorized-keys-file" env:"QYG_SSH_AUTHORIZED_KEYS_FILE"`
-	SshHost               string `yaml:"ssh.host" env:"QYG_SSH_HOST"`
-	SshPort               string `yaml:"ssh.port" env:"QYG_SSH_PORT"`
-	SshExternalDomain     string `yaml:"ssh.external-domain" env:"QYG_SSH_EXTERNAL_DOMAIN"`
-	SshUsername           string `yaml:"ssh.username" env:"QYG_SSH_USERNAME"`
+	SshGit                string `env:"QYG_SSH_GIT_ENABLED"` // builtin | host | disabled (true → builtin, false → disabled)
+	SshAuthorizedKeysFile string `env:"QYG_SSH_AUTHORIZED_KEYS_FILE"`
+	SshHost               string `env:"QYG_SSH_HOST"`
+	SshPort               string `env:"QYG_SSH_PORT"`
+	SshExternalDomain     string `env:"QYG_SSH_EXTERNAL_DOMAIN"`
+	SshUsername           string `env:"QYG_SSH_USERNAME"`
 
-	GithubClientKey string `yaml:"github.client-key" env:"QYG_GITHUB_CLIENT_KEY"`
-	GithubSecret    string `yaml:"github.secret" env:"QYG_GITHUB_SECRET"`
+	GithubClientKey string `env:"QYG_GITHUB_CLIENT_KEY"`
+	GithubSecret    string `env:"QYG_GITHUB_SECRET"`
+	GithubName      string `env:"QYG_GITHUB_NAME"`
 
-	GitlabClientKey string `yaml:"gitlab.client-key" env:"QYG_GITLAB_CLIENT_KEY"`
-	GitlabSecret    string `yaml:"gitlab.secret" env:"QYG_GITLAB_SECRET"`
-	GitlabUrl       string `yaml:"gitlab.url" env:"QYG_GITLAB_URL"`
-	GitlabName      string `yaml:"gitlab.name" env:"QYG_GITLAB_NAME"`
+	GitlabClientKey string `env:"QYG_GITLAB_CLIENT_KEY"`
+	GitlabSecret    string `env:"QYG_GITLAB_SECRET"`
+	GitlabUrl       string `env:"QYG_GITLAB_URL"`
+	GitlabName      string `env:"QYG_GITLAB_NAME"`
 
-	GiteaClientKey string `yaml:"gitea.client-key" env:"QYG_GITEA_CLIENT_KEY"`
-	GiteaSecret    string `yaml:"gitea.secret" env:"QYG_GITEA_SECRET"`
-	GiteaUrl       string `yaml:"gitea.url" env:"QYG_GITEA_URL"`
-	GiteaName      string `yaml:"gitea.name" env:"QYG_GITEA_NAME"`
+	GiteaClientKey string `env:"QYG_GITEA_CLIENT_KEY"`
+	GiteaSecret    string `env:"QYG_GITEA_SECRET"`
+	GiteaUrl       string `env:"QYG_GITEA_URL"`
+	GiteaName      string `env:"QYG_GITEA_NAME"`
 
-	OIDCProviderName   string `yaml:"oidc.provider-name" env:"QYG_OIDC_PROVIDER_NAME"`
-	OIDCClientKey      string `yaml:"oidc.client-key" env:"QYG_OIDC_CLIENT_KEY"`
-	OIDCSecret         string `yaml:"oidc.secret" env:"QYG_OIDC_SECRET"`
-	OIDCDiscoveryUrl   string `yaml:"oidc.discovery-url" env:"QYG_OIDC_DISCOVERY_URL"`
-	OIDCGroupClaimName string `yaml:"oidc.group-claim-name" env:"QYG_OIDC_GROUP_CLAIM_NAME"`
-	OIDCAdminGroup     string `yaml:"oidc.admin-group" env:"QYG_OIDC_ADMIN_GROUP"`
+	OIDCProviderName   string `env:"QYG_OIDC_PROVIDER_NAME"`
+	OIDCClientKey      string `env:"QYG_OIDC_CLIENT_KEY"`
+	OIDCSecret         string `env:"QYG_OIDC_SECRET"`
+	OIDCDiscoveryUrl   string `env:"QYG_OIDC_DISCOVERY_URL"`
+	OIDCGroupClaimName string `env:"QYG_OIDC_GROUP_CLAIM_NAME"`
+	OIDCAdminGroup     string `env:"QYG_OIDC_ADMIN_GROUP"`
 
-	MetricsEnabled bool   `yaml:"metrics.enabled" env:"QYG_METRICS_ENABLED"`
-	MetricsHost    string `yaml:"metrics.host" env:"QYG_METRICS_HOST"`
-	MetricsPort    string `yaml:"metrics.port" env:"QYG_METRICS_PORT"`
+	GoogleName      string `env:"QYG_GOOGLE_NAME"`
+	GoogleClientKey string `env:"QYG_GOOGLE_CLIENT_KEY"`
+	GoogleSecret    string `env:"QYG_GOOGLE_SECRET"`
 
-	LDAPUrl             string `yaml:"ldap.url" env:"QYG_LDAP_URL"`
-	LDAPBindDn          string `yaml:"ldap.bind-dn" env:"QYG_LDAP_BIND_DN"`
-	LDAPBindCredentials string `yaml:"ldap.bind-credentials" env:"QYG_LDAP_BIND_CREDENTIALS"`
-	LDAPSearchBase      string `yaml:"ldap.search-base" env:"QYG_LDAP_SEARCH_BASE"`
-	LDAPSearchFilter    string `yaml:"ldap.search-filter" env:"QYG_LDAP_SEARCH_FILTER"`
+	// Generic OAuth 2.0 provider: any authorization server that exposes a
+	// JSON userinfo endpoint.
+	OAuth2Name        string `env:"QYG_OAUTH2_NAME"`
+	OAuth2ClientKey   string `env:"QYG_OAUTH2_CLIENT_KEY"`
+	OAuth2Secret      string `env:"QYG_OAUTH2_SECRET"`
+	OAuth2AuthUrl     string `env:"QYG_OAUTH2_AUTH_URL"`
+	OAuth2TokenUrl    string `env:"QYG_OAUTH2_TOKEN_URL"`
+	OAuth2UserinfoUrl string `env:"QYG_OAUTH2_USERINFO_URL"`
+	OAuth2Scopes      string `env:"QYG_OAUTH2_SCOPES"`
+	OAuth2IdField     string `env:"QYG_OAUTH2_ID_FIELD"`
+	OAuth2NameField   string `env:"QYG_OAUTH2_NAME_FIELD"`
+	OAuth2EmailField  string `env:"QYG_OAUTH2_EMAIL_FIELD"`
+	OAuth2AvatarField string `env:"QYG_OAUTH2_AVATAR_FIELD"`
 
-	CustomName    string       `yaml:"custom.name" env:"QYG_CUSTOM_NAME"`
-	CustomLogo    string       `yaml:"custom.logo" env:"QYG_CUSTOM_LOGO"`
-	CustomFavicon string       `yaml:"custom.favicon" env:"QYG_CUSTOM_FAVICON"`
-	StaticLinks   []StaticLink `yaml:"custom.static-links" env:"QYG_CUSTOM_STATIC_LINK"`
+	// Per-provider switches. They are panel-only (no environment variable):
+	// the admin panel writes them into the database and applies them here.
+	// A provider is offered when its switch is on and its credentials exist.
+	GithubEnabled bool
+	GoogleEnabled bool
+	GitlabEnabled bool
+	GiteaEnabled  bool
+	OIDCEnabled   bool
+	OAuth2Enabled bool
+
+	MetricsEnabled bool   `env:"QYG_METRICS_ENABLED"`
+	MetricsHost    string `env:"QYG_METRICS_HOST"`
+	MetricsPort    string `env:"QYG_METRICS_PORT"`
+
+	LDAPUrl             string `env:"QYG_LDAP_URL"`
+	LDAPBindDn          string `env:"QYG_LDAP_BIND_DN"`
+	LDAPBindCredentials string `env:"QYG_LDAP_BIND_CREDENTIALS"`
+	LDAPSearchBase      string `env:"QYG_LDAP_SEARCH_BASE"`
+	LDAPSearchFilter    string `env:"QYG_LDAP_SEARCH_FILTER"`
+
+	CustomName    string       `env:"QYG_CUSTOM_NAME"`
+	CustomLogo    string       `env:"QYG_CUSTOM_LOGO"`
+	CustomFavicon string       `env:"QYG_CUSTOM_FAVICON"`
+	StaticLinks   []StaticLink `env:"QYG_CUSTOM_STATIC_LINK"`
 }
 
 type StaticLink struct {
-	Name string `yaml:"name" env:"QYG_CUSTOM_STATIC_LINK_#_NAME"`
-	Path string `yaml:"path" env:"QYG_CUSTOM_STATIC_LINK_#_PATH"`
+	Name string `env:"QYG_CUSTOM_STATIC_LINK_#_NAME"`
+	Path string `env:"QYG_CUSTOM_STATIC_LINK_#_PATH"`
 }
 
 // SshEnabled reports whether SSH git access is offered in any form.
@@ -134,6 +163,42 @@ func (c *config) SshBuiltin() bool {
 // file: host mode with a configured file path.
 func (c *config) SshManagesAuthorizedKeys() bool {
 	return c.SshGit == SshServerHost && c.SshAuthorizedKeysFile != ""
+}
+
+// A third-party provider is offered only when the admin switch is on and every
+// credential it needs is present. The helpers keep that rule in one place:
+// handlers, middlewares and templates all ask these instead of poking at the
+// individual fields.
+
+func (c *config) GithubOAuthEnabled() bool {
+	return c.GithubEnabled && c.GithubClientKey != "" && c.GithubSecret != ""
+}
+
+func (c *config) GoogleOAuthEnabled() bool {
+	return c.GoogleEnabled && c.GoogleClientKey != "" && c.GoogleSecret != ""
+}
+
+func (c *config) GitlabOAuthEnabled() bool {
+	return c.GitlabEnabled && c.GitlabClientKey != "" && c.GitlabSecret != ""
+}
+
+func (c *config) GiteaOAuthEnabled() bool {
+	return c.GiteaEnabled && c.GiteaClientKey != "" && c.GiteaSecret != ""
+}
+
+func (c *config) OpenIDConnectEnabled() bool {
+	return c.OIDCEnabled && c.OIDCClientKey != "" && c.OIDCSecret != "" && c.OIDCDiscoveryUrl != ""
+}
+
+func (c *config) OAuth2OAuthEnabled() bool {
+	return c.OAuth2Enabled && c.OAuth2ClientKey != "" && c.OAuth2Secret != "" &&
+		c.OAuth2AuthUrl != "" && c.OAuth2TokenUrl != "" && c.OAuth2UserinfoUrl != ""
+}
+
+// OAuthAnyEnabled reports whether the login page should offer third-party sign-in.
+func (c *config) OAuthAnyEnabled() bool {
+	return c.GithubOAuthEnabled() || c.GoogleOAuthEnabled() || c.GitlabOAuthEnabled() ||
+		c.GiteaOAuthEnabled() || c.OpenIDConnectEnabled() || c.OAuth2OAuthEnabled()
 }
 
 func configWithDefaults() (*config, error) {
@@ -163,9 +228,19 @@ func configWithDefaults() (*config, error) {
 	c.SshPort = "2222"
 
 	c.GitlabName = "GitLab"
+	c.GithubName = "GitHub"
 
 	c.GiteaUrl = "https://gitea.com"
 	c.GiteaName = "Gitea"
+
+	c.GoogleName = "Google"
+
+	c.OAuth2Name = "OAuth 2.0"
+	c.OAuth2Scopes = "openid profile email"
+	c.OAuth2IdField = "id"
+	c.OAuth2NameField = "username"
+	c.OAuth2EmailField = "email"
+	c.OAuth2AvatarField = "avatar_url"
 
 	c.MetricsEnabled = false
 	c.MetricsHost = "0.0.0.0"
@@ -174,14 +249,13 @@ func configWithDefaults() (*config, error) {
 	return c, nil
 }
 
-func InitConfig(configPath string, out io.Writer) error {
+// InitConfig resolves the runtime configuration from the compiled-in defaults
+// and the QYG_* environment variables. There is no configuration file: every
+// option either has a default or is set through the environment.
+func InitConfig(out io.Writer) error {
 	// Default values
 	c, err := configWithDefaults()
 	if err != nil {
-		return err
-	}
-
-	if err = loadConfigFromYaml(c, configPath, out); err != nil {
 		return err
 	}
 
@@ -194,14 +268,18 @@ func InitConfig(configPath string, out io.Writer) error {
 	// was provided into a canonical mode.
 	c.SshGit = normalizeSshGitMode(c.SshGit)
 
-	if c.QingyuGistHome == "" && c.LegacyHome != "" {
-		c.QingyuGistHome = c.LegacyHome
+	// Git hooks run as a child of the server, which exports QYG_HOME_INTERNAL
+	// for exactly this purpose, so honour it when QYG_HOME is absent.
+	if c.QingyuGistHome == "" {
+		if internalHome, ok := envLookup("QYG_HOME_INTERNAL"); ok && internalHome != "" {
+			c.QingyuGistHome = internalHome
+		}
 	}
 
 	if c.QingyuGistHome == "" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			return fmt.Errorf("qingyugist home directory is not set and current user home directory could not be determined; please specify the qingyugist home directory manually via the configuration")
+			return fmt.Errorf("qingyugist home directory is not set and current user home directory could not be determined; please set the QYG_HOME environment variable")
 		}
 
 		c.QingyuGistHome = filepath.Join(homeDir, ".qingyugist")
@@ -217,6 +295,17 @@ func InitConfig(configPath string, out io.Writer) error {
 	if err = checks(c); err != nil {
 		return err
 	}
+
+	// A provider whose credentials came from the environment starts enabled, so
+	// upgrades keep every existing sign-in button. The admin panel can switch it
+	// off afterwards; its choice lands in the database and wins over this default.
+	c.GithubEnabled = c.GithubClientKey != "" && c.GithubSecret != ""
+	c.GoogleEnabled = c.GoogleClientKey != "" && c.GoogleSecret != ""
+	c.GitlabEnabled = c.GitlabClientKey != "" && c.GitlabSecret != ""
+	c.GiteaEnabled = c.GiteaClientKey != "" && c.GiteaSecret != ""
+	c.OIDCEnabled = c.OIDCClientKey != "" && c.OIDCSecret != "" && c.OIDCDiscoveryUrl != ""
+	c.OAuth2Enabled = c.OAuth2ClientKey != "" && c.OAuth2Secret != "" &&
+		c.OAuth2AuthUrl != "" && c.OAuth2TokenUrl != "" && c.OAuth2UserinfoUrl != ""
 
 	C = c
 
@@ -339,33 +428,6 @@ func SetupSecretKey() {
 	} else {
 		SecretKey = []byte(C.SecretKey)
 	}
-}
-
-func loadConfigFromYaml(c *config, configPath string, out io.Writer) error {
-	if configPath != "" {
-		absolutePath, _ := filepath.Abs(configPath)
-		absolutePath = filepath.Clean(absolutePath)
-		file, err := os.Open(absolutePath)
-		if err != nil {
-			if !os.IsNotExist(err) {
-				return err
-			}
-			_, _ = fmt.Fprintln(out, "No YAML config file found at "+absolutePath)
-		} else {
-			_, _ = fmt.Fprintln(out, "Using YAML config file: "+absolutePath)
-
-			// Override default values with values from config.yml
-			d := yaml.NewDecoder(file)
-			if err = d.Decode(&c); err != nil {
-				return err
-			}
-			defer file.Close()
-		}
-	} else {
-		_, _ = fmt.Fprintln(out, "No YAML config file specified.")
-	}
-
-	return nil
 }
 
 func loadConfigFromEnv(c *config, out io.Writer) error {

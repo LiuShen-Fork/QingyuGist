@@ -748,5 +748,5 @@ func convertURLToOctal(name string) string {
 }
 
 const hookTemplate = `#!/bin/sh
-"$QYG_HOME_INTERNAL/symlinks/qingyugist" --config=$QYG_HOME_INTERNAL/symlinks/config.yml hook %s
+"$QYG_HOME_INTERNAL/symlinks/qingyugist" hook %s
 `

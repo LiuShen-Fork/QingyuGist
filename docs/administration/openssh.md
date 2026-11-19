@@ -24,10 +24,11 @@ true:
   and git runs directly against the repositories on disk. A split setup -
   host `sshd` in front of a containerized QingyuGist - is **not** supported, because
   the git data must be on the same filesystem.
-- **QingyuGist is started with a config file via `--config`** (for example
-  `qingyugist --config /etc/qingyugist/config.yml`). Host mode resolves the daemon's
-  settings through that file when `sshd` invokes QingyuGist; a pure environment-only
-  configuration is not supported in this mode.
+- **The same environment reaches `sshd`'s child process.** Host mode reads the
+  same `QYG_*` environment variables as the daemon (`QYG_HOME`, `QYG_SSH_*`), so
+  the `qingyugist` subcommand that `sshd` runs must see them too - set them in
+  `sshd`'s own environment (e.g. `Environment=` in the systemd unit, or
+  `/etc/environment`).
 - A **dedicated OS user** for QingyuGist is strongly recommended.
 - Users have added their SSH keys in QingyuGist as usual (**Settings → SSH keys**);
   the keys come from QingyuGist's database.
@@ -51,26 +52,29 @@ There are two ways to wire this up. Pick **one**.
 `sshd` calls QingyuGist on each connection to resolve the offered key. Nothing is
 written to disk, and keys added or removed in the web UI take effect immediately.
 
-1. Configure QingyuGist (`/etc/qingyugist/config.yml`):
+1. Configure QingyuGist with environment variables (see
+   [Configuration](/configuration/configure)):
 
-   ```yaml
-   ssh.git-enabled: host
-   ssh.external-domain: gist.example.com   # host clients will SSH to
-   ssh.port: "22"
-   ssh.username: gist                      # the OS account clients log in as
+   ```shell
+   QYG_SSH_GIT_ENABLED=host
+   QYG_SSH_EXTERNAL_DOMAIN=gist.example.com # host clients will SSH to
+   QYG_SSH_PORT=22
+   QYG_SSH_USERNAME=gist                   # the OS account clients log in as
    ```
+
+   These same variables must be visible to the process `sshd` starts, not only to
+   the daemon.
 
 2. Configure `sshd` (`/etc/ssh/sshd_config`). Use a `Match` block so only the
    QingyuGist account is affected:
 
    ```
    Match User gist
-       AuthorizedKeysCommand /usr/local/bin/qingyugist --config /path/to/config.yml keys -t %t -k %k
+       AuthorizedKeysCommand /usr/local/bin/qingyugist keys -t %t -k %k
        AuthorizedKeysCommandUser gist
    ```
 
-   > `--config` is a global flag, so it must come **before** the `keys`
-   > subcommand. `%t` and `%k` are the key type and content `sshd` passes in.
+   > `%t` and `%k` are the key type and content `sshd` passes in.
 
 3. Reload `sshd`:
 
@@ -94,12 +98,12 @@ prefer a static file.
 
 1. Configure QingyuGist:
 
-   ```yaml
-   ssh.git-enabled: host
-   ssh.authorized-keys-file: /home/gist/.ssh/authorized_keys
-   ssh.external-domain: gist.example.com
-   ssh.port: "22"
-   ssh.username: gist                  # the OS account clients log in as
+   ```shell
+   QYG_SSH_GIT_ENABLED=host
+   QYG_SSH_AUTHORIZED_KEYS_FILE=/home/gist/.ssh/authorized_keys
+   QYG_SSH_EXTERNAL_DOMAIN=gist.example.com
+   QYG_SSH_PORT=22
+   QYG_SSH_USERNAME=gist              # the OS account clients log in as
    ```
 
 2. Restart QingyuGist. It (re)generates the managed block:
@@ -112,7 +116,7 @@ the markers is managed - any keys you add outside it are preserved:
 
 ```
 # --- qingyugist managed keys start (do not edit) ---
-command="/home/gist/.qingyugist/symlinks/qingyugist --config /home/gist/.qingyugist/symlinks/config.yml shell 1",no-port-forwarding,no-x11-forwarding,no-agent-forwarding,no-pty ssh-ed25519 AAAA... thomas@laptop
+command="/home/gist/.qingyugist/symlinks/qingyugist shell 1",no-port-forwarding,no-x11-forwarding,no-agent-forwarding,no-pty ssh-ed25519 AAAA... thomas@laptop
 # --- qingyugist managed keys end ---
 ```
 

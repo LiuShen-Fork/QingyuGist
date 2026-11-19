@@ -26,7 +26,7 @@ func cliError(format string, a ...any) error {
 }
 
 func initialize(ctx *cli.Context) {
-	if err := config.InitConfig(ctx.String("config"), io.Discard); err != nil {
+	if err := config.InitConfig(io.Discard); err != nil {
 		panic(err)
 	}
 	config.InitLog()

@@ -21,7 +21,7 @@ export QYG_HOME=$QYG_DATA_HOME
 
 if [ "$(id -u)" -ne 0 ]; then
     load_secrets
-    exec env HOME="$QYG_DATA_HOME" QYG_HOME="$QYG_DATA_HOME" /app/qingyugist/qingyugist --config /config.yml
+    exec env HOME="$QYG_DATA_HOME" QYG_HOME="$QYG_DATA_HOME" /app/qingyugist/qingyugist
 fi
 
 export USER=qingyugist
@@ -31,8 +31,7 @@ groupmod -o -g "$GID" $USER
 usermod -o -u "$UID" $USER
 
 chown -R "$USER:$USER" "$QYG_DATA_HOME"
-chown -R "$USER:$USER" /config.yml
 
 load_secrets
 
-exec su $USER -c "QYG_HOME=$QYG_DATA_HOME /app/qingyugist/qingyugist --config /config.yml"
+exec su $USER -c "QYG_HOME=$QYG_DATA_HOME /app/qingyugist/qingyugist"

@@ -6,8 +6,7 @@ QingyuGist is a hard fork, but it reads the existing data format. On the first
 start, the binary detects the old home directory and automatically moves the
 database, session key and search index to their QingyuGist names. The old secret
 and SSH host key are copied rather than deleted, so rolling back remains safe.
-The pre-fork `OG_*` environment variables and the old `opengist-home` YAML key
-are still accepted.
+The pre-fork `OG_*` environment variables are still accepted.
 
 Docker users can keep the existing volume mount: the entrypoint uses the old
 `/opengist` volume while the new `/qingyugist` volume is empty. Move the data to
@@ -45,7 +44,7 @@ wget https://github.com/LiuShen-Fork/QingyuGist/releases/download/v1.15.3/qingyu
 tar xzvf qingyugist1.15.3-linux-amd64.tar.gz
 cd qingyugist
 chmod +x qingyugist
-./qingyugist # with or without `--config config.yml`
+./qingyugist
 ```
 
 ### From source

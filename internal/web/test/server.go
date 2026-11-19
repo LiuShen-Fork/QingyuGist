@@ -231,7 +231,7 @@ func Setup(t *testing.T) *Server {
 	// expects an anonymous clone to be rejected.
 	t.Setenv("GIT_TERMINAL_PROMPT", "0")
 
-	err := config.InitConfig("", io.Discard)
+	err := config.InitConfig(io.Discard)
 	require.NoError(t, err, "Could not init config")
 
 	config.C.LogLevel = "warn"
