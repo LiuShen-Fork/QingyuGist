@@ -27,8 +27,12 @@ func NewValidator() *QingyuGistValidator {
 	return &QingyuGistValidator{v}
 }
 
+// DefaultThemeColor is the accent used when the account has not picked one.
+// It must match the --theme-color fallback in public/css/globals.css.
+const DefaultThemeColor = "teal"
+
 var ThemeColors = []string{
-	"red", "amber", "emerald", "sky", "indigo", "purple", "neutral",
+	"red", "amber", "emerald", "teal", "sky", "indigo", "purple", "neutral",
 }
 
 func (cv *QingyuGistValidator) Validate(i interface{}) error {

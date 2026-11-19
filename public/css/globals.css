@@ -11,7 +11,7 @@
     --card-foreground: oklch(0.141 0.005 285.823);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.141 0.005 285.823);
-    --theme-color: var(--color-indigo-500);
+    --theme-color: var(--color-teal-500);
     /* Primary is a tuned derivation of the accent (darker + less saturated than
        the raw Tailwind -500). The factors are variables so the theme-picker
        swatches can preview the exact button color with the same formula and
@@ -19,7 +19,7 @@
     --primary-l: 0.82;
     --primary-c: 0.5;
     --primary: oklch(from var(--theme-color) calc(l * var(--primary-l)) calc(c * var(--primary-c)) h);
-    --primary-foreground: oklch(0.969 0.016 293.756);
+    --primary-foreground: oklch(0.985 0.005 180);
     --secondary: oklch(0.967 0.001 286.375);
     --secondary-foreground: oklch(0.21 0.006 285.885);
     --muted: oklch(0.967 0.001 286.375);
@@ -41,7 +41,7 @@
     --content: oklch(from var(--theme-color) 0.985 calc(c * 0.04) h);
     --sidebar: oklch(from var(--theme-color) 0.97 calc(c * 0.10) h);
     --sidebar-foreground: oklch(0.141 0.005 285.823);
-    --sidebar-primary-foreground: oklch(0.969 0.016 293.756);
+    --sidebar-primary-foreground: oklch(0.985 0.005 180);
     /* Active/current item: same hue/chroma as the sidebar, a touch darker. */
     --sidebar-accent: oklch(from var(--theme-color) 0.93 calc(c * 0.18) h);
     /* Hover: same hue but mostly desaturated (grayer). */
@@ -58,11 +58,11 @@
     --card-foreground: oklch(0.985 0 0);
     --popover: oklch(0.21 0.006 285.885);
     --popover-foreground: oklch(0.985 0 0);
-    --theme-color: var(--color-indigo-500);
+    --theme-color: var(--color-teal-500);
     --primary-l: 0.62;
     --primary-c: 0.5;
     --primary: oklch(from var(--theme-color) calc(l * var(--primary-l)) calc(c * var(--primary-c)) h);
-    --primary-foreground: oklch(0.969 0.016 293.756);
+    --primary-foreground: oklch(0.985 0.005 180);
     --secondary: oklch(0.274 0.006 286.033);
     --secondary-foreground: oklch(0.985 0 0);
     --muted: oklch(0.274 0.006 286.033);
@@ -81,7 +81,7 @@
     --content: oklch(from var(--theme-color) 0.17 calc(c * 0.04) h);
     --sidebar: oklch(from var(--theme-color) 0.23 calc(c * 0.10) h);
     --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary-foreground: oklch(0.969 0.016 293.756);
+    --sidebar-primary-foreground: oklch(0.985 0.005 180);
     --sidebar-accent: oklch(from var(--theme-color) 0.30 calc(c * 0.18) h);
     --sidebar-hover: oklch(from var(--theme-color) 0.30 calc(c * 0.04) h);
     --sidebar-accent-foreground: oklch(0.985 0 0);

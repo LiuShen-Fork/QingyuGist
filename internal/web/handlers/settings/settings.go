@@ -59,6 +59,7 @@ func UserSSHKeys(ctx *context.Context) error {
 func UserStyle(ctx *context.Context) error {
 	ctx.SetData("settingsHeaderPage", "style")
 	ctx.SetData("themeColors", validator.ThemeColors)
+	ctx.SetData("defaultThemeColor", validator.DefaultThemeColor)
 	ctx.SetData("htmlTitle", ctx.TrH("settings"))
 	return ctx.Html("settings_style.html")
 }
