@@ -351,6 +351,41 @@ admin.users: Users
 admin.gists: Gists
 admin.configuration: Configuration
 admin.invitations: Invitations
+admin.moderation: Moderation
+admin.moderation.title: Moderation
+admin.moderation.subtitle: Every review the provider handled, with its verdict, reason and latency.
+admin.moderation.history: Review log
+admin.moderation.attempted_at: Time
+admin.moderation.result: Result
+admin.moderation.gist: Gist
+admin.moderation.reason: Reason
+admin.moderation.model: Model
+admin.moderation.result.approved: Approved
+admin.moderation.result.rejected: Rejected
+admin.moderation.result.error: Error
+admin.moderation.result.deferred: Deferred
+admin.moderation.stat.approved: Approved - 7 days
+admin.moderation.stat.rejected: Rejected - 7 days
+admin.moderation.stat.error: Errors - 7 days
+admin.moderation.stat.deferred: Deferred - 7 days
+admin.moderation.waiting: "%d gist(s) are waiting for a review."
+admin.moderation.retry: Review now
+admin.moderation.empty: No review has run yet.
+admin.notifications: Notifications
+admin.notifications.title: Notifications
+admin.notifications.subtitle: A notice reaches every account, including accounts created later.
+admin.notifications.create: New notice
+admin.notifications.help: Markdown is supported. The notice appears in the bell menu of every signed-in user.
+admin.notifications.field.title: Title
+admin.notifications.field.title_placeholder: Scheduled maintenance tonight
+admin.notifications.field.body: Message
+admin.notifications.field.body_placeholder: Write the notice in Markdown...
+admin.notifications.field.link: Link (optional)
+admin.notifications.markdown: Markdown supported
+admin.notifications.publish: Publish
+admin.notifications.sent: Published notices
+admin.notifications.empty: Nothing has been published yet.
+admin.notifications.delete_confirm: Delete this notice for every user?
 admin.invitations.create: Create invitation
 admin.versions: Versions
 admin.ssh_keys: SSH keys
@@ -409,6 +444,13 @@ flash.admin.user-deleted: User has been deleted
 flash.admin.gist-deleted: Gist has been deleted
 flash.admin.invitation-created: Invitation has been created
 flash.admin.invitation-deleted: Invitation has been deleted
+flash.notifications.all-read: All notifications marked as read
+flash.admin.moderation-requeued: "%d gist(s) queued for review"
+flash.admin.notification-created: Notice published
+flash.admin.notification-deleted: Notice deleted
+flash.admin.notification-empty: A title and a message are required
+flash.admin.notification-too-long: The title or the message is too long
+flash.admin.notification-bad-link: The link must start with /, http:// or https://
 
 flash.auth.username-exists: Username already exists
 flash.auth.invalid-credentials: Invalid credentials
@@ -502,6 +544,9 @@ settings.category.api: API
 settings.unit.mb: MB
 settings.unit.days: days
 settings.unit.seconds: seconds
+settings.unit.tokens: tokens
+settings.unit.kb: KB
+settings.unit.per_day: / day
 settings.site.name: Site name
 settings.site.name_help: Shown in the sidebar, page titles and emails.
 settings.site.description: Site description
@@ -524,6 +569,8 @@ settings.site.icp: ICP filing number
 settings.site.icp_help: Shown in the site footer, linked to the MIIT filing site.
 settings.site.police_record: Public security filing
 settings.site.police_record_help: Shown in the site footer beside the ICP filing.
+settings.site.announcement: Announcement
+settings.site.announcement_help: Markdown banner shown on every page. Leave empty to hide it.
 settings.auth.registration_mode: Registration
 settings.auth.registration_mode_help: Controls who can create an account.
 settings.auth.registration_open: Open registration
@@ -558,7 +605,7 @@ settings.security.cors_credentials_help: Send cookies on cross-origin requests. 
 settings.moderation.enabled: AI moderation
 settings.moderation.enabled_help: Review gists submitted as public before they become visible.
 settings.moderation.endpoint: API endpoint
-settings.moderation.endpoint_help: OpenAI-compatible chat completions endpoint.
+settings.moderation.endpoint_help: Full OpenAI-compatible Responses endpoint, e.g. https://api.openai.com/v1/responses.
 settings.moderation.api_key: API key
 settings.moderation.api_key_help: Leave unchanged to keep the stored key.
 settings.moderation.model: Model
@@ -568,7 +615,19 @@ settings.moderation.timeout_help: How long to wait for the moderation provider.
 settings.moderation.fail_closed: Keep private on failure
 settings.moderation.fail_closed_help: When the check fails, keep the gist private instead of publishing it.
 settings.moderation.prompt: Review prompt
-settings.moderation.prompt_help: System prompt sent to the model. It must return JSON with allowed and reason.
+settings.moderation.prompt_help: System prompt sent to the model. The answer shape is enforced by the request, so describe the policy here.
+settings.moderation.reasoning: Reasoning effort
+settings.moderation.reasoning_help: How much the model may think before answering. Pick none for models without reasoning support.
+settings.moderation.reasoning_default: None
+settings.moderation.reasoning_low: Low
+settings.moderation.reasoning_medium: Medium
+settings.moderation.reasoning_high: High
+settings.moderation.max_output: Max output
+settings.moderation.max_output_help: Upper bound for the verdict, in tokens, so a runaway answer cannot exhaust the context window.
+settings.moderation.max_input: Max gist size
+settings.moderation.max_input_help: Longer documents are truncated before they are sent.
+settings.moderation.daily_limit: Daily review limit
+settings.moderation.daily_limit_help: Gists that arrive after the limit stay pending and are retried later. 0 removes the limit.
 settings.git.default_branch: Default branch
 settings.git.default_branch_help: Branch created for new repositories.
 settings.api.enabled: Enable API
@@ -705,3 +764,15 @@ settings.style.theme-color: Accent color
 
 settings.style.mode: Appearance mode
 settings.style.wrap: Line wrapping
+
+# Notifications
+notifications.title: Notifications
+notifications.subtitle: Moderation results and announcements from the administrators.
+notifications.all: Inbox
+notifications.unread: "%d unread"
+notifications.mark-all-read: Mark all as read
+notifications.mark-read: Mark as read
+notifications.open: Open
+notifications.empty: Nothing here yet.
+notification.moderation.rejected.title: A gist was not published
+notification.moderation.rejected.body: '"%s" stays private: %s'

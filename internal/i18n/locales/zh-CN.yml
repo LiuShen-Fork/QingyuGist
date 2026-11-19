@@ -242,6 +242,41 @@ error.cannot-bind-data: '无法绑定数据'
 error.invalid-number: '数字格式不正确'
 error.invalid-character-unescaped: '包含未转义的无效字符'
 admin.invitations: '邀请'
+admin.moderation: 审核
+admin.moderation.title: 审核
+admin.moderation.subtitle: 记录每一次送审的结果、原因与耗时。
+admin.moderation.history: 审核记录
+admin.moderation.attempted_at: 时间
+admin.moderation.result: 结果
+admin.moderation.gist: 项目
+admin.moderation.reason: 原因
+admin.moderation.model: 模型
+admin.moderation.result.approved: 通过
+admin.moderation.result.rejected: 拒绝
+admin.moderation.result.error: 出错
+admin.moderation.result.deferred: 延后
+admin.moderation.stat.approved: 通过 - 7 天
+admin.moderation.stat.rejected: 拒绝 - 7 天
+admin.moderation.stat.error: 出错 - 7 天
+admin.moderation.stat.deferred: 延后 - 7 天
+admin.moderation.waiting: 有 %d 个 gist 正在等待审核。
+admin.moderation.retry: 立即审核
+admin.moderation.empty: 还没有审核记录。
+admin.notifications: 通知
+admin.notifications.title: 公告通知
+admin.notifications.subtitle: 一条通知会送达所有账号，包括之后注册的账号。
+admin.notifications.create: 发布通知
+admin.notifications.help: 支持 Markdown，通知会出现在每个登录用户的铃铛菜单里。
+admin.notifications.field.title: 标题
+admin.notifications.field.title_placeholder: 今晚进行维护
+admin.notifications.field.body: 内容
+admin.notifications.field.body_placeholder: 用 Markdown 写通知内容……
+admin.notifications.field.link: 链接（可选）
+admin.notifications.markdown: 支持 Markdown
+admin.notifications.publish: 发布
+admin.notifications.sent: 已发布的通知
+admin.notifications.empty: 还没有发布过通知。
+admin.notifications.delete_confirm: 确定对所有用户删除这条通知？
 admin.invitations.create: '创建邀请'
 admin.actions.sync-previews: '同步所有 Gist 预览'
 admin.actions.reset-hooks: '重置所有存储库的 Git 服务 hooks'
@@ -257,6 +292,13 @@ flash.admin.user-deleted: '用户已被删除'
 flash.admin.gist-deleted: 'Gist 已被删除'
 flash.admin.invitation-created: '邀请已被创建'
 flash.admin.invitation-deleted: '邀请已被删除'
+flash.notifications.all-read: 已全部标为已读
+flash.admin.moderation-requeued: 已将 %d 个 gist 加入审核队列
+flash.admin.notification-created: 通知已发布
+flash.admin.notification-deleted: 通知已删除
+flash.admin.notification-empty: 标题和内容都不能为空
+flash.admin.notification-too-long: 标题或内容超出长度限制
+flash.admin.notification-bad-link: 链接必须以 /、http:// 或 https:// 开头
 flash.auth.username-exists: '用户名已存在'
 flash.auth.invalid-credentials: '无效的凭证'
 flash.auth.account-linked-oauth: '帐户已关联到 %s'
@@ -380,6 +422,9 @@ settings.category.api: API
 settings.unit.mb: MB
 settings.unit.days: 天
 settings.unit.seconds: 秒
+settings.unit.tokens: token
+settings.unit.kb: KB
+settings.unit.per_day: 次/天
 settings.site.name: 站点名称
 settings.site.name_help: 显示在侧边栏、页面标题和邮件中。
 settings.site.description: 站点描述
@@ -402,6 +447,8 @@ settings.site.icp: ICP 备案号
 settings.site.icp_help: 显示在页脚，链接至工信部备案查询。
 settings.site.police_record: 公网安备
 settings.site.police_record_help: 显示在页脚，与 ICP 备案并列。
+settings.site.announcement: 全站公告
+settings.site.announcement_help: 显示在每一页顶部的 Markdown 公告，留空则不显示。
 settings.auth.registration_mode: 注册方式
 settings.auth.registration_mode_help: 控制谁可以创建账户。
 settings.auth.registration_open: 开放注册
@@ -436,7 +483,7 @@ settings.security.cors_credentials_help: 跨域请求携带 Cookie，需明确�
 settings.moderation.enabled: AI 内容审核
 settings.moderation.enabled_help: 公开 Gist 发布前自动审核。
 settings.moderation.endpoint: 接口地址
-settings.moderation.endpoint_help: 兼容 OpenAI 的对话补全接口。
+settings.moderation.endpoint_help: 完整的 Responses 接口地址，例如 https://api.openai.com/v1/responses。
 settings.moderation.api_key: API 密钥
 settings.moderation.api_key_help: 留空或保持原值不会修改已保存的密钥。
 settings.moderation.model: 模型
@@ -446,7 +493,19 @@ settings.moderation.timeout_help: 等待审核服务返回的最长等待时间�
 settings.moderation.fail_closed: 失败时保持私有
 settings.moderation.fail_closed_help: 审核失败时将 Gist 保持私有，而不是直接公开。
 settings.moderation.prompt: 审核提示词
-settings.moderation.prompt_help: 发送给模型的系统提示词，必须返回包含 allowed 与 reason 的 JSON。
+settings.moderation.prompt_help: 发送给模型的系统提示词。回答格式由接口强制为 JSON，这里只需说明审核标准。
+settings.moderation.reasoning: 思考强度
+settings.moderation.reasoning_help: 模型回答前的思考量。不支持思考的模型请选「无」。
+settings.moderation.reasoning_default: 无
+settings.moderation.reasoning_low: 低
+settings.moderation.reasoning_medium: 中
+settings.moderation.reasoning_high: 高
+settings.moderation.max_output: 最大输出
+settings.moderation.max_output_help: 单次审核回复的 token 上限，避免异常输出占满上下文。
+settings.moderation.max_input: 最大送审体积
+settings.moderation.max_input_help: 超过这个体积的内容会在送审前截断。
+settings.moderation.daily_limit: 每日审核上限
+settings.moderation.daily_limit_help: 超过上限的 gist 会保持待审状态，之后自动重试。0 表示不限制。
 settings.git.default_branch: 默认分支
 settings.git.default_branch_help: 新仓库使用的分支名称。
 settings.api.enabled: 启用 API
@@ -690,3 +749,15 @@ settings.style.theme-color: 主题色
 
 settings.style.mode: 外观模式
 settings.style.wrap: 换行方式
+
+# Notifications
+notifications.title: 通知
+notifications.subtitle: 审核结果与管理员公告。
+notifications.all: 收件箱
+notifications.unread: '%d 条未读'
+notifications.mark-all-read: 全部标为已读
+notifications.mark-read: 标为已读
+notifications.open: 查看
+notifications.empty: 暂时没有通知。
+notification.moderation.rejected.title: 有 gist 未通过审核
+notification.moderation.rejected.body: 「%s」仍保持私有：%s
