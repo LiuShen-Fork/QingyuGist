@@ -1,6 +1,42 @@
 # Changelog
 
-## [1.16.0](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.16.0) - 2026-11-19
+## [1.0.2](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.0.2) - 2026-11-19
+
+### Added
+- Frontend type checking in CI, so TypeScript errors no longer reach a release
+- A version smoke test in the release workflow, which fails before tagging when
+  a binary reports the wrong version
+
+### Changed
+- Every backend form now shares a single row system: label and description on
+  the left, a fixed control column aligned on the right, and number fields in a
+  narrow box with the unit inside the field. The account, SSH, access token,
+  invitation and gist settings pages were converted to it
+- Access tokens are issued with a `qyg_` prefix; tokens issued before this
+  release keep working
+- Consistent card padding, table density and empty states across the admin and
+  settings pages
+- CI is split into lint, check, frontend, test and build jobs with concurrency
+  control and timeouts. The docs and Helm workflows were removed, as the target
+  repository secrets do not exist in this fork
+
+### Fixed
+- Passkey registration and login now fail closed when the stored challenge
+  cannot be decoded, instead of continuing with an empty one
+- Signing in through an OAuth provider now honours multi-factor
+  authentication, so a linked account is no longer silently downgraded to a
+  single factor
+- Changing a password and disabling TOTP now require the current password, so a
+  borrowed session cannot become a permanent takeover
+- An invitation's expiry date was ignored and always replaced with one week
+- Invitation codes and the invitation table cells came from a time-seeded
+  generator; codes now use a cryptographically secure source. Table cells had
+  also lost their horizontal padding
+- Fork lists no longer stop after the first page
+- The legacy settings endpoint rejects keys outside the registered schema
+- "Bad credentials" was misspelt in the API error responses
+
+## [1.0.1](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.0.1) - 2026-11-19
 
 This is the first QingyuGist release: an independent hard fork focused on a
 calmer interface, live administration and a fully self-contained deployment.
