@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.0.3](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.0.3) - 2026-11-19
 
 ### Added
 - AI moderation now calls the OpenAI Responses API with a strict JSON schema, so
@@ -29,6 +29,13 @@
   matching the behaviour of the web editor
 
 ### Changed
+- The default accent color is now teal instead of the inherited indigo, and the
+  theme picker marks it when an account has not chosen one yet. The accent stays
+  light on surfaces and is derived from a single CSS variable, so a personal
+  choice still overrides it per account
+- A bilingual (English and Simplified Chinese) README, rewritten for people who
+  have never used a Git-backed pastebin, with fresh screenshots of the current
+  interface
 - Substantial documentation for the moderation pipeline, the review log and the
   notification inbox in the admin panel guide
 
