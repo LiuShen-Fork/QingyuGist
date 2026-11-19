@@ -37,6 +37,8 @@ are shown masked; leaving a masked value untouched keeps the stored secret.
 - Source repository URL, shown as a GitHub icon at the bottom of the sidebar.
 - Sidebar links: icon, label and URL for each custom link, plus the source
   repository icon. Existing `custom.static-links` entries keep working.
+- Site announcement: Markdown shown above the content on every page while it is
+  set. Leave it empty to hide the banner.
 
 ### Authentication
 
@@ -67,14 +69,37 @@ are shown masked; leaving a masked value untouched keeps the stored secret.
 
 ### Moderation
 
-When enabled, a newly published public gist is made private and marked
-*pending* while it is reviewed asynchronously by an OpenAI-compatible chat
-completions endpoint. Approved gists become public; rejected gists stay private.
-Private gists are not reviewed.
+When enabled, a public gist submitted from the web editor or pushed over git is
+stored privately and marked *pending* while an asynchronous review asks an
+OpenAI-compatible **Responses** endpoint whether it may be published. The review
+never runs on the request path, so a push or a form post returns immediately.
+Approved gists become public; rejected gists stay private and their author is
+notified with the reason. Private and unlisted gists are not reviewed.
 
-- API endpoint, API key and model.
+Editing or pushing to an already-approved gist starts a new review; the gist
+stays online until a verdict arrives, and only a rejection takes it down.
+
+- API endpoint, API key and model. The endpoint is the full Responses URL, for
+  example `https://api.openai.com/v1/responses`.
+- Reasoning effort, left out of the request when set to *None* for models that
+  do not support it.
+- Maximum output tokens and maximum input size sent per review.
 - Review prompt and request timeout.
+- Daily review quota: calls that would exceed it are skipped and the gist stays
+  pending, then is picked up again every ten minutes. `0` removes the cap.
 - **Fail closed** keeps gists private if the moderation service is unavailable.
+
+Each attempt is recorded on **Admin → Moderation**, together with the verdict,
+the reason, the model and the latency. The page also shows how many gists are
+waiting and offers **Review now** to retry them without waiting for the next
+scheduled attempt.
+
+### Notifications
+
+**Admin → Notifications** publishes a Markdown announcement to every account,
+including accounts created later. Recipients see it under the bell in the header
+and can mark it read individually or all at once. An optional link turns the
+title into a pointer to another page.
 
 ### Git and API
 

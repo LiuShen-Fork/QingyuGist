@@ -1,5 +1,37 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- AI moderation now calls the OpenAI Responses API with a strict JSON schema, so
+  the verdict is structured instead of parsed out of prose. Reasoning effort,
+  the maximum output tokens and the maximum document size are configurable
+- A daily review quota. Gists that arrive after the cap stay pending and are
+  retried every ten minutes instead of failing
+- An admin review log at **Admin → Moderation**: every attempt with its verdict,
+  reason, model and latency, the pending backlog, and a **Review now** action
+- Site-wide notifications: admins publish a Markdown announcement from
+  **Admin → Notifications**, every account sees it under the header bell and can
+  mark it read. Rejections use the same inbox, so an author learns why a gist
+  stayed private
+- A site-wide announcement banner, rendered from Markdown in the admin settings
+
+### Fixed
+- Markdown stays readable in the light theme when the operating system prefers
+  dark. The stylesheet for the light theme pulled in the automatic GitHub
+  Markdown palette, which follows the OS preference, so gist previews and the
+  announcement banner were painted white on white
+- Moderation is no longer bypassed by `git push`, which previously published a
+  gist without ever reviewing it
+- Editing the files of an approved gist starts a new review; before, only a
+  visibility change did, so changed content was never re-checked
+- A public gist pushed over git is held private until it passes the review,
+  matching the behaviour of the web editor
+
+### Changed
+- Substantial documentation for the moderation pipeline, the review log and the
+  notification inbox in the admin panel guide
+
 ## [1.0.2](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.0.2) - 2026-11-19
 
 ### Added
