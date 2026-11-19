@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.0.4](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.0.4) - 2026-11-20
+
+### Added
+- Third-party sign-in is configured in **Admin → Configuration → Third-party
+  sign-in**: one tab per provider, a switch that is off until you turn it on
+  (marked with a green dot), and a display name you can set. Google and a generic
+  OAuth 2.0 provider join GitHub, GitLab, Gitea and OpenID Connect, so any server
+  with an authorize, token and user-info endpoint can be used
+- The options that used to live only in the configuration file — OAuth clients,
+  LDAP, the Meilisearch endpoint and the default search backend, HTTP git access,
+  the git default branch and the API switch — are now editable in the same panel
+  and take effect immediately
+
+### Changed
+- There is no configuration file anymore. Defaults are compiled in, everyday
+  options live in the admin panel and boot-time values come from `QYG_*`
+  environment variables. `--config` is still accepted so git hooks written by
+  earlier releases keep working, but it no longer reads anything; the Helm chart
+  is removed since it existed to render that file
+- The site ships its own favicon — the white rounded tile from the README, as SVG
+  with 32, 180 and 512px PNGs — instead of the inherited OpenGist icon, and uses
+  it as the social preview image
+
+### Fixed
+- The section links in the admin configuration page navigated to the site root
+  instead of scrolling within the page, because the fragment was resolved against
+  the document's base URL
+- A provider that is switched off can no longer be reached directly through
+  `/oauth/<provider>`
+
 ## [1.0.3](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.0.3) - 2026-11-19
 
 ### Added
