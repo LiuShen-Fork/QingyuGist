@@ -51,11 +51,12 @@ async function bindPasskey() {
 
         const credential = await navigator.credentials.create({
             publicKey: beginData.publicKey,
-        });
+        }) as PublicKeyCredential | null;
 
         if (!credential || !credential.rawId || !credential.response) {
             throw new Error('Credential object is missing required properties');
         }
+        const attestation = credential.response as AuthenticatorAttestationResponse;
 
         const finishResponse = await fetch(`${baseUrl}/webauthn/bind/finish`, {
             method: 'POST',
@@ -69,8 +70,8 @@ async function bindPasskey() {
                 id: credential.id,
                 rawId: encodeArrayBufferToBase64Url(credential.rawId),
                 response: {
-                    attestationObject: encodeArrayBufferToBase64Url(credential.response.attestationObject),
-                    clientDataJSON: encodeArrayBufferToBase64Url(credential.response.clientDataJSON),
+                    attestationObject: encodeArrayBufferToBase64Url(attestation.attestationObject),
+                    clientDataJSON: encodeArrayBufferToBase64Url(attestation.clientDataJSON),
                 },
                 type: credential.type,
                 passkeyname: document.querySelector<HTMLInputElement>('form#webauthn input[name="passkeyname"]').value
@@ -120,11 +121,12 @@ async function loginWithPasskey() {
 
         const credential = await navigator.credentials.get({
             publicKey: beginData.publicKey,
-        });
+        }) as PublicKeyCredential | null;
 
         if (!credential || !credential.rawId || !credential.response) {
             throw new Error('Credential object is missing required properties');
         }
+        const assertion = credential.response as AuthenticatorAssertionResponse;
 
         const finishResponse = await fetch(`${baseUrl}/webauthn/${loginMethod}/finish`, {
             method: 'POST',
@@ -139,10 +141,10 @@ async function loginWithPasskey() {
                 id: credential.id,
                 rawId: encodeArrayBufferToBase64Url(credential.rawId),
                 response: {
-                    authenticatorData: encodeArrayBufferToBase64Url(credential.response.authenticatorData),
-                    clientDataJSON: encodeArrayBufferToBase64Url(credential.response.clientDataJSON),
-                    signature: encodeArrayBufferToBase64Url(credential.response.signature),
-                    userHandle: encodeArrayBufferToBase64Url(credential.response.userHandle),
+                    authenticatorData: encodeArrayBufferToBase64Url(assertion.authenticatorData),
+                    clientDataJSON: encodeArrayBufferToBase64Url(assertion.clientDataJSON),
+                    signature: encodeArrayBufferToBase64Url(assertion.signature),
+                    userHandle: encodeArrayBufferToBase64Url(assertion.userHandle),
                 },
                 type: credential.type,
                 clientExtensionResults: credential.getClientExtensionResults(),

@@ -16,3 +16,10 @@ docs/.vitepress/dist/
 docs/.vitepress/cache/
 helm/qingyugist/charts/
 vendor/
+
+# Local demo instances (binary, data dir, logs)
+.demo-*
+
+# npm is the package manager; other lockfiles are noise
+bun.lock
+bun.lockb

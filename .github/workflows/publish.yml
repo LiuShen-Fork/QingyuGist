@@ -14,6 +14,12 @@ permissions:
   contents: write
   packages: write
 
+# Two dispatches racing each other would both pass the tag check in `prepare`
+# and then fight over the same tag and GHCR tags, so releases queue instead.
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
 env:
   GHCR_REGISTRY: ghcr.io
   IMAGE: ghcr.io/liushen-fork/qingyugist
@@ -136,6 +142,23 @@ jobs:
           done
           cd dist
           sha256sum *.tar.gz > SHA256SUMS
+
+      # The version reaches the binary through -ldflags; a typo there would
+      # otherwise only show up after the tag is already published.
+      - name: Check the injected version
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p smoke
+          tar -C smoke -xzf "dist/qingyugist-${VERSION}-linux-amd64.tar.gz"
+          reported=$(./smoke/qingyugist version)
+          echo "$reported"
+          if [[ "$reported" != *"v${VERSION}"* ]]; then
+            echo "Binary reports the wrong version" >&2
+            exit 1
+          fi
 
       - name: Keep the archives for the publishing job
         uses: actions/upload-artifact@v7
