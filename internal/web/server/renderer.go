@@ -19,6 +19,7 @@ import (
 	"github.com/LiuShen-Fork/QingyuGist/internal/config"
 	"github.com/LiuShen-Fork/QingyuGist/internal/db"
 	"github.com/LiuShen-Fork/QingyuGist/internal/index"
+	"github.com/LiuShen-Fork/QingyuGist/internal/settings"
 	"github.com/LiuShen-Fork/QingyuGist/internal/validator"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers"
@@ -79,26 +80,23 @@ func (s *Server) setFuncMap() {
 		"slug": func(s string) string {
 			return strings.Trim(re.ReplaceAllString(strings.ToLower(s), "-"), "-")
 		},
-		"avatarUrl": func(user *db.User, noGravatar bool) string {
-			if user.HasUploadedAvatar() {
-				return fmt.Sprintf("%s/avatar/%s", config.C.ExternalUrl, user.AvatarURL)
+		// Avatars are never stored: they are derived from the account's email
+		// address through the configured Gravatar-style provider. The uploaded
+		// file and provider-CDN picture that older releases wrote into
+		// user.AvatarURL are no longer used.
+		"avatarUrl": func(user *db.User) string {
+			if user == nil {
+				return ""
 			}
-
-			if user.AvatarURL != "" {
-				return user.AvatarURL
-			}
-
-			if user.MD5Hash != "" && !noGravatar {
-				return "https://www.gravatar.com/avatar/" + user.MD5Hash + "?d=identicon&s=200"
-			}
-
-			return ""
+			return settings.AvatarURL(user.MD5Hash)
 		},
-		"shouldGenerateAvatar": func(user *db.User, noGravatar bool) bool {
+		// True when the caller should draw an identicon instead of loading an
+		// image: no provider, no email hash, and no fallback picture.
+		"shouldGenerateAvatar": func(user *db.User) bool {
 			if user == nil {
 				return true
 			}
-			return user.AvatarURL == "" && (user.MD5Hash == "" || noGravatar)
+			return settings.AvatarURL(user.MD5Hash) == ""
 		},
 		"profilePath": validator.ProfilePath,
 		"asset": func(file string) string {

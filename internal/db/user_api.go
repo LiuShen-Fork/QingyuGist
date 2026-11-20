@@ -1,12 +1,16 @@
 package db
 
 import (
-	"fmt"
 	"time"
 
-	"github.com/LiuShen-Fork/QingyuGist/internal/config"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers/api/v1/types"
 )
+
+// AvatarURLBuilder turns a Gravatar hash into the picture URL the site uses.
+// The settings package installs it at startup: this keeps the API reporting the
+// same picture the pages draw, without db importing settings (settings imports
+// db, so the other direction would be a cycle). Empty hash means "no picture".
+var AvatarURLBuilder = func(hash string) string { return "" }
 
 // ToSimpleAPI returns the public simple-user shape used inside gist responses
 // and by the public user-lookup endpoints. It carries no private fields (no
@@ -14,16 +18,11 @@ import (
 // (followers, repos, ...) are still populated with the spec-shaped URLs so
 // clients can parse cleanly.
 func (u *User) ToSimpleAPI() types.SimpleUser {
-	avatarURL := u.AvatarURL
-	if u.HasUploadedAvatar() {
-		avatarURL = fmt.Sprintf("%s/avatar/%s", config.C.ExternalUrl, u.AvatarURL)
-	}
-
 	return types.SimpleUser{
 		ID:        u.ID,
 		Login:     u.Username,
 		Username:  u.Username,
-		AvatarURL: avatarURL,
+		AvatarURL: AvatarURLBuilder(u.MD5Hash),
 		Type:      "User",
 		CreatedAt: time.Unix(u.CreatedAt, 0).UTC(),
 	}

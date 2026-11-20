@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.3.0](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.3.0) - 2026-11-21
+
+### Added
+- Avatars are looked up from the account's email address through **WeAvatar**
+  (the default) or **Gravatar**. **Admin → Configuration → Authentication**
+  chooses the provider and, optionally, a default picture for addresses the
+  provider does not know. An account without an email address keeps the default
+  picture, or a generated identicon when none is set
+- Migration 7 moves existing accounts onto the hash of their email address and
+  clears the provider CDN URLs and uploaded file names older releases stored
+
+### Changed
+- Avatar uploads are gone. The picture is managed at the provider named on the
+  account settings page, which also explains that setting an email address is
+  what makes an avatar appear
+- An OAuth login no longer copies the provider's own picture URL. The address
+  it returns is used for the lookup instead, and fills in the account's email
+  when that account does not have one yet. The generic OAuth 2.0 provider no
+  longer asks for an avatar field
+- Collapsing the desktop sidebar now really leaves an icon rail: link labels
+  and counters are visually hidden (still readable by screen readers), and the
+  toggle's chevron points the way the next click moves the sidebar
+- Scrollbars are thinner and translucent in both themes instead of the default
+  OS chrome
+- The OAuth registration page opts out of the browser's password manager and
+  labels its fields as a nickname and an email, so returning from a provider no
+  longer offers to save the provider password
+
+### Fixed
+- After an htmx-boosted navigation, a settings `<select>` could show both the
+  native box and the styled dropdown. Native selects are now hidden inline as
+  well as by class, a stale enhancement marker left behind by a restored
+  snapshot is repaired, and one failing init step can no longer stop the rest
+  of the page's scripts from running
+
 ## [1.2.1](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.2.1) - 2026-11-21
 
 ### Changed

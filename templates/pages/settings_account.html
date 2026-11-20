@@ -2,33 +2,27 @@
 <div class="space-y-6">
     {{ template "page_header" dict "Eyebrow" (.locale.Tr "settings") "Title" (.locale.Tr "settings.header.account") }}
 
-    <!-- Avatar -->
+    <!-- Avatar. There is nothing to upload: the picture is looked up at the
+         configured provider by the hash of the email address, so the only way
+         to change it is to change the address or the picture itself. -->
     <section class="bg-card rounded-xl border">
-        <div class="space-y-1 border-b px-5 py-3">
+        <div class="border-b px-5 py-3">
             <h2 class="font-semibold">{{ .locale.Tr "settings.avatar" }}</h2>
-            <p class="text-muted-foreground text-sm">{{ .locale.Tr "settings.avatar-help" }}</p>
         </div>
         <div class="flex items-center gap-4 px-5 py-4">
             <div class="shrink-0">
-                {{ if not (shouldGenerateAvatar .userLogged .DisableGravatar) }}
-                    <img class="size-16 rounded-full border" src="{{ avatarUrl .userLogged .DisableGravatar }}" alt="{{ .userLogged.Username }}" />
+                {{ if not (shouldGenerateAvatar .userLogged) }}
+                    <img class="size-16 rounded-full border object-cover" src="{{ avatarUrl .userLogged }}" alt="{{ .userLogged.Username }}" />
                 {{ else }}
                     <svg class="size-16 rounded-full border" data-jdenticon-value="{{ .userLogged.Username }}" width="64" height="64"></svg>
                 {{ end }}
             </div>
-            <div class="flex flex-auto flex-wrap items-center gap-3">
-                <form action="{{ .c.ExternalUrl }}/settings/avatar" method="post" enctype="multipart/form-data">
-                    {{ .csrfHtml }}
-                    <input id="avatar" name="avatar" type="file" accept="image/png,image/jpeg,image/gif,image/webp" required onchange="this.form.submit()"
-                           class="text-muted-foreground file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 block text-sm file:mr-4 file:cursor-pointer file:rounded-md file:border-0 file:px-4 file:py-2 file:text-sm file:font-medium" />
-                </form>
-                {{ if .userLogged.HasUploadedAvatar }}
-                <form action="{{ .c.ExternalUrl }}/settings/avatar" method="post">
-                    {{ .csrfHtml }}
-                    <input type="hidden" name="_method" value="DELETE" />
-                    <button type="submit" class="btn-sm-outline"
-                            _="on click if not window.confirm('{{ .locale.Tr "settings.avatar-remove-confirm" }}') halt the event">{{ .locale.Tr "settings.avatar-remove" }}</button>
-                </form>
+            <div class="min-w-0 flex-auto space-y-1">
+                {{ if .AvatarProviderSite }}
+                <p class="text-sm">{{ .locale.Tr "settings.avatar-provider-help" .AvatarProviderName }}</p>
+                <a class="text-primary text-sm font-medium hover:underline" href="{{ .AvatarProviderSite }}" target="_blank" rel="noopener noreferrer">{{ .locale.Tr "settings.avatar-provider-link" .AvatarProviderName }}</a>
+                {{ else }}
+                <p class="text-sm">{{ .locale.Tr "settings.avatar-generated-help" }}</p>
                 {{ end }}
             </div>
         </div>

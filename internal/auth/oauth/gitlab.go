@@ -2,9 +2,7 @@ package oauth
 
 import (
 	gocontext "context"
-	gojson "encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/LiuShen-Fork/QingyuGist/internal/config"
@@ -13,7 +11,6 @@ import (
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/gitlab"
-	"github.com/rs/zerolog/log"
 )
 
 type GitLabProvider struct {
@@ -86,34 +83,7 @@ func (p *GitLabCallbackProvider) GetProviderUserSSHKeys() ([]string, error) {
 
 func (p *GitLabCallbackProvider) UpdateUserDB(user *db.User) {
 	user.GitlabID = p.User.UserID
-
-	resp, err := http.Get(urlJoin(config.C.GitlabUrl, "/api/v4/avatar?size=400&email=", p.User.Email))
-	if err != nil {
-		log.Error().Err(err).Msg("Cannot get user avatar from GitLab")
-		return
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Error().Err(err).Msg("Cannot read Gitlab response body")
-		return
-	}
-
-	var result map[string]interface{}
-	err = gojson.Unmarshal(body, &result)
-	if err != nil {
-		log.Error().Err(err).Msg("Cannot unmarshal Gitlab response body")
-		return
-	}
-
-	field, ok := result["avatar_url"]
-	if !ok {
-		log.Error().Msg("Field 'avatar_url' not found in Gitlab JSON response")
-		return
-	}
-
-	user.AvatarURL = field.(string)
+	syncAvatarHash(user, p.User.Email)
 }
 
 func (p *GitLabCallbackProvider) IsAdmin() bool {

@@ -17,10 +17,9 @@ import (
 )
 
 const (
-	defaultIDField     = "id"
-	defaultNameField   = "username"
-	defaultEmailField  = "email"
-	defaultAvatarField = "avatar_url"
+	defaultIDField    = "id"
+	defaultNameField  = "username"
+	defaultEmailField = "email"
 )
 
 // Provider is the goth.Provider implementation for a generic OAuth 2.0 server.
@@ -36,12 +35,11 @@ type Provider struct {
 	idField     string
 	nameField   string
 	emailField  string
-	avatarField string
 }
 
 // New creates the provider. Empty field names fall back to the common ones, so
 // a server following the usual conventions needs only urls and credentials.
-func New(clientKey, secret, callbackURL, authURL, tokenURL, userinfoURL, scopes, idField, nameField, emailField, avatarField string) *Provider {
+func New(clientKey, secret, callbackURL, authURL, tokenURL, userinfoURL, scopes, idField, nameField, emailField string) *Provider {
 	p := &Provider{
 		ClientKey:    clientKey,
 		Secret:       secret,
@@ -51,7 +49,6 @@ func New(clientKey, secret, callbackURL, authURL, tokenURL, userinfoURL, scopes,
 		idField:      orDefault(idField, defaultIDField),
 		nameField:    orDefault(nameField, defaultNameField),
 		emailField:   orDefault(emailField, defaultEmailField),
-		avatarField:  orDefault(avatarField, defaultAvatarField),
 	}
 
 	p.config = &oauth2.Config{
@@ -164,7 +161,6 @@ func (p *Provider) userFromReader(r io.Reader, user *goth.User) error {
 	user.UserID = firstField(payload, p.idField, "id", "sub", "user_id")
 	user.Name = firstField(payload, p.nameField, "name", "username", "login", "preferred_username", "display_name", "nickname")
 	user.Email = firstField(payload, p.emailField, "email", "mail")
-	user.AvatarURL = firstField(payload, p.avatarField, "avatar_url", "picture", "avatar")
 
 	user.NickName = user.Name
 	if user.NickName == "" && user.Email != "" {

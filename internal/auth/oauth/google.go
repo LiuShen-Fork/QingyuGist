@@ -68,9 +68,7 @@ func (p *GoogleCallbackProvider) GetProviderUserSSHKeys() ([]string, error) {
 
 func (p *GoogleCallbackProvider) UpdateUserDB(user *db.User) {
 	user.GoogleID = p.User.UserID
-	if p.User.AvatarURL != "" {
-		user.AvatarURL = p.User.AvatarURL
-	}
+	syncAvatarHash(user, p.User.Email)
 }
 
 // IsAdmin is false: Google groups are not read, so it never grants admin.

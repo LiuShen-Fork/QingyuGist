@@ -13,7 +13,7 @@ When deploying QingyuGist in an automated way (Ansible, Terraform, a bootstrap s
 | `--username`, `-u` | Username of the new user (same validation rules as the web form: alphanumerics and dashes, ≤ 24).    |
 | `--password`, `-p` | Password for the new user. Note: visible in the process list, so prefer `--password-stdin` for automation. |
 | `--password-stdin` | Read the password from the first line of stdin. Keeps the secret out of the process list and shell history. |
-| `--email`          | Optional email address (enables [Gravatar](https://gravatar.com)).                                   |
+| `--email`          | Optional email address, also used to look up the account's avatar.                                    |
 | `--admin`          | Grant administrator privileges to the new user.                                                      |
 
 All inputs are flags (including the username). Flags may be given in any order.

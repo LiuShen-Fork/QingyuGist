@@ -27,18 +27,30 @@ const initIpynb = () => {
     void ipynbModule.then(({ initIpynb: renderNotebooks }) => renderNotebooks());
 };
 
+// One broken component must not take the rest of the page with it. After an
+// hx-boost swap this runs on every navigation, and a throw in an early step used
+// to leave every later one un-initialised — dropdowns half enhanced, the sidebar
+// toggle dead.
+const safely = (step: () => void) => {
+    try {
+        step();
+    } catch (error) {
+        console.error('init step failed', error);
+    }
+};
+
 const init = () => {
-    initGistFilters();
-    initGistLines();
-    initGistCheckboxes();
-    initIpynb();
-    initPdf();
-    initJdenticon();
-    initOgSelects();
-    initSiteLinks();
-    initToasts();
-    syncSidebarToggle();
-    syncBackToTop();
+    safely(initGistFilters);
+    safely(initGistLines);
+    safely(initGistCheckboxes);
+    safely(initIpynb);
+    safely(initPdf);
+    safely(initJdenticon);
+    safely(initOgSelects);
+    safely(initSiteLinks);
+    safely(initToasts);
+    safely(syncSidebarToggle);
+    safely(syncBackToTop);
 };
 
 document.addEventListener('DOMContentLoaded', init);
@@ -220,6 +232,7 @@ const stripInitMarkers = () => {
         const select = wrapper.querySelector('select');
         if (!select) return;
         select.classList.remove('og-select-native');
+        (select as HTMLElement).style.removeProperty('display');
         delete (select as HTMLElement).dataset.ogSelectReady;
         wrapper.parentNode?.insertBefore(select, wrapper);
         wrapper.remove();

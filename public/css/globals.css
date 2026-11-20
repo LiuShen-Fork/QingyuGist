@@ -203,6 +203,41 @@
     background-color: var(--git-diff);
 }
 
+/* Scrollbars -------------------------------------------------------------
+   The browser default scrollbar is the heaviest piece of OS chrome left on
+   the page, and it looks worst exactly where this app scrolls most: the
+   sidebar rail, long code panes and dropdown menus. A thin, translucent wash
+   of the foreground keeps it quiet in both themes without adding a colour
+   variable. WebKit gets the rounded thumb; Firefox gets the standard
+   properties, which Chrome would otherwise prefer over ::-webkit-scrollbar. */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background-color: color-mix(in oklab, var(--foreground) 20%, transparent);
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in oklab, var(--foreground) 34%, transparent);
+}
+
+@supports (-moz-appearance: none) {
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: color-mix(in oklab, var(--foreground) 24%, transparent) transparent;
+    }
+}
+
 /* basecoat only styles <input> by type; mirror it for <textarea> so they match. */
 textarea.input {
     @apply border-input dark:bg-input/30 placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex w-full min-w-0 rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50;
@@ -569,12 +604,27 @@ table.csv-table thead th {
         margin-left: 3.5rem;
     }
 
-    /* Hide text without dropping it from the accessibility tree, so every
-       icon-only link keeps its name for screen readers. Scope this to nav
-       labels: the open language popover lives inside the rail and its links
-       must keep their visible labels. */
+    /* Section headings ("Gists", "Settings", ...) label a group and are not a
+       navigation target, so the rail simply drops them. */
     html.sidebar-collapsed #sidebar p {
         display: none;
+    }
+
+    /* Link labels — and the counters that ride along with them — collapse to
+       an icon-only rail. They are clipped rather than removed so each link
+       keeps its accessible name for screen readers and tooltips. Scope this to
+       nav links: the open language popover lives inside the rail and its links
+       must keep their visible labels. */
+    html.sidebar-collapsed #sidebar .og-nav-link > span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
     }
 
     html.sidebar-collapsed #sidebar :is(.og-nav-link, .og-icon-button, .og-language-button) {
@@ -642,6 +692,12 @@ table.csv-table thead th {
 
 #sidebar-toggle svg {
     transition: transform 160ms ease;
+}
+
+/* The chevron points the way the button will move the sidebar: left while it
+   is expanded (click collapses), right once it is a rail (click expands). */
+html.sidebar-collapsed #sidebar-toggle svg {
+    transform: rotate(180deg);
 }
 
 /* Toast notifications ---------------------------------------------------

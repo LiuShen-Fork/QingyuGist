@@ -27,10 +27,41 @@ const cloneWidthClasses = (select: HTMLSelectElement, wrapper: HTMLElement) => {
     }
 };
 
+// Hide the native box as an inline style as well as a class. The class lives in
+// the compiled stylesheet, and a restored htmx snapshot (or a stylesheet still
+// in flight) can leave a select that carries `og-select-native` — or a stale
+// `ogSelectReady` marker without its wrapper — visible right next to the styled
+// trigger. Belt and braces: the element that must never be seen is hidden by
+// the DOM itself.
+const hideNative = (select: HTMLSelectElement) => {
+    select.classList.add('og-select-native');
+    select.style.setProperty('display', 'none');
+};
+
+const showNative = (select: HTMLSelectElement) => {
+    select.classList.remove('og-select-native');
+    select.style.removeProperty('display');
+};
+
 const enhanceSelect = (select: HTMLSelectElement) => {
-    if (select.dataset.ogSelectReady === '1') return;
+    // A select marked ready that no longer sits in its wrapper is a leftover:
+    // the wrapper went away (snapshot restore, DOM patched by htmx) and with it
+    // every listener, while the marker survived. Reset it and enhance afresh.
+    if (select.dataset.ogSelectReady === '1' && !select.parentElement?.classList.contains('og-select')) {
+        delete select.dataset.ogSelectReady;
+        showNative(select);
+    }
+
+    if (select.dataset.ogSelectReady === '1') {
+        hideNative(select);
+        return;
+    }
+
     if (select.multiple || select.size > 1) return;
-    if (select.closest('.og-select')) return;
+    if (select.closest('.og-select')) {
+        hideNative(select);
+        return;
+    }
 
     select.dataset.ogSelectReady = '1';
 
@@ -250,7 +281,7 @@ const enhanceSelect = (select: HTMLSelectElement) => {
 
     select.parentNode?.insertBefore(wrapper, select);
     wrapper.append(select, trigger, menu);
-    select.classList.add('og-select-native');
+    hideNative(select);
     sync();
 };
 

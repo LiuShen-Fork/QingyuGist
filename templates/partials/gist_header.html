@@ -3,8 +3,8 @@
     <div class="flex flex-wrap items-center justify-between gap-3">
         <div class="flex min-w-0 items-center gap-3">
             <a href="{{ .c.ExternalUrl }}/{{ profilePath .gist.User.Username }}" class="shrink-0">
-                {{ if not (shouldGenerateAvatar .gist.User .DisableGravatar) }}
-                    <img class="size-12 rounded-full border object-cover" src="{{ avatarUrl .gist.User .DisableGravatar }}" alt="{{ .gist.User.Username }}" />
+                {{ if not (shouldGenerateAvatar .gist.User) }}
+                    <img class="size-12 rounded-full border object-cover" src="{{ avatarUrl .gist.User }}" alt="{{ .gist.User.Username }}" />
                 {{ else }}
                     <svg class="size-12 rounded-full border" data-jdenticon-value="{{ .gist.User.Username }}" width="48" height="48"></svg>
                 {{ end }}

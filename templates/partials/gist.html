@@ -2,8 +2,8 @@
 <article class="og-card-interactive bg-card text-card-foreground group overflow-hidden rounded-xl border">
     <header class="flex items-start gap-3 p-4">
         <a href="{{ .c.ExternalUrl }}/{{ profilePath .gist.User.Username }}" class="shrink-0">
-            {{ if not (shouldGenerateAvatar .gist.User .DisableGravatar) }}
-                <img class="size-9 rounded-full border object-cover" src="{{ avatarUrl .gist.User .DisableGravatar }}" alt="{{ .gist.User.Username }}" />
+            {{ if not (shouldGenerateAvatar .gist.User) }}
+                <img class="size-9 rounded-full border object-cover" src="{{ avatarUrl .gist.User }}" alt="{{ .gist.User.Username }}" />
             {{ else }}
                 <svg class="size-9 rounded-full border" data-jdenticon-value="{{ .gist.User.Username }}" width="36" height="36"></svg>
             {{ end }}

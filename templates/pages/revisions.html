@@ -9,8 +9,8 @@
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <h3 class="flex flex-wrap items-center gap-1.5 text-sm">
                     {{ $user := $commit.User }}
-                    {{ if not (shouldGenerateAvatar $user $.DisableGravatar) }}
-                        <img class="size-5 rounded-full" src="{{ avatarUrl $user $.DisableGravatar }}" alt="" />
+                    {{ if not (shouldGenerateAvatar $user) }}
+                        <img class="size-5 rounded-full" src="{{ avatarUrl $user }}" alt="" />
                     {{ else }}
                         <svg class="size-5 rounded-full" data-jdenticon-value="{{ if $user }}{{ $user.Username }}{{ else }}{{ $commit.AuthorName }}{{ end }}" width="20" height="20"></svg>
                     {{ end }}

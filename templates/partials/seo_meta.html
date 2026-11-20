@@ -14,19 +14,19 @@
     <meta property="og:type" content="article" />
     <meta property="og:url" content="{{ .canonicalUrl }}" />
     <meta property="og:site_name" content="{{ $siteName }}" />
-    {{ if shouldGenerateAvatar .gist.User .DisableGravatar }}
+    {{ if shouldGenerateAvatar .gist.User }}
         <meta property="og:image" content="{{ asset "img/favicon-512.png" }}" />
     {{ else }}
-        <meta property="og:image" content="{{ avatarUrl .gist.User .DisableGravatar }}" />
+        <meta property="og:image" content="{{ avatarUrl .gist.User }}" />
     {{ end }}
 
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="{{ $ogTitle }}" />
     <meta name="twitter:description" content="{{ $ogDescription }}" />
-    {{ if shouldGenerateAvatar .gist.User .DisableGravatar }}
+    {{ if shouldGenerateAvatar .gist.User }}
         <meta name="twitter:image" content="{{ asset "img/favicon-512.png" }}" />
     {{ else }}
-        <meta name="twitter:image" content="{{ avatarUrl .gist.User .DisableGravatar }}" />
+        <meta name="twitter:image" content="{{ avatarUrl .gist.User }}" />
     {{ end }}
 {{ end }}
 {{ end }}

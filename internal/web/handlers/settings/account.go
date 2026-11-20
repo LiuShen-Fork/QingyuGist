@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/LiuShen-Fork/QingyuGist/internal/config"
 	"github.com/LiuShen-Fork/QingyuGist/internal/db"
@@ -19,18 +18,17 @@ import (
 
 func EmailProcess(ctx *context.Context) error {
 	user := ctx.User
-	email := ctx.FormValue("email")
-	var hash string
+	email := strings.ToLower(strings.TrimSpace(ctx.FormValue("email")))
 
 	if email == "" {
-		// generate random md5 string
-		hash = fmt.Sprintf("%x", md5.Sum([]byte(time.Now().String())))
+		// No address, no picture: the account falls back to the default avatar
+		// (or a generated identicon) until an address is set.
+		user.MD5Hash = ""
 	} else {
-		hash = fmt.Sprintf("%x", md5.Sum([]byte(strings.ToLower(strings.TrimSpace(email)))))
+		user.MD5Hash = fmt.Sprintf("%x", md5.Sum([]byte(email)))
 	}
 
-	user.Email = strings.ToLower(email)
-	user.MD5Hash = hash
+	user.Email = email
 
 	if err := user.Update(); err != nil {
 		return ctx.ErrorRes(500, "Cannot update email", err)

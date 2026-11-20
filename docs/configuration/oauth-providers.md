@@ -64,8 +64,10 @@ every login, so removing somebody from the group removes the rights.
 
 For any authorization server that is not covered above, fill in the authorize,
 token and user-info endpoints, the scope to request, and the names of the JSON
-fields that carry the user id, name, email and avatar. Field names may be dotted
-paths into the user-info response, such as `data.user.login`.
+fields that carry the user id, name and email. Field names may be dotted paths
+into the user-info response, such as `data.user.login`. Pictures come from the
+avatar provider based on the email address (see
+[the admin panel](admin-panel.md)), so a provider's own avatar URL is not read.
 
 ## Environment variables
 
@@ -76,4 +78,4 @@ paths into the user-info response, such as `data.user.login`.
 | GitLab | `QYG_GITLAB_CLIENT_KEY`, `QYG_GITLAB_SECRET`, `QYG_GITLAB_URL`, `QYG_GITLAB_NAME` |
 | Gitea | `QYG_GITEA_CLIENT_KEY`, `QYG_GITEA_SECRET`, `QYG_GITEA_URL`, `QYG_GITEA_NAME` |
 | OpenID Connect | `QYG_OIDC_CLIENT_KEY`, `QYG_OIDC_SECRET`, `QYG_OIDC_DISCOVERY_URL`, `QYG_OIDC_PROVIDER_NAME`, `QYG_OIDC_GROUP_CLAIM_NAME`, `QYG_OIDC_ADMIN_GROUP` |
-| OAuth 2.0 | `QYG_OAUTH2_CLIENT_KEY`, `QYG_OAUTH2_SECRET`, `QYG_OAUTH2_AUTH_URL`, `QYG_OAUTH2_TOKEN_URL`, `QYG_OAUTH2_USERINFO_URL`, `QYG_OAUTH2_SCOPES`, `QYG_OAUTH2_ID_FIELD`, `QYG_OAUTH2_NAME_FIELD`, `QYG_OAUTH2_EMAIL_FIELD`, `QYG_OAUTH2_AVATAR_FIELD`, `QYG_OAUTH2_NAME` |
+| OAuth 2.0 | `QYG_OAUTH2_CLIENT_KEY`, `QYG_OAUTH2_SECRET`, `QYG_OAUTH2_AUTH_URL`, `QYG_OAUTH2_TOKEN_URL`, `QYG_OAUTH2_USERINFO_URL`, `QYG_OAUTH2_SCOPES`, `QYG_OAUTH2_ID_FIELD`, `QYG_OAUTH2_NAME_FIELD`, `QYG_OAUTH2_EMAIL_FIELD`, `QYG_OAUTH2_NAME` |

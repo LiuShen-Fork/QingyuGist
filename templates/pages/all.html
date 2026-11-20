@@ -3,8 +3,8 @@
     <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         {{ if .fromUser }}
             <div class="flex items-center gap-4">
-                {{ if not (shouldGenerateAvatar .fromUser .DisableGravatar) }}
-                    <img class="size-14 rounded-full border object-cover shadow-sm" src="{{ avatarUrl .fromUser .DisableGravatar }}" alt="{{ .fromUser.Username }}" />
+                {{ if not (shouldGenerateAvatar .fromUser) }}
+                    <img class="size-14 rounded-full border object-cover shadow-sm" src="{{ avatarUrl .fromUser }}" alt="{{ .fromUser.Username }}" />
                 {{ else }}
                     <svg class="size-14 rounded-full border shadow-sm" data-jdenticon-value="{{ .fromUser.Username }}" width="56" height="56"></svg>
                 {{ end }}
@@ -123,7 +123,7 @@
     {{ if ne (len .gists) 0 }}
         <div class="space-y-4">
             {{ range $gist := .gists }}
-                {{ template "gist" (dict "gist" $gist "c" $.c "locale" $.locale "DisableGravatar" $.DisableGravatar "currentStyle" $.currentStyle) }}
+                {{ template "gist" (dict "gist" $gist "c" $.c "locale" $.locale "currentStyle" $.currentStyle) }}
             {{ end }}
         </div>
         {{ template "pagination" . }}

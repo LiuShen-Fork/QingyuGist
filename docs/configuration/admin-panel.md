@@ -45,8 +45,14 @@ stored secret.
 
 - Registration mode: open, OAuth-only, or closed. OAuth-only hides the local
   registration form while keeping sign-in and invitation links available.
-- Require login, allow individual gists without login, disable the login form
-  (for OAuth-only instances), and disable Gravatar.
+- Require login, allow individual gists without login, and disable the login
+  form (for OAuth-only instances).
+- Avatars. Pictures are never uploaded or copied from an OAuth provider: they
+  are looked up by the MD5 hash of the account's email address. Pick the
+  provider — **WeAvatar** (the default, and usually faster in mainland China),
+  **Gravatar**, or **generated avatars only** — and optionally set a default
+  picture URL for addresses the provider does not know. Leaving it empty asks
+  the provider for its own geometric placeholder.
 
 ### Third-party sign-in
 
@@ -61,7 +67,7 @@ your own instance. The OpenID Connect tab takes the discovery URL and, if the
 provider returns groups, the claim that carries them plus the group whose
 members become admins. The OAuth 2.0 tab takes the authorize, token and
 user-info endpoints, the scope to request, and the JSON field names for the
-user id, name, email and avatar — dotted paths such as `data.user.login` work.
+user id, name and email — dotted paths such as `data.user.login` work.
 
 ### LDAP
 

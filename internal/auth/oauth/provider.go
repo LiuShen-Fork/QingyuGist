@@ -1,6 +1,7 @@
 package oauth
 
 import (
+	"crypto/md5"
 	"fmt"
 	"io"
 	"net/http"
@@ -103,13 +104,12 @@ func CompleteUserAuth(ctx *context.Context) (CallbackProvider, error) {
 	return nil, fmt.Errorf("unsupported provider %s", user.Provider)
 }
 
-func NewCallbackProviderFromSession(provider string, userID string, nickname string, email string, avatarURL string) (CallbackProvider, error) {
+func NewCallbackProviderFromSession(provider string, userID string, nickname string, email string) (CallbackProvider, error) {
 	user := &goth.User{
-		Provider:  provider,
-		UserID:    userID,
-		NickName:  nickname,
-		Email:     email,
-		AvatarURL: avatarURL,
+		Provider: provider,
+		UserID:   userID,
+		NickName: nickname,
+		Email:    email,
 	}
 
 	switch provider {
@@ -156,6 +156,32 @@ func nameOrDefault(name, fallback string) string {
 		return fallback
 	}
 	return strings.TrimSpace(name)
+}
+
+// syncAvatarHash records the Gravatar key for an account's email address.
+//
+// Providers all hand out their own picture URLs (avatars.githubusercontent.com,
+// Google's CDN, …): they are slow from outside their region, they turn every
+// page load into a third-party request, and the account holder cannot choose
+// what they see. So the picture is always derived from the address instead —
+// see settings.AvatarURL — and only the hash is stored.
+func syncAvatarHash(user *db.User, email string) {
+	// The account's own address wins: it is what the site displays and what the
+	// settings page changes. The provider address only fills the gap when the
+	// account has none, which is the case for a locally registered account that
+	// has just linked a provider for the first time.
+	if strings.TrimSpace(user.Email) == "" {
+		email = strings.ToLower(strings.TrimSpace(email))
+		if email == "" {
+			user.MD5Hash = ""
+			return
+		}
+		user.Email = email
+	} else {
+		email = user.Email
+	}
+
+	user.MD5Hash = fmt.Sprintf("%x", md5.Sum([]byte(strings.ToLower(strings.TrimSpace(email)))))
 }
 
 func urlJoin(base string, elem ...string) string {

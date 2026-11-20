@@ -27,7 +27,7 @@ Written in [Go](https://go.dev), QingyuGist aims to be fast and easy to deploy.
 * Download raw files or as a ZIP archive
 * Retrieve snippet data/metadata via a JSON API
 * OAuth2 login with GitHub, GitLab, Gitea, and OpenID Connect
-* Avatars via Gravatar or OAuth2 providers
+* Email-based avatars through WeAvatar or Gravatar, with generated fallback
 * Light/Dark mode
 * Responsive UI
 * Enable or disable signups

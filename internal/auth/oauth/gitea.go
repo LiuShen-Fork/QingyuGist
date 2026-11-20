@@ -83,7 +83,7 @@ func (p *GiteaCallbackProvider) GetProviderUserSSHKeys() ([]string, error) {
 
 func (p *GiteaCallbackProvider) UpdateUserDB(user *db.User) {
 	user.GiteaID = p.User.UserID
-	user.AvatarURL = p.User.AvatarURL
+	syncAvatarHash(user, p.User.Email)
 }
 
 func (p *GiteaCallbackProvider) IsAdmin() bool {

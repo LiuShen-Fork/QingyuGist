@@ -80,7 +80,7 @@ func (p *GitHubCallbackProvider) GetProviderUserSSHKeys() ([]string, error) {
 
 func (p *GitHubCallbackProvider) UpdateUserDB(user *db.User) {
 	user.GithubID = p.User.UserID
-	user.AvatarURL = "https://avatars.githubusercontent.com/u/" + p.User.UserID + "?v=4"
+	syncAvatarHash(user, p.User.Email)
 }
 
 func (p *GitHubCallbackProvider) IsAdmin() bool {

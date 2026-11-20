@@ -183,6 +183,7 @@ func resolveCreateUserPassword(ctx *cli.Context) (string, error) {
 // avatar resolves identically regardless of how the account was created. With
 // no email the hash is left empty, matching the password-registration flow.
 func gravatarHash(email string) string {
+	email = strings.ToLower(strings.TrimSpace(email))
 	if email == "" {
 		return ""
 	}

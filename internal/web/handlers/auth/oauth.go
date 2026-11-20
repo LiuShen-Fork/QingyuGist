@@ -150,7 +150,6 @@ func OauthCallback(ctx *context.Context) error {
 		sess.Values["oauthUserID"] = user.UserID
 		sess.Values["oauthNickname"] = user.NickName
 		sess.Values["oauthEmail"] = user.Email
-		sess.Values["oauthAvatarURL"] = user.AvatarURL
 		sess.Values["oauthIsAdmin"] = provider.IsAdmin()
 
 		sess.Options.MaxAge = 10 * 60 // 10 minutes
@@ -203,7 +202,6 @@ func OauthRegister(ctx *context.Context) error {
 	ctx.SetData("oauthProvider", oauth.ProviderDisplayName(sessionProvider(sess)))
 	ctx.SetData("oauthNickname", sess.Values["oauthNickname"])
 	ctx.SetData("oauthEmail", sess.Values["oauthEmail"])
-	ctx.SetData("oauthAvatarURL", sess.Values["oauthAvatarURL"])
 
 	return ctx.Html("oauth_register.html")
 }
@@ -230,7 +228,6 @@ func ProcessOauthRegister(ctx *context.Context) error {
 			ctx.SetData("oauthNickname", sess.Values["oauthNickname"])
 			ctx.SetData("oauthEmail", sess.Values["oauthEmail"])
 		}
-		ctx.SetData("oauthAvatarURL", sess.Values["oauthAvatarURL"])
 	}
 
 	// Bind and validate form data
@@ -270,12 +267,7 @@ func ProcessOauthRegister(ctx *context.Context) error {
 	if n, ok := sess.Values["oauthNickname"].(string); ok {
 		nickname = n
 	}
-	avatarURL := ""
-	if av, ok := sess.Values["oauthAvatarURL"].(string); ok {
-		avatarURL = av
-	}
-
-	callbackProvider, err := oauth.NewCallbackProviderFromSession(providerStr, oauthUserID, nickname, dto.Email, avatarURL)
+	callbackProvider, err := oauth.NewCallbackProviderFromSession(providerStr, oauthUserID, nickname, dto.Email)
 	if err != nil {
 		return ctx.ErrorRes(500, "Cannot create provider", err)
 	}
@@ -328,7 +320,6 @@ func ProcessOauthRegister(ctx *context.Context) error {
 	delete(sess.Values, "oauthUserID")
 	delete(sess.Values, "oauthNickname")
 	delete(sess.Values, "oauthEmail")
-	delete(sess.Values, "oauthAvatarURL")
 	delete(sess.Values, "oauthIsAdmin")
 	delete(sess.Values, oauthInvitationSessionKey)
 

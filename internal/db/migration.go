@@ -1,7 +1,9 @@
 package db
 
 import (
+	"crypto/md5"
 	"fmt"
+	"strings"
 
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
@@ -39,6 +41,7 @@ func applyAllMigrations(dbType databaseType) error {
 		{4, nil, v4_uniqueUsername},
 		{5, nil, v5_gistCommentsCount},
 		{6, nil, v6_gistCommentParents},
+		{7, nil, v7_avatarHashes},
 	}
 
 	for _, m := range migrations {
@@ -177,4 +180,42 @@ func v5_gistCommentsCount(tx *gorm.DB) error {
 func v6_gistCommentParents(tx *gorm.DB) error {
 	return tx.Model(&GistComment{}).Where("parent_id IS NULL").
 		UpdateColumn("parent_id", 0).Error
+}
+
+// v7_avatarHashes moves accounts onto the Gravatar key of their email address,
+// now that a picture is derived from the address instead of being copied from a
+// provider CDN or an upload that the panel no longer offers.
+func v7_avatarHashes(tx *gorm.DB) error {
+	var users []User
+	if err := tx.Select("id", "email", "md5_hash").Find(&users).Error; err != nil {
+		return err
+	}
+
+	for _, user := range users {
+		email := strings.ToLower(strings.TrimSpace(user.Email))
+		if email == "" {
+			// Older releases filled this with a random hash so that a
+			// mailless account still got a Gravatar identicon; that picture
+			// is no longer wanted — it must fall back to the default avatar.
+			if user.MD5Hash != "" {
+				if err := tx.Model(&User{}).Where("id = ?", user.ID).UpdateColumn("md5_hash", "").Error; err != nil {
+					return err
+				}
+			}
+			continue
+		}
+
+		hash := fmt.Sprintf("%x", md5.Sum([]byte(email)))
+		if hash == user.MD5Hash {
+			continue
+		}
+
+		if err := tx.Model(&User{}).Where("id = ?", user.ID).UpdateColumn("md5_hash", hash).Error; err != nil {
+			return err
+		}
+	}
+
+	// Whatever those columns still hold (provider URLs, uploaded file names) is
+	// no longer rendered anywhere.
+	return tx.Model(&User{}).Where("avatar_url <> ''").UpdateColumn("avatar_url", "").Error
 }

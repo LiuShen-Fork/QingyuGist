@@ -61,8 +61,8 @@
                     <tr class="transition-colors hover:bg-muted/30">
                         <td class="px-4 py-3">
                             <a href="{{ $.c.ExternalUrl }}/{{ profilePath .Username }}" class="group flex items-center gap-3">
-                                {{ if not (shouldGenerateAvatar .User $.DisableGravatar) }}
-                                    <img class="size-10 shrink-0 rounded-full border object-cover" src="{{ avatarUrl .User $.DisableGravatar }}" alt="{{ .Username }}" />
+                                {{ if not (shouldGenerateAvatar .User) }}
+                                    <img class="size-10 shrink-0 rounded-full border object-cover" src="{{ avatarUrl .User }}" alt="{{ .Username }}" />
                                 {{ else }}
                                     <svg class="size-10 shrink-0 rounded-full border" data-jdenticon-value="{{ .Username }}" width="40" height="40"></svg>
                                 {{ end }}

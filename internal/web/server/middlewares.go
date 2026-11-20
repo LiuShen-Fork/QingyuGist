@@ -468,7 +468,11 @@ func loadSettings(ctx *context.Context) error {
 	ctx.SetData("RequireLogin", settings.RequireLogin() || legacy(db.SettingRequireLogin))
 	ctx.SetData("AllowGistsWithoutLogin", settings.AllowGistsWithoutLogin() || legacy(db.SettingAllowGistsWithoutLogin))
 	ctx.SetData("DisableLoginForm", settings.DisableLoginForm() || legacy(db.SettingDisableLoginForm))
-	ctx.SetData("DisableGravatar", settings.DisableGravatar() || legacy(db.SettingDisableGravatar))
+	// Avatars: the templates only need to know whether a picture exists for a
+	// given user (see the avatarUrl helper); these two describe the provider
+	// itself for the account settings page.
+	ctx.SetData("AvatarProviderName", settings.AvatarProviderDisplayName())
+	ctx.SetData("AvatarProviderSite", settings.AvatarProviderSite())
 	ctx.SetData("DisableFileUpload", !settings.UploadEnabled())
 	ctx.SetData("UploadEnabled", settings.UploadEnabled())
 	ctx.SetData("SiteName", settings.SiteName())

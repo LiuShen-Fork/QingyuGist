@@ -23,8 +23,12 @@ type User struct {
 	IsAdmin            bool
 	CreatedAt          int64
 	Email              string `gorm:"size:191;index"`
-	MD5Hash            string // for gravatar, if no Email is specified, the value is random
-	AvatarURL          string // an absolute URL (from an OAuth provider) or a bare filename for a manually uploaded avatar stored under {home}/avatars/users
+	// MD5Hash is the Gravatar key of Email; empty when the account has no
+	// address, in which case the site draws a generated identicon instead.
+	MD5Hash string `gorm:"size:64"`
+	// AvatarURL only holds leftovers of the removed avatar upload and of the
+	// provider picture URLs we no longer use; nothing reads it any more.
+	AvatarURL string `gorm:"size:255"`
 	// One column per provider: an account is bound to a single identity per
 	// provider, and the OAuth callback looks the account up by these columns.
 	GithubID         string `gorm:"size:191;index"`
@@ -128,7 +132,7 @@ func (user *User) BeforeDelete(tx *gorm.DB) error {
 		return err
 	}
 
-	// Delete uploaded avatar, if any
+	// Remove the file left by the avatar upload this version no longer offers.
 	if user.HasUploadedAvatar() {
 		_ = os.Remove(filepath.Join(config.GetHomeDir(), "avatars", "users", filepath.Base(user.AvatarURL)))
 	}
@@ -347,13 +351,7 @@ func (user *User) DeleteProviderID(provider string) error {
 	}
 
 	if providerIDField, ok := providerIDFields[provider]; ok {
-		query := db.Model(&user).Update(providerIDField, nil)
-		// Only clear the avatar when it came from the provider, not when the
-		// user has uploaded their own.
-		if !user.HasUploadedAvatar() {
-			query = query.Update("avatar_url", nil)
-		}
-		return query.Error
+		return db.Model(&user).Update(providerIDField, nil).Error
 	}
 
 	return nil
@@ -381,8 +379,8 @@ func (user *User) GetStyle() *UserStyleDTO {
 	return style
 }
 
-// HasUploadedAvatar reports whether the user's AvatarURL refers to a manually
-// uploaded avatar (a bare filename) rather than an absolute OAuth provider URL.
+// HasUploadedAvatar reports whether AvatarURL is a bare filename, which is how
+// the removed avatar upload recorded its file. Only used to clean up after it.
 func (user *User) HasUploadedAvatar() bool {
 	return user.AvatarURL != "" && !strings.Contains(user.AvatarURL, "://")
 }

@@ -34,7 +34,6 @@ func (p *OAuth2Provider) RegisterProvider() error {
 			config.C.OAuth2IdField,
 			config.C.OAuth2NameField,
 			config.C.OAuth2EmailField,
-			config.C.OAuth2AvatarField,
 		),
 	)
 
@@ -80,9 +79,7 @@ func (p *OAuth2CallbackProvider) GetProviderUserSSHKeys() ([]string, error) {
 
 func (p *OAuth2CallbackProvider) UpdateUserDB(user *db.User) {
 	user.OAuth2ID = p.User.UserID
-	if p.User.AvatarURL != "" {
-		user.AvatarURL = p.User.AvatarURL
-	}
+	syncAvatarHash(user, p.User.Email)
 }
 
 // IsAdmin is false for generic servers: groups are provider specific.

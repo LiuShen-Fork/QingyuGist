@@ -74,10 +74,10 @@ func UpdateUser(ctx *context.Context) error {
 	if req.Email != nil {
 		email := strings.ToLower(strings.TrimSpace(*req.Email))
 		user.Email = email
-		// Gravatar key: hash of the lowercased email (or a random value when
-		// no email is set, matching EmailProcess).
+		// Gravatar key: the hash of the lowercased address, empty when there is
+		// no address (the account then shows the default avatar).
 		if email == "" {
-			user.MD5Hash = fmt.Sprintf("%x", md5.Sum([]byte(time.Now().String())))
+			user.MD5Hash = ""
 		} else {
 			user.MD5Hash = fmt.Sprintf("%x", md5.Sum([]byte(email)))
 		}

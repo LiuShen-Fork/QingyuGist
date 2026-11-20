@@ -180,7 +180,7 @@ func TestCmdAdminCreateUser_PasswordStdinAndFlagMutuallyExclusive(t *testing.T) 
 
 func TestGravatarHash(t *testing.T) {
 	require.Empty(t, gravatarHash(""))
-	require.Equal(t, fmt.Sprintf("%x", md5.Sum([]byte("User@Example.com"))), gravatarHash("User@Example.com"))
+	require.Equal(t, fmt.Sprintf("%x", md5.Sum([]byte("user@example.com"))), gravatarHash("User@Example.com"))
 	// A 32-char lowercase hex digest.
 	require.Regexp(t, `^[0-9a-f]{32}$`, gravatarHash("a@b.c"))
 }

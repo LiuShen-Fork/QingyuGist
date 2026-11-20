@@ -8,8 +8,8 @@
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {{ range $user := .likers }}
             <a href="{{ $.c.ExternalUrl }}/{{ profilePath $user.Username }}" class="bg-card hover:border-primary flex items-center gap-3 rounded-xl border p-3 transition-colors">
-                {{ if not (shouldGenerateAvatar $user $.DisableGravatar) }}
-                    <img class="size-10 shrink-0 rounded-full border object-cover" src="{{ avatarUrl $user $.DisableGravatar }}" alt="{{ $user.Username }}" />
+                {{ if not (shouldGenerateAvatar $user) }}
+                    <img class="size-10 shrink-0 rounded-full border object-cover" src="{{ avatarUrl $user }}" alt="{{ $user.Username }}" />
                 {{ else }}
                     <svg class="size-10 shrink-0 rounded-full border" data-jdenticon-value="{{ $user.Username }}" width="40" height="40"></svg>
                 {{ end }}

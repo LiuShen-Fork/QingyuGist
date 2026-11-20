@@ -97,7 +97,13 @@ const (
 	KeyRequireLogin           = "auth.require-login"
 	KeyAllowGistsWithoutLogin = "auth.allow-gists-without-login"
 	KeyDisableLoginForm       = "auth.disable-login-form"
-	KeyDisableGravatar        = "auth.disable-gravatar"
+
+	// Avatars are looked up by the MD5 hash of the account's email address. The
+	// provider is a setting rather than a hardcoded host, so a slow one can be
+	// swapped without a rebuild; "none" falls back to the generated identicon
+	// and a default image can stand in for accounts without an address.
+	KeyAvatarProvider = "avatar.provider"
+	KeyAvatarDefault  = "avatar.default"
 
 	// Third-party sign-in. Every provider has an enable switch plus the fields it
 	// needs; keys are derived with oauthKey so the surrounding code stays uniform.
@@ -243,7 +249,12 @@ var baseDefinitions = []Definition{
 	{Key: KeyRequireLogin, Kind: KindBool, Category: CategoryAuth, Label: "settings.auth.require_login", Help: "settings.auth.require_login_help"},
 	{Key: KeyAllowGistsWithoutLogin, Kind: KindBool, Category: CategoryAuth, Label: "settings.auth.allow_gists_without_login", Help: "settings.auth.allow_gists_without_login_help"},
 	{Key: KeyDisableLoginForm, Kind: KindBool, Category: CategoryAuth, Label: "settings.auth.disable_login_form", Help: "settings.auth.disable_login_form_help"},
-	{Key: KeyDisableGravatar, Kind: KindBool, Category: CategoryAuth, Label: "settings.auth.disable_gravatar", Help: "settings.auth.disable_gravatar_help"},
+	{Key: KeyAvatarProvider, Kind: KindEnum, Default: AvatarProviderWeAvatar, Category: CategoryAuth, Label: "settings.auth.avatar_provider", Help: "settings.auth.avatar_provider_help", Options: []Option{
+		{Value: AvatarProviderWeAvatar, Label: "settings.auth.avatar_weavatar"},
+		{Value: AvatarProviderGravatar, Label: "settings.auth.avatar_gravatar"},
+		{Value: AvatarProviderNone, Label: "settings.auth.avatar_generated"},
+	}},
+	{Key: KeyAvatarDefault, Kind: KindURL, Category: CategoryAuth, Label: "settings.auth.avatar_default", Help: "settings.auth.avatar_default_help", Placeholder: "https://example.com/avatar.png", Max: 300},
 
 	// Third-party sign-in lives in oauth.go: one enable switch plus credentials
 	// per provider, appended to the definitions below.
@@ -327,6 +338,10 @@ func init() {
 	}
 	empty := map[string]string{}
 	values.Store(&empty)
+
+	// Lets the API shapes report the same picture the templates draw (see
+	// db.AvatarURLBuilder — db cannot import this package).
+	db.AvatarURLBuilder = AvatarURL
 }
 
 // Definitions returns all setting definitions in declaration order.
@@ -369,8 +384,6 @@ func ResolveKey(key string) string {
 		return KeyAllowGistsWithoutLogin
 	case db.SettingDisableLoginForm:
 		return KeyDisableLoginForm
-	case db.SettingDisableGravatar:
-		return KeyDisableGravatar
 	}
 	return key
 }
@@ -384,6 +397,14 @@ func NormalizeLegacyValue(key, value string) (string, string) {
 	}
 	if key == db.SettingDisableSignup {
 		return KeyRegistrationMode, RegistrationModeOpen
+	}
+	// The old boolean switched Gravatar off entirely; its successor is the
+	// "generated avatars only" provider.
+	if key == db.SettingDisableGravatar {
+		if value == "1" {
+			return KeyAvatarProvider, AvatarProviderNone
+		}
+		return KeyAvatarProvider, AvatarProviderWeAvatar
 	}
 	return ResolveKey(key), value
 }
@@ -517,6 +538,13 @@ func defaultValues() map[string]string {
 		httpGit = "1"
 	}
 
+	// An install that had switched Gravatar off keeps generated avatars after
+	// the upgrade; the old boolean has no other successor.
+	avatarProvider := AvatarProviderWeAvatar
+	if boolFromLegacy(db.SettingDisableGravatar, "0") == "1" {
+		avatarProvider = AvatarProviderNone
+	}
+
 	values := map[string]string{
 		KeySiteName:               config.C.CustomName,
 		KeySiteExternalURL:        config.C.ExternalUrl,
@@ -526,7 +554,7 @@ func defaultValues() map[string]string {
 		KeyRequireLogin:           boolFromLegacy(db.SettingRequireLogin, "0"),
 		KeyAllowGistsWithoutLogin: boolFromLegacy(db.SettingAllowGistsWithoutLogin, "0"),
 		KeyDisableLoginForm:       boolFromLegacy(db.SettingDisableLoginForm, "0"),
-		KeyDisableGravatar:        boolFromLegacy(db.SettingDisableGravatar, "0"),
+		KeyAvatarProvider:         avatarProvider,
 		KeyUploadEnabled:          uploadEnabled,
 		KeyCommentsEnabled:        commentsEnabled,
 		KeyCommentsNotifyOwner:    commentNotify,
@@ -566,7 +594,6 @@ func mirrorLegacy(v map[string]string) error {
 		KeyRequireLogin:           db.SettingRequireLogin,
 		KeyAllowGistsWithoutLogin: db.SettingAllowGistsWithoutLogin,
 		KeyDisableLoginForm:       db.SettingDisableLoginForm,
-		KeyDisableGravatar:        db.SettingDisableGravatar,
 	}
 	for key, legacy := range pairs {
 		val := v[key]
@@ -582,7 +609,15 @@ func mirrorLegacy(v map[string]string) error {
 	if v[KeyRegistrationMode] == RegistrationModeClosed {
 		disableSignup = "1"
 	}
-	return db.UpdateSetting(db.SettingDisableSignup, disableSignup)
+	if err := db.UpdateSetting(db.SettingDisableSignup, disableSignup); err != nil {
+		return err
+	}
+
+	disableGravatar := "0"
+	if v[KeyAvatarProvider] == AvatarProviderNone {
+		disableGravatar = "1"
+	}
+	return db.UpdateSetting(db.SettingDisableGravatar, disableGravatar)
 }
 
 // applyLocked copies the boot config and overlays the settings that mirror it.
@@ -955,7 +990,87 @@ func SignupEnabled() bool           { return !ClosedRegistration() }
 func RequireLogin() bool           { return Bool(KeyRequireLogin) }
 func AllowGistsWithoutLogin() bool { return Bool(KeyAllowGistsWithoutLogin) }
 func DisableLoginForm() bool       { return Bool(KeyDisableLoginForm) }
-func DisableGravatar() bool        { return Bool(KeyDisableGravatar) }
+
+// Avatar providers. Both are Gravatar protocol services: the picture is derived
+// from the MD5 hash of the account's email address, so the app never stores or
+// proxies an image and no provider account has to be linked.
+const (
+	AvatarProviderWeAvatar = "weavatar"
+	AvatarProviderGravatar = "gravatar"
+	AvatarProviderNone     = "none"
+)
+
+var avatarProviderHosts = map[string]string{
+	AvatarProviderWeAvatar: "https://weavatar.com/avatar",
+	AvatarProviderGravatar: "https://www.gravatar.com/avatar",
+}
+
+var avatarProviderSites = map[string]string{
+	AvatarProviderWeAvatar: "https://weavatar.com",
+	AvatarProviderGravatar: "https://gravatar.com",
+}
+
+// AvatarProvider returns the configured provider key, normalised so a value
+// from an older release or a hand-edited row never leaves the app guessing.
+func AvatarProvider() string {
+	switch Get(KeyAvatarProvider) {
+	case AvatarProviderWeAvatar, AvatarProviderGravatar, AvatarProviderNone:
+		return Get(KeyAvatarProvider)
+	}
+	return AvatarProviderWeAvatar
+}
+
+// AvatarProviderHost returns the base URL of the configured provider, and ""
+// when avatars are generated locally.
+func AvatarProviderHost() string { return avatarProviderHosts[AvatarProvider()] }
+
+// AvatarProviderSite returns the provider's home page, where an account holder
+// changes their picture. Empty when avatars are generated locally.
+func AvatarProviderSite() string { return avatarProviderSites[AvatarProvider()] }
+
+// AvatarProviderDisplayName is the provider's name as shown to end users.
+func AvatarProviderDisplayName() string {
+	switch AvatarProvider() {
+	case AvatarProviderWeAvatar:
+		return "WeAvatar"
+	case AvatarProviderGravatar:
+		return "Gravatar"
+	}
+	return ""
+}
+
+// AvatarDefaultURL is the picture shown for accounts without an email address.
+// Empty means they keep the generated identicon.
+func AvatarDefaultURL() string { return strings.TrimSpace(Get(KeyAvatarDefault)) }
+
+// AvatarURL builds the address of an account's picture from the Gravatar hash,
+// or returns the configured fallback image, or "" when one should be drawn
+// locally.
+func AvatarURL(hash string) string {
+	return avatarURL(AvatarProvider(), AvatarDefaultURL(), hash)
+}
+
+// avatarURL is AvatarURL with the settings passed in, so the URL rules can be
+// tested without a database.
+func avatarURL(provider, fallback, hash string) string {
+	fallback = strings.TrimSpace(fallback)
+	host := avatarProviderHosts[provider]
+	if host == "" || hash == "" {
+		return fallback
+	}
+
+	// Gravatar and WeAvatar both understand d= for the fallback picture; a URL
+	// there must be escaped, a keyword must not.
+	src := host + "/" + hash + "?s=200"
+	switch {
+	case fallback == "":
+		return src + "&d=identicon"
+	case strings.HasPrefix(fallback, "http://"), strings.HasPrefix(fallback, "https://"):
+		return src + "&d=" + url.QueryEscape(fallback)
+	default:
+		return src + "&d=" + fallback
+	}
+}
 
 func UploadEnabled() bool      { return Bool(KeyUploadEnabled) }
 func UploadMediaAllowed() bool { return Bool(KeyUploadAllowMedia) }

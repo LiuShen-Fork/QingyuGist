@@ -70,7 +70,6 @@ var oauthProviders = []oauthProviderSpec{
 		{Key: "id-field", Kind: KindString, Default: "id", Placeholder: "id", Max: 100},
 		{Key: "name-field", Kind: KindString, Default: "username", Placeholder: "username", Max: 100},
 		{Key: "email-field", Kind: KindString, Default: "email", Placeholder: "email", Max: 100},
-		{Key: "avatar-field", Kind: KindString, Default: "avatar_url", Placeholder: "avatar_url", Max: 100},
 	}},
 }
 
@@ -165,7 +164,6 @@ var oauthStringFields = map[string]func(c *config.Config) *string{
 	"oauth2.id-field":     func(c *config.Config) *string { return &c.OAuth2IdField },
 	"oauth2.name-field":   func(c *config.Config) *string { return &c.OAuth2NameField },
 	"oauth2.email-field":  func(c *config.Config) *string { return &c.OAuth2EmailField },
-	"oauth2.avatar-field": func(c *config.Config) *string { return &c.OAuth2AvatarField },
 }
 
 // oauthConfigValue reads the config value backing a definition, used to seed

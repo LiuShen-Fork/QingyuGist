@@ -126,7 +126,6 @@ type config struct {
 	OAuth2IdField     string `env:"QYG_OAUTH2_ID_FIELD"`
 	OAuth2NameField   string `env:"QYG_OAUTH2_NAME_FIELD"`
 	OAuth2EmailField  string `env:"QYG_OAUTH2_EMAIL_FIELD"`
-	OAuth2AvatarField string `env:"QYG_OAUTH2_AVATAR_FIELD"`
 
 	// Per-provider switches. They are panel-only (no environment variable):
 	// the admin panel writes them into the database and applies them here.
@@ -254,7 +253,6 @@ func configWithDefaults() (*config, error) {
 	c.OAuth2IdField = "id"
 	c.OAuth2NameField = "username"
 	c.OAuth2EmailField = "email"
-	c.OAuth2AvatarField = "avatar_url"
 
 	c.MetricsEnabled = false
 	c.MetricsHost = "0.0.0.0"

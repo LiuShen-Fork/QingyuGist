@@ -8,8 +8,8 @@
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {{ range $gist := .forks }}
             <a href="{{ $.c.ExternalUrl }}/{{ $gist.User.Username }}/{{ $gist.Identifier }}" class="bg-card hover:border-primary flex items-center gap-3 rounded-xl border p-3 transition-colors">
-                {{ if not (shouldGenerateAvatar $gist.User $.DisableGravatar) }}
-                    <img class="size-10 shrink-0 rounded-full border object-cover" src="{{ avatarUrl $gist.User $.DisableGravatar }}" alt="{{ $gist.User.Username }}" />
+                {{ if not (shouldGenerateAvatar $gist.User) }}
+                    <img class="size-10 shrink-0 rounded-full border object-cover" src="{{ avatarUrl $gist.User }}" alt="{{ $gist.User.Username }}" />
                 {{ else }}
                     <svg class="size-10 shrink-0 rounded-full border" data-jdenticon-value="{{ $gist.User.Username }}" width="40" height="40"></svg>
                 {{ end }}
