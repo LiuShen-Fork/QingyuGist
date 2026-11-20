@@ -14,26 +14,28 @@ type actionView struct {
 	Running  bool   // currently in progress in this instance
 	Periodic bool   // also runs automatically on a schedule
 	Spec     string // raw schedule spec, e.g. "@every 72h"; "" if not periodic
+	Confirm  bool   // asks for confirmation, because the action deletes data
 }
 
 // adminActions lists every action shown on the actions page, in display order.
 // The Path values match the POST routes registered in the router.
 var adminActions = []struct {
-	Type int
-	Path string
-	Key  string
-	Icon string
+	Type    int
+	Path    string
+	Key     string
+	Icon    string
+	Confirm bool
 }{
-	{actions.SyncReposFromFS, "sync-fs", "admin.actions.sync-fs", "folder"},
-	{actions.SyncReposFromDB, "sync-db", "admin.actions.sync-db", "database"},
-	{actions.GitGcRepos, "gc-repos", "admin.actions.git-gc", "trash"},
-	{actions.SyncGistPreviews, "sync-previews", "admin.actions.sync-previews", "eye"},
-	{actions.ResetHooks, "reset-hooks", "admin.actions.reset-hooks", "link"},
-	{actions.IndexGists, "index-gists", "admin.actions.index-gists", "search"},
-	{actions.SyncGistLanguages, "sync-languages", "admin.actions.sync-gist-languages", "language"},
-	{actions.DeleteExpiredGists, "delete-expired-gists", "admin.actions.delete-expired-gists", "calendar"},
-	{actions.SyncSSHKeys, "sync-ssh-keys", "admin.actions.sync-ssh-keys", "key"},
-	{actions.BackfillActivity, "backfill-activity", "admin.actions.backfill-activity", "activity"},
+	{actions.SyncReposFromFS, "sync-fs", "admin.actions.sync-fs", "folder", true},
+	{actions.SyncReposFromDB, "sync-db", "admin.actions.sync-db", "database", true},
+	{actions.GitGcRepos, "gc-repos", "admin.actions.git-gc", "trash", false},
+	{actions.SyncGistPreviews, "sync-previews", "admin.actions.sync-previews", "eye", false},
+	{actions.ResetHooks, "reset-hooks", "admin.actions.reset-hooks", "link", false},
+	{actions.IndexGists, "index-gists", "admin.actions.index-gists", "search", false},
+	{actions.SyncGistLanguages, "sync-languages", "admin.actions.sync-gist-languages", "language", false},
+	{actions.DeleteExpiredGists, "delete-expired-gists", "admin.actions.delete-expired-gists", "calendar", true},
+	{actions.SyncSSHKeys, "sync-ssh-keys", "admin.actions.sync-ssh-keys", "key", false},
+	{actions.BackfillActivity, "backfill-activity", "admin.actions.backfill-activity", "activity", false},
 }
 
 func AdminActions(ctx *context.Context) error {
@@ -62,6 +64,7 @@ func AdminActions(ctx *context.Context) error {
 			Running:  running,
 			Periodic: actions.IsPeriodic(a.Type),
 			Spec:     actions.Spec(a.Type),
+			Confirm:  a.Confirm,
 		})
 	}
 
@@ -119,5 +122,8 @@ func runAdminAction(ctx *context.Context, actionType int, legacyFlashKey string)
 		ctx.AddFlash(ctx.Tr(legacyFlashKey), "success")
 		return ctx.RedirectTo("/admin")
 	}
+	// The task itself runs in the background, so the only honest confirmation is
+	// that it has been started; the list keeps polling until it reports idle.
+	ctx.AddFlash(ctx.Tr("admin.actions.started"), "success")
 	return ctx.RedirectTo("/admin/actions?run=1")
 }

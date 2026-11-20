@@ -6,9 +6,32 @@ import (
 	"time"
 
 	"github.com/LiuShen-Fork/QingyuGist/internal/db"
+	"github.com/LiuShen-Fork/QingyuGist/internal/settings"
 	webtest "github.com/LiuShen-Fork/QingyuGist/internal/web/test"
 	"github.com/stretchr/testify/require"
 )
+
+// A token would be useless while the API is switched off, so the route must
+// refuse even when the form is posted directly.
+func TestCreateTokenWhileAPIDisabled(t *testing.T) {
+	s := webtest.Setup(t)
+	defer webtest.Teardown(t)
+
+	s.Register(t, "thomas")
+	s.Login(t, "thomas")
+
+	require.NoError(t, settings.Set(settings.KeyAPIEnabled, "0"))
+	defer func() { require.NoError(t, settings.Set(settings.KeyAPIEnabled, "1")) }()
+
+	s.Request(t, "POST", "/settings/access-tokens", db.AccessTokenDTO{
+		Name:      "should-not-exist",
+		ScopeGist: db.ReadPermission,
+	}, 302)
+
+	tokens, err := db.GetAccessTokensByUserID(1)
+	require.NoError(t, err)
+	require.Empty(t, tokens)
+}
 
 func TestAccessTokensCRUD(t *testing.T) {
 	s := webtest.Setup(t)

@@ -62,7 +62,9 @@
 
                 {{ if .disableForm }}
                 <div class="border-border bg-muted/40 text-muted-foreground mb-6 rounded-lg border border-dashed p-4 text-sm leading-6">
-                    {{ if and (not .isLoginPage) .OAuthOnlyRegistration }}
+                    {{ if not $hasOauth }}
+                        {{ .locale.Tr "auth.no-sign-in-method" }}
+                    {{ else if and (not .isLoginPage) .OAuthOnlyRegistration }}
                         {{ if $hasOauth }}{{ .locale.Tr "auth.oauth-only-notice" }}{{ else }}{{ .locale.Tr "auth.oauth-only-no-provider" }}{{ end }}
                     {{ else }}
                         {{ .locale.Tr "auth.form-disabled" }}

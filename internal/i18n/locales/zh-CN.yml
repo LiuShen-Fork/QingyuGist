@@ -86,6 +86,12 @@ gist.revision.file-renamed-no-changes: 文件已重命名，但内容与之前�
 gist.revision.empty-file: 文件为空
 gist.revision.no-changes: 没有任何变更
 gist.revision.no-revisions: 无可供显示的修订
+gist.revision.files-changed: '%d 个文件被修改'
+gist.revision.files-changed-one: '%d 个文件被修改'
+gist.revision.insertions: 新增 %d 行
+gist.revision.insertions-one: 新增 %d 行
+gist.revision.deletions: 删除 %d 行
+gist.revision.deletions-one: 删除 %d 行
 
 settings: 设置
 settings.header.account: 账号设置
@@ -137,8 +143,12 @@ settings.token-expires-at: 过期于
 settings.token-no-expiration: 永不过期
 settings.token-expired: 已过期
 settings.token-created: 令牌已创建，请立即复制保存，离开本页后将无法再次查看！
+settings.token-created-title: 你的新令牌
+settings.token-created-help: 请立即复制保存，该令牌只显示这一次，之后无法找回。
+settings.token-copy: 复制
+settings.token-copied: 已复制
 settings.token-deleted: 访问令牌已删除
-settings.api-disabled-warning: REST API 当前已禁用，在此处创建的令牌需要管理员启用 API 后才能使用。
+settings.api-disabled-warning: REST API 当前已禁用，请在后台启用后才能创建和使用访问令牌。
 settings.api-disabled-go-admin: 前往管理后台启用
 
 auth.signup-disabled: 管理员已禁用注册
@@ -249,6 +259,8 @@ admin.invitations: '邀请'
 admin.moderation: 审核
 admin.moderation.title: 审核
 admin.moderation.subtitle: 记录每一次送审的结果、原因与耗时。
+admin.moderation.disabled: 内容审核当前处于关闭状态，新发布的内容不会被送审，下方列表为历史记录。
+admin.moderation.enable: 前往开启
 admin.moderation.history: 审核记录
 admin.moderation.attempted_at: 时间
 admin.moderation.result: 结果
@@ -292,7 +304,9 @@ admin.invitations.code: '邀请码'
 admin.invitations.copy_link: '复制链接'
 admin.invitations.uses: '使用次数'
 admin.invitations.expired: '已过期'
+admin.invitations.used_up: '已用完'
 flash.admin.user-deleted: '用户已被删除'
+flash.admin.cannot-delete-self: 无法删除当前登录的账号。
 flash.admin.gist-deleted: 'Gist 已被删除'
 flash.admin.invitation-created: '邀请已被创建'
 flash.admin.invitation-deleted: '邀请已被删除'
@@ -307,6 +321,7 @@ flash.auth.username-exists: '用户名已存在'
 flash.auth.invalid-credentials: '无效的凭证'
 flash.auth.account-linked-oauth: '帐户已关联到 %s'
 flash.auth.account-unlinked-oauth: '帐户与 %s 解除关联'
+flash.auth.cannot-unlink-last: 请先设置密码，再解除唯一的登录方式。
 flash.auth.user-sshkeys-not-retrievable: '无法获取用户密钥'
 flash.auth.user-sshkeys-not-created: '无法创建 SSH 密钥'
 flash.auth.must-be-logged-in: '您必须登录才能访问 Gist'
@@ -321,6 +336,7 @@ flash.user.ssh-key-deleted: 'SSH 密钥已删除'
 flash.user.password-updated: '密码已更新'
 flash.user.current-password-invalid: '当前密码不正确'
 flash.user.username-updated: '用户名已更新'
+flash.settings.account-deleted: 你的账号及其中的所有内容已被删除。
 validation.is-too-long: '字段 %s 太长'
 validation.should-not-be-empty: '字段 %s 不能为空'
 validation.should-not-include-sub-directory: '字段 %s 不应包含子目录'
@@ -387,7 +403,7 @@ gist.search.placeholder.unlisted: 未列出的
 admin.dashboard: 概览
 admin.dashboard-subtitle: 实例的实时运行状态。
 admin.back-to-dashboard: 返回概览
-admin.config-description: 配置保存在数据库中并即时生效，无需重启或修改配置文件。
+admin.config-description: 配置保存在数据库中，保存后立即生效；个别需要重启的选项会单独标注。
 admin.config-save-hint: 所有字段会先校验，再统一写入。
 admin.oauth-description: 每个提供商都有独立的开关，开启后标签右上角会亮起绿点。请先在服务商处登记回调地址，再打开开关。
 admin.restart-required: 需要重启生效
@@ -639,6 +655,7 @@ auth.brand-tagline: 一个安静的代码片段之家，运行在你自己掌控
 auth.oauth-only-notice: 本地注册已关闭，请使用下方任一第三方账户创建账号。
 auth.oauth-only-no-provider: 本地注册已关闭。请联系管理员配置第三方登录。
 auth.form-disabled: 密码登录已禁用，请使用第三方账户继续。
+auth.no-sign-in-method: 目前没有任何可用的登录方式，请联系管理员开启密码登录或配置第三方登录。
 auth.or: 或
 auth.continue-with: 使用
 auth.no-account: 还没有账户？
@@ -667,6 +684,8 @@ admin.actions.running: 运行中
 admin.actions.subtitle: 手动运行维护任务。部分任务也会按计划自动运行。
 admin.actions.sync-db: 删除数据库中没有记录的仓库
 admin.actions.sync-fs: 删除磁盘上没有仓库的 Gist
+admin.actions.confirm: 该任务会删除数据且无法撤销，确定继续吗？
+admin.actions.started: 任务已开始，将在后台运行。
 admin.actions.sync-ssh-keys: 重新生成 authorized_keys 文件
 auth.oauth.already-have-account: 如果你已有 QingyuGist 账号，请先登录，然后在设置中关联你的 %s 账号。
 auth.oauth.cancel: 取消
@@ -746,6 +765,7 @@ header.menu.users: 用户
 settings.avatar: 头像
 settings.avatar-help: 上传自定义头像以替代 Gravatar
 settings.avatar-remove: 移除头像
+settings.avatar-remove-confirm: 确定要移除头像吗？如果绑定了第三方账号，将重新使用它们提供头像。
 settings.header.authentication: 登录与认证
 settings.style.added-lines-color: 新增行颜色
 settings.style.default-order: 默认排序方向
@@ -807,6 +827,7 @@ admin.users.subtitle: 管理实例中的账户与权限。
 admin.users.all: 所有用户
 admin.users.admin: 管理员
 admin.users.empty: 暂无用户。
+admin.users.you: 当前账号
 admin.gists.subtitle: 浏览并管理所有 Gist，包括私有内容。
 admin.gists.all: 所有 Gist
 admin.gists.empty: 暂无 Gist。
@@ -825,6 +846,7 @@ sidebar.explore: 发现
 settings.link-oidc-account: 关联 OpenID 账号
 settings.unlink-oidc-account: 解除 OpenID 关联
 settings.unlink-oauth-confirm: 确定要解除 %s 账号的关联吗？如果这是你登录 QingyuGist 的唯一方式，你可能将无法再访问账户。
+settings.unlink-last-method-help: 你的账号尚未设置密码。请先在上方设置密码，再解除唯一的登录方式。
 settings.site.repository_url: 源码仓库
 settings.site.repository_url_help: 页脚 QingyuGist 链接指向的地址，留空则隐藏。
 settings.site.links: 页脚链接

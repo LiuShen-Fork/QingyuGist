@@ -583,21 +583,18 @@ func applyLocked(v map[string]string) {
 
 	applyOAuthSettings(&next, v)
 
-	// LDAP
-	if s := trimmed(KeyLDAPURL); s != "" {
-		next.LDAPUrl = s
-	}
-	if s := trimmed(KeyLDAPBindDN); s != "" {
-		next.LDAPBindDn = s
-	}
+	// LDAP. Unlike the credentials above, clearing the URL has to take effect:
+	// an empty URL is how sign-in through LDAP is switched off.
+	next.LDAPUrl = trimmed(KeyLDAPURL)
+	next.LDAPBindDn = trimmed(KeyLDAPBindDN)
 	if s := v[KeyLDAPBindPassword]; s != "" {
 		next.LDAPBindCredentials = s
 	}
-	if s := trimmed(KeyLDAPSearchBase); s != "" {
-		next.LDAPSearchBase = s
-	}
+	next.LDAPSearchBase = trimmed(KeyLDAPSearchBase)
 	if s := trimmed(KeyLDAPSearchFilter); s != "" {
 		next.LDAPSearchFilter = s
+	} else {
+		next.LDAPSearchFilter = DefaultLDAPSearchFilter
 	}
 
 	// Search index

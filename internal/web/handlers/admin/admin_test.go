@@ -127,6 +127,21 @@ func TestAdminUserOperations(t *testing.T) {
 	s.Register(t, "thomas")
 	s.Register(t, "nonadmin")
 
+	// An admin deleting their own account would lock the instance out of its
+	// only administrator, so the route refuses it.
+	t.Run("CannotDeleteSelf", func(t *testing.T) {
+		s.Login(t, "thomas")
+
+		admin, err := db.GetUserByUsername("thomas")
+		require.NoError(t, err)
+
+		s.Request(t, "POST", "/admin/users/"+strconv.FormatUint(uint64(admin.ID), 10)+"/delete", nil, 302)
+
+		count, err := db.CountAll(db.User{})
+		require.NoError(t, err)
+		require.Equal(t, int64(2), count)
+	})
+
 	t.Run("DeleteUser", func(t *testing.T) {
 		s.Login(t, "nonadmin")
 

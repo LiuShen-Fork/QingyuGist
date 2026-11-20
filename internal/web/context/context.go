@@ -147,6 +147,9 @@ func (ctx *Context) setErrorFlashes() {
 	ctx.SetData("flashErrors", sess.Flashes("error"))
 	ctx.SetData("flashSuccess", sess.Flashes("success"))
 	ctx.SetData("flashWarnings", sess.Flashes("warning"))
+	// "secret" flashes carry values that must stay readable until the user has
+	// copied them, so the page renders them in place instead of as a toast.
+	ctx.SetData("flashSecrets", sess.Flashes("secret"))
 
 	_ = sess.Save(ctx.Request(), ctx.Response())
 }

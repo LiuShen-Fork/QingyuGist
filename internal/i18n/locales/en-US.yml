@@ -167,12 +167,19 @@ gist.revision.empty-file: Empty file
 gist.revision.binary-file-changes: Binary file changes are not shown
 gist.revision.no-changes: No changes
 gist.revision.no-revisions: No revisions to show
+gist.revision.files-changed: '%d files changed'
+gist.revision.files-changed-one: '%d file changed'
+gist.revision.insertions: '%d insertions'
+gist.revision.insertions-one: '%d insertion'
+gist.revision.deletions: '%d deletions'
+gist.revision.deletions-one: '%d deletion'
 gist.revision-of: Revision of %s
 
 settings: Settings
 settings.avatar: Avatar
 settings.avatar-help: Upload a custom avatar to override Gravatar
 settings.avatar-remove: Remove avatar
+settings.avatar-remove-confirm: Remove your profile picture? Your provider avatar will be used again if there is one.
 settings.email: Email
 settings.email-help: Used for commits and Gravatar
 settings.email-set: Set email
@@ -249,8 +256,12 @@ settings.token-expires-at: Expires
 settings.token-no-expiration: No expiration
 settings.token-expired: expired
 settings.token-created: Token created, make sure to copy it now, you won't be able to see it again!
+settings.token-created-title: Your new token
+settings.token-created-help: Copy it now — it is shown only once and cannot be recovered.
+settings.token-copy: Copy
+settings.token-copied: Copied
 settings.token-deleted: Access token deleted
-settings.api-disabled-warning: The REST API is currently disabled. Tokens you create here cannot be used until an administrator enables it.
+settings.api-disabled-warning: The REST API is disabled. Enable it in the admin panel to create and use access tokens.
 settings.api-disabled-go-admin: Open admin configuration
 
 auth.signup-disabled: Administrator has disabled signing up
@@ -358,6 +369,8 @@ admin.invitations: Invitations
 admin.moderation: Moderation
 admin.moderation.title: Moderation
 admin.moderation.subtitle: Every review the provider handled, with its verdict, reason and latency.
+admin.moderation.disabled: Content moderation is turned off, so new gists are not reviewed. The entries below are history.
+admin.moderation.enable: Turn it on
 admin.moderation.history: Review log
 admin.moderation.attempted_at: Time
 admin.moderation.result: Result
@@ -395,6 +408,8 @@ admin.versions: Versions
 admin.ssh_keys: SSH keys
 admin.stats: Stats
 admin.actions: Actions
+admin.actions.confirm: This task deletes data and cannot be undone. Continue?
+admin.actions.started: The task has started and runs in the background.
 admin.actions.subtitle: Run maintenance tasks manually. Some tasks also run automatically on a schedule.
 admin.actions.run: Run
 admin.actions.running: Running
@@ -442,9 +457,11 @@ admin.invitations.code: Code
 admin.invitations.copy_link: Copy link
 admin.invitations.uses: Uses
 admin.invitations.expired: Expired
+admin.invitations.used_up: Used up
 admin.invitations.delete_confirm: Do you want to delete this invitation ?
 
 flash.admin.user-deleted: User has been deleted
+flash.admin.cannot-delete-self: You cannot delete the account you are signed in with.
 flash.admin.gist-deleted: Gist has been deleted
 flash.admin.invitation-created: Invitation has been created
 flash.admin.invitation-deleted: Invitation has been deleted
@@ -460,6 +477,7 @@ flash.auth.username-exists: Username already exists
 flash.auth.invalid-credentials: Invalid credentials
 flash.auth.account-linked-oauth: Account linked to %s
 flash.auth.account-unlinked-oauth: Account unlinked from %s
+flash.auth.cannot-unlink-last: Set a password before unlinking your only sign-in method.
 flash.auth.user-sshkeys-not-retrievable: Could not import SSH keys from your provider. Your account was created, but you may need to add your SSH keys manually.
 flash.auth.user-sshkeys-not-created: Could not create ssh key
 flash.auth.must-be-logged-in: You must be logged in to access gists
@@ -490,6 +508,7 @@ flash.user.ssh-key-deleted: SSH key deleted
 flash.user.password-updated: Password updated
 flash.user.current-password-invalid: The current password is incorrect
 flash.user.username-updated: Username updated
+flash.settings.account-deleted: Your account and everything in it has been deleted.
 
 validation.is-too-long: Field %s is too long
 validation.should-not-be-empty: Field %s should not be empty
@@ -508,7 +527,7 @@ html.title.admin-panel: Admin panel
 admin.dashboard: Dashboard
 admin.dashboard-subtitle: A live overview of this instance.
 admin.back-to-dashboard: Back to dashboard
-admin.config-description: Stored in the database and applied instantly — no restart or configuration file needed.
+admin.config-description: Stored in the database and applied immediately. Options that need it say so and take effect after a restart.
 admin.config-save-hint: Every field is validated before anything is written.
 admin.oauth-description: Every provider has its own switch. A green dot marks the providers that are on; register the client with the provider before switching it on.
 admin.restart-required: Requires a restart
@@ -762,6 +781,7 @@ auth.brand-tagline: A quiet home for your snippets, on a server you control.
 auth.oauth-only-notice: Local sign-up is disabled. Continue with one of the providers below to create an account.
 auth.oauth-only-no-provider: Local sign-up is disabled. Ask an administrator to configure a third-party provider.
 auth.form-disabled: The sign-in form is disabled. Use a third-party provider to continue.
+auth.no-sign-in-method: No sign-in method is available. Ask an administrator to enable the sign-in form or to configure a third-party provider.
 auth.or: or
 auth.continue-with: Continue with
 auth.no-account: New here?
@@ -822,6 +842,7 @@ admin.users.subtitle: Manage the accounts and permissions on this instance.
 admin.users.all: All users
 admin.users.admin: Admin
 admin.users.empty: No users yet.
+admin.users.you: You
 admin.gists.subtitle: Browse and manage every gist, including private ones.
 admin.gists.all: All gists
 admin.gists.empty: No gists yet.
@@ -840,6 +861,7 @@ sidebar.explore: Explore
 settings.link-oidc-account: Link OpenID account
 settings.unlink-oidc-account: Unlink OpenID account
 settings.unlink-oauth-confirm: Are you sure you want to unlink your %s account? You may lose access to QingyuGist if it is your only way to log in.
+settings.unlink-last-method-help: Your account has no password. Set one above before unlinking the only account you can sign in with.
 settings.site.repository_url: Source repository
 settings.site.repository_url_help: Linked from the QingyuGist item in the site footer. Leave empty to hide it.
 settings.site.links: Footer links

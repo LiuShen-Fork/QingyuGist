@@ -8,14 +8,21 @@
   through a dedicated SSH host no longer needs an environment variable
 - Migration 4 adds the unique index on normalized usernames that earlier
   releases declared but never created, after checking for duplicates
+- A freshly created access token is shown in a panel that stays on the page,
+  with a copy button, instead of a toast that vanished after a few seconds and
+  lost the only copy of the plaintext token
 
 ### Changed
+- Pagination, empty states and wording across the admin panel: broadcasts are
+  paginated instead of silently cut at 50, the moderation page says when
+  moderation is switched off, an invitation is labelled "used up" rather than
+  "expired", and revision summaries follow the interface language
+
+### Fixed
 - Indexed columns now carry explicit sizes and the database is indexed for the
   queries that run on every request: tokens by hash, gists by owner, date and
   moderation state, users by email and by each third-party account id. Existing
   databases are migrated on start
-
-### Fixed
 - Deleting an account left its two-factor secret behind and failed with a
   foreign-key error, so an account with 2FA enabled could not be deleted at all;
   notifications, read markers and activity rows were left orphaned as well
@@ -23,6 +30,14 @@
   (a comma instead of a semicolon), so neither unique constraint nor index was
   ever created. API requests that look a token up by hash no longer scan the
   whole table
+- The third-party sign-up page showed an empty provider name, LDAP could not be
+  switched off once a server URL had been saved, and an OAuth-only account could
+  unlink its sole sign-in method and lock itself out
+- Administrators could delete their own account, and the destructive maintenance
+  actions ran without asking for confirmation
+- Notification pagination linked to `//notifications?page=2`
+- Passkey registration ignored a failed response from the server and reported a
+  bare `undefined` instead of the reason
 
 ## [1.0.4](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.0.4) - 2026-11-20
 

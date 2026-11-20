@@ -41,7 +41,7 @@
     <section class="bg-card overflow-hidden rounded-xl border">
         <div class="flex items-center justify-between gap-3 border-b px-5 py-3">
             <h2 class="text-sm font-medium">{{ .locale.Tr "admin.notifications.sent" }}</h2>
-            <span class="text-muted-foreground text-xs tabular-nums">{{ len .broadcasts }}</span>
+            <span class="text-muted-foreground text-xs tabular-nums">{{ .broadcastTotal }}</span>
         </div>
         {{ if .broadcasts }}
         <ul class="divide-y">
@@ -67,6 +67,7 @@
             </li>
             {{ end }}
         </ul>
+        {{ template "pagination" . }}
         {{ else }}
         <div class="text-muted-foreground flex flex-col items-center gap-3 px-5 py-16 text-center">
             <span class="bg-muted flex size-12 items-center justify-center rounded-full">

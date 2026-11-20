@@ -174,10 +174,18 @@ func MarkAllNotificationsRead(userID uint) error {
 
 // GetBroadcastNotifications lists what administrators have sent, newest first,
 // for the admin page.
-func GetBroadcastNotifications(limit int) ([]*Notification, error) {
+func GetBroadcastNotifications(limit, offset int) ([]*Notification, error) {
 	rows := make([]*Notification, 0, limit)
-	err := db.Where("kind = ?", "broadcast").Order("created_at DESC, id DESC").Limit(limit).Find(&rows).Error
+	err := db.Where("kind = ?", "broadcast").Order("created_at DESC, id DESC").
+		Limit(limit).Offset(offset).Find(&rows).Error
 	return rows, err
+}
+
+// CountBroadcastNotifications counts the broadcasts shown on the admin page.
+func CountBroadcastNotifications() (int64, error) {
+	var total int64
+	err := db.Model(&Notification{}).Where("kind = ?", "broadcast").Count(&total).Error
+	return total, err
 }
 
 // DeleteNotification removes a broadcast (read records cascade by hand).

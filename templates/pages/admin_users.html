@@ -34,6 +34,7 @@
                         </td>
                         <td class="text-muted-foreground hidden px-5 py-3 whitespace-nowrap sm:table-cell">{{ $user.CreatedAt | humanDate }}</td>
                         <td class="px-5 py-3 text-right">
+                            {{ if ne $user.ID $.userLogged.ID }}
                             <form action="{{ $.c.ExternalUrl }}/admin/users/{{ $user.ID }}/delete" method="POST">
                                 {{ $.csrfHtml }}
                                 <button type="submit" class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex size-8 items-center justify-center rounded-md transition-colors"
@@ -43,6 +44,9 @@
                                     <span class="sr-only">{{ $.locale.Tr "admin.delete" }}</span>
                                 </button>
                             </form>
+                            {{ else }}
+                            <span class="text-muted-foreground text-xs whitespace-nowrap">{{ $.locale.Tr "admin.users.you" }}</span>
+                            {{ end }}
                         </td>
                     </tr>
                     {{ end }}

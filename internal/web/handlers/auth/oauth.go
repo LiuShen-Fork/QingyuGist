@@ -350,6 +350,13 @@ func OauthUnlink(ctx *context.Context) error {
 	currUser := ctx.User
 
 	if provider.UserHasProvider(currUser) {
+		// Accounts created through a provider have no password; unlinking the
+		// last identity would leave them with no way back in.
+		if currUser.Password == "" && currUser.LinkedProviderCount() <= 1 {
+			ctx.AddFlash(ctx.Tr("flash.auth.cannot-unlink-last"), "error")
+			return ctx.RedirectTo("/settings/authentication")
+		}
+
 		if err := currUser.DeleteProviderID(providerStr); err != nil {
 			return ctx.ErrorRes(500, "Cannot unlink account from "+oauth.ProviderDisplayName(providerStr), err)
 		}

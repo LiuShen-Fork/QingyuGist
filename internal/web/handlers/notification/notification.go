@@ -41,7 +41,7 @@ func List(ctx *context.Context) error {
 		items = append(items, toItem(ctx, row))
 	}
 
-	if err := handlers.Paginate(ctx, items, pageInt, perPage, "notifications", "/notifications", 2, nil); err != nil {
+	if err := handlers.Paginate(ctx, items, pageInt, perPage, "notifications", "notifications", 2, nil); err != nil {
 		return ctx.ErrorRes(404, "Page not found", err)
 	}
 

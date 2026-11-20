@@ -67,6 +67,7 @@
                         <form method="POST" action="{{ $.c.ExternalUrl }}/admin/{{ .Path }}">
                             {{ $.csrfHtml }}
                             <button type="submit" {{ if .Running }}disabled{{ end }}
+                                    {{ if .Confirm }}_="on click if not window.confirm('{{ $.locale.Tr "admin.actions.confirm" }}') halt the event"{{ end }}
                                     class="btn-sm-outline disabled:pointer-events-none disabled:opacity-50">
                                 {{ $.locale.Tr "admin.actions.run" }}
                             </button>

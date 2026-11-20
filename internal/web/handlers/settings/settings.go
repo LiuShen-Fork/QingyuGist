@@ -36,6 +36,9 @@ func UserAuthentication(ctx *context.Context) error {
 	ctx.SetData("passkeys", passkeys)
 	ctx.SetData("hasTotp", hasTotp)
 	ctx.SetData("hasPassword", user.Password != "")
+	// Accounts created through a third-party provider have no password, so
+	// unlinking their only provider would lock them out for good.
+	ctx.SetData("unlinkLocked", user.Password == "" && user.LinkedProviderCount() <= 1)
 	ctx.SetData("disableForm", ctx.GetData("DisableLoginForm"))
 	ctx.SetData("settingsHeaderPage", "authentication")
 	ctx.SetData("htmlTitle", ctx.TrH("settings"))

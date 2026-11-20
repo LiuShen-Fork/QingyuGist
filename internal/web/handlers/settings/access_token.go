@@ -29,6 +29,14 @@ func AccessTokens(ctx *context.Context) error {
 func AccessTokensProcess(ctx *context.Context) error {
 	user := ctx.User
 
+	// A token would be useless while the API is switched off, and the page
+	// warns about that, but the form is still posted by anything that reaches
+	// this route directly.
+	if !config.C.ApiEnabled {
+		ctx.AddFlash(ctx.Tr("settings.api-disabled-warning"), "error")
+		return ctx.RedirectTo("/settings/access-tokens")
+	}
+
 	dto := new(db.AccessTokenDTO)
 	if err := ctx.Bind(dto); err != nil {
 		return ctx.ErrorRes(400, ctx.Tr("error.cannot-bind-data"), err)
@@ -51,9 +59,10 @@ func AccessTokensProcess(ctx *context.Context) error {
 		return ctx.ErrorRes(500, "Cannot create access token", err)
 	}
 
-	// Show the token once to the user
-	ctx.AddFlash(ctx.Tr("settings.token-created"), "success")
-	ctx.AddFlash(plainToken, "success")
+	// The plaintext token is only ever shown once, so it is delivered as a
+	// "secret" flash: the page renders it in place and keeps it on screen until
+	// the user dismisses it, unlike the auto-dismissing toasts.
+	ctx.AddFlash(plainToken, "secret")
 	return ctx.RedirectTo("/settings/access-tokens")
 }
 

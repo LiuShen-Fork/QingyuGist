@@ -48,6 +48,11 @@ func AccountDeleteProcess(ctx *context.Context) error {
 	}
 	qingyugistssh.SyncAuthorizedKeysLogged()
 
+	// The flash lives in its own cookie, so it still reaches the home page after
+	// the session itself is dropped.
+	ctx.AddFlash(ctx.Tr("flash.settings.account-deleted"), "success")
+	ctx.DeleteSession()
+
 	return ctx.RedirectTo("/explore")
 }
 

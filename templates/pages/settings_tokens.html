@@ -2,6 +2,23 @@
 <div class="space-y-6">
     {{ template "page_header" dict "Eyebrow" (.locale.Tr "settings") "Title" (.locale.Tr "settings.header.tokens") }}
 
+    {{ range .flashSecrets }}
+    <section class="bg-card rounded-xl border">
+        <div class="border-b px-5 py-3">
+            <h2 class="font-semibold">{{ $.locale.Tr "settings.token-created-title" }}</h2>
+            <p class="text-muted-foreground text-sm">{{ $.locale.Tr "settings.token-created-help" }}</p>
+        </div>
+        <div class="flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-center">
+            <code class="bg-muted min-w-0 flex-1 truncate rounded-md px-3 py-2 font-mono text-sm select-all">{{ . }}</code>
+            <button type="button" class="btn-sm-outline shrink-0"
+                    _="on click call navigator.clipboard.writeText('{{ . }}')
+                       then set my textContent to '{{ $.locale.Tr "settings.token-copied" }}'
+                       wait 1.5s
+                       set my textContent to '{{ $.locale.Tr "settings.token-copy" }}'">{{ $.locale.Tr "settings.token-copy" }}</button>
+        </div>
+    </section>
+    {{ end }}
+
     {{ if not .apiEnabled }}
     <div class="alert og-orange" role="alert">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
@@ -16,6 +33,7 @@
 
     <div class="space-y-6">
         <!-- Create token -->
+        {{ if .apiEnabled }}
         <section class="bg-card h-fit rounded-xl border">
             <div class="space-y-1 border-b px-5 py-3">
                 <h2 class="font-semibold">{{ .locale.Tr "settings.create-token" }}</h2>
@@ -63,6 +81,7 @@
                 </div>
             </form>
         </section>
+        {{ end }}
 
         <!-- Token list -->
         <div class="space-y-3">
@@ -100,7 +119,7 @@
             {{ end }}
             {{ else }}
             <div class="text-muted-foreground flex h-full min-h-32 items-center justify-center rounded-xl border border-dashed p-6 text-sm">
-                {{ .locale.Tr "settings.create-token-help" }}
+                {{ if .apiEnabled }}{{ .locale.Tr "settings.create-token-help" }}{{ else }}{{ .locale.Tr "settings.api-disabled-warning" }}{{ end }}
             </div>
             {{ end }}
         </div>

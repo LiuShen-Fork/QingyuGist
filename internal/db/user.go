@@ -301,6 +301,18 @@ func (user *User) HasLiked(gist *Gist) (bool, error) {
 	return true, nil
 }
 
+// LinkedProviderCount reports how many third-party identities are attached to
+// the account.
+func (user *User) LinkedProviderCount() int {
+	n := 0
+	for _, id := range []string{user.GithubID, user.GoogleID, user.GitlabID, user.GiteaID, user.OIDCID, user.OAuth2ID} {
+		if id != "" {
+			n++
+		}
+	}
+	return n
+}
+
 func (user *User) DeleteProviderID(provider string) error {
 	providerIDFields := map[string]string{
 		"github":         "github_id",

@@ -152,6 +152,13 @@ func AdminUserDelete(ctx *context.Context) error {
 		return ctx.ErrorRes(500, "Cannot retrieve user", err)
 	}
 
+	// Deleting the account the request is made with would sign the administrator
+	// out mid-action and can leave the instance without an admin.
+	if user.ID == ctx.User.ID {
+		ctx.AddFlash(ctx.Tr("flash.admin.cannot-delete-self"), "error")
+		return ctx.RedirectTo("/admin/users")
+	}
+
 	if err := user.Delete(); err != nil {
 		return ctx.ErrorRes(500, "Cannot delete this user", err)
 	}

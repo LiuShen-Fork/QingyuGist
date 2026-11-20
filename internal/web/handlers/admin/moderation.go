@@ -7,6 +7,7 @@ import (
 
 	"github.com/LiuShen-Fork/QingyuGist/internal/db"
 	"github.com/LiuShen-Fork/QingyuGist/internal/moderation"
+	"github.com/LiuShen-Fork/QingyuGist/internal/settings"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/context"
 	"github.com/LiuShen-Fork/QingyuGist/internal/web/handlers"
 )
@@ -46,6 +47,7 @@ func AdminModeration(ctx *context.Context) error {
 	ctx.SetData("reviewTotal", total)
 	ctx.SetData("stats", stats)
 	ctx.SetData("pendingCount", len(pending))
+	ctx.SetData("moderationEnabled", settings.ModerationEnabled())
 	return ctx.Html("admin_moderation.html")
 }
 
@@ -70,11 +72,24 @@ func AdminNotifications(ctx *context.Context) error {
 	ctx.SetData("htmlTitle", ctx.TrH("admin.notifications.title")+" - "+ctx.TrH("admin.admin_panel"))
 	ctx.SetData("adminHeaderPage", "notifications")
 
-	rows, err := db.GetBroadcastNotifications(50)
+	pageInt := handlers.GetPage(ctx)
+
+	const perPage = 10
+	rows, err := db.GetBroadcastNotifications(perPage+1, (pageInt-1)*perPage)
 	if err != nil {
 		return ctx.ErrorRes(500, "Cannot get notifications", err)
 	}
-	ctx.SetData("broadcasts", rows)
+
+	total, err := db.CountBroadcastNotifications()
+	if err != nil {
+		return ctx.ErrorRes(500, "Cannot get notifications", err)
+	}
+
+	// Paginate trims the extra row that signals a next page.
+	if err = handlers.Paginate(ctx, rows, pageInt, perPage, "broadcasts", "admin/notifications", 2, nil); err != nil {
+		return ctx.ErrorRes(404, ctx.Tr("error.page-not-found"), nil)
+	}
+	ctx.SetData("broadcastTotal", int(total))
 	return ctx.Html("admin_notifications.html")
 }
 

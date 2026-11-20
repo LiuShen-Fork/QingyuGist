@@ -26,7 +26,8 @@
                 <form action="{{ .c.ExternalUrl }}/settings/avatar" method="post">
                     {{ .csrfHtml }}
                     <input type="hidden" name="_method" value="DELETE" />
-                    <button type="submit" class="btn-sm-outline">{{ .locale.Tr "settings.avatar-remove" }}</button>
+                    <button type="submit" class="btn-sm-outline"
+                            _="on click if not window.confirm('{{ .locale.Tr "settings.avatar-remove-confirm" }}') halt the event">{{ .locale.Tr "settings.avatar-remove" }}</button>
                 </form>
                 {{ end }}
             </div>

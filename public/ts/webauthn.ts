@@ -77,7 +77,10 @@ async function bindPasskey() {
                 passkeyname: document.querySelector<HTMLInputElement>('form#webauthn input[name="passkeyname"]').value
             }),
         });
-        const finishData = await finishResponse.json();
+
+        if (!finishResponse.ok) {
+            throw new Error(await errorMessage(finishResponse));
+        }
 
         setTimeout(() => {
             window.location.reload();
@@ -86,8 +89,22 @@ async function bindPasskey() {
         console.error('Error during passkey registration:', error);
         waitText.classList.add('hidden');
         this.classList.remove('hidden');
-        alert(error);
+        alert(error instanceof Error ? error.message : String(error));
     }
+}
+
+// errorMessage prefers the message the server sent, so a rejected passkey does
+// not surface as "Unexpected token" from JSON.parse.
+async function errorMessage(response: Response): Promise<string> {
+    try {
+        const body = await response.json();
+        if (body && typeof body.message === 'string' && body.message) {
+            return body.message;
+        }
+    } catch {
+        // Not JSON; fall through to the status.
+    }
+    return `Request failed (${response.status})`;
 }
 
 async function loginWithPasskey() {
@@ -150,10 +167,9 @@ async function loginWithPasskey() {
                 clientExtensionResults: credential.getClientExtensionResults(),
             }),
         });
-        const finishData = await finishResponse.json();
 
         if (!finishResponse.ok) {
-            throw new Error(finishData.message || 'Unknown error');
+            throw new Error(await errorMessage(finishResponse));
         }
 
         setTimeout(() => {
@@ -163,7 +179,7 @@ async function loginWithPasskey() {
         console.error('Login error:', error);
         waitText.classList.add('hidden');
         this.classList.remove('hidden');
-        alert(error);
+        alert(error instanceof Error ? error.message : String(error));
     }
 }
 

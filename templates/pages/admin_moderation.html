@@ -2,6 +2,16 @@
 <div class="space-y-6">
     {{ template "admin_header" (dict "Locale" .locale "Title" (.locale.Tr "admin.moderation.title") "Subtitle" (.locale.Tr "admin.moderation.subtitle")) }}
 
+    {{ if not .moderationEnabled }}
+    <div class="alert og-orange" role="alert">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        <section>
+            {{ .locale.Tr "admin.moderation.disabled" }}
+            <a href="{{ .c.ExternalUrl }}/admin/settings#moderation" class="font-medium underline">{{ .locale.Tr "admin.moderation.enable" }} →</a>
+        </section>
+    </div>
+    {{ end }}
+
     <!-- Last seven days at a glance -->
     <section class="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div class="bg-card rounded-xl border px-4 py-3">
