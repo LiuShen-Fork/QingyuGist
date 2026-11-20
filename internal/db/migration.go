@@ -37,6 +37,7 @@ func applyAllMigrations(dbType databaseType) error {
 		{2, []databaseType{SQLite}, v2_lowercaseEmails},
 		{3, nil, v3_normalizedColumns},
 		{4, nil, v4_uniqueUsername},
+		{5, nil, v5_gistCommentsCount},
 	}
 
 	for _, m := range migrations {
@@ -159,4 +160,12 @@ func v4_uniqueUsername(tx *gorm.DB) error {
 		}
 	}
 	return tx.Exec("CREATE UNIQUE INDEX idx_users_username_normalized ON users (username_normalized)").Error
+}
+
+// v5_gistCommentsCount sets the comments counter of the gists created before
+// comments existed, which AutoMigrate added as NULL, so that it can be
+// incremented.
+func v5_gistCommentsCount(tx *gorm.DB) error {
+	return tx.Model(&Gist{}).Where("nb_comments IS NULL").
+		UpdateColumn("nb_comments", 0).Error
 }

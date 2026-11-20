@@ -84,6 +84,23 @@ gist.settings.danger-zone: Danger zone
 gist.settings.delete-gist: Delete this gist
 gist.settings.delete-help: Once deleted, this gist and all its revisions are gone for good.
 
+gist.comments: Comments
+gist.comments.comment: Comment
+gist.comments.commented: commented
+gist.comments.edited: edited
+gist.comments.owner: Owner
+gist.comments.edit: Edit comment
+gist.comments.delete: Delete comment
+gist.comments.delete-confirm: Are you sure you want to delete this comment?
+gist.comments.placeholder: Leave a comment
+gist.comments.markdown-help: Markdown is supported.
+gist.comments.login: Log in to leave a comment
+gist.comments.archived: This gist is archived, new comments cannot be added.
+gist.comments.view-more: View more comments
+gist.comments.back-to-gist: Back to the gist
+gist.comments.no: No comments yet
+gist.comments.for: Comments for %s
+
 gist.list.joined: Joined
 gist.list.all: All gists
 gist.list.recently-liked: Recently liked
@@ -101,6 +118,7 @@ gist.list.likes: Likes
 gist.list.forked: Forked
 gist.list.forked-from: Forked from
 gist.list.forks: Forks
+gist.list.comments: Comments
 gist.list.files: files
 gist.list.last-active: Last active
 gist.list.no-gists: No gists
@@ -332,6 +350,7 @@ error.no-file-uploaded: No file uploaded
 error.file-upload-disabled: File upload is disabled
 error.cannot-open-file: Cannot open uploaded file
 error.gist-form-too-large: Gist form exceeds the 10 MB request limit
+error.comments-disabled: Comments are disabled
 
 header.menu.all: All
 header.menu.new: New
@@ -493,6 +512,7 @@ flash.gist.deleted: Gist has been deleted
 flash.gist.updated: Gist has been updated
 flash.gist.fork-own-gist: Unable to fork own gists
 flash.gist.forked: Gist has been forked
+flash.gist.comment-deleted: Comment has been deleted
 
 flash.user.email-updated: Email updated
 flash.user.avatar-updated: Avatar updated
@@ -562,6 +582,7 @@ settings.category.auth: Authentication
 settings.category.oauth: Third-party sign-in
 settings.category.ldap: LDAP
 settings.category.upload: Uploads
+settings.category.comments: Comments
 settings.category.search: Search
 settings.category.security: Security
 settings.category.moderation: Moderation
@@ -710,6 +731,10 @@ settings.upload.allow_media: Allow media files
 settings.upload.allow_media_help: Accept images, audio and video. Disable to save disk space.
 settings.upload.blocked_extensions: Blocked extensions
 settings.upload.blocked_extensions_help: Comma-separated list of file extensions that are never accepted.
+settings.comments.enabled: Allow comments
+settings.comments.enabled_help: Show the comment section on gists and accept new comments. Disabling hides existing comments everywhere, including the API.
+settings.comments.notify_owner: Notify gist owners
+settings.comments.notify_owner_help: Put a comment in the gist owner's inbox when someone else writes it.
 settings.search.index_type: Search index
 settings.search.index_type_help: Bleve runs inside the process; Meilisearch needs a reachable server.
 settings.search.index_bleve: Bleve (built in)
@@ -904,7 +929,7 @@ settings.style.wrap: Line wrapping
 
 # Notifications
 notifications.title: Notifications
-notifications.subtitle: Moderation results and announcements from the administrators.
+notifications.subtitle: Moderation results, new comments and announcements from the administrators.
 notifications.all: Inbox
 notifications.unread: "%d unread"
 notifications.mark-all-read: Mark all as read
@@ -913,3 +938,5 @@ notifications.open: Open
 notifications.empty: Nothing here yet.
 notification.moderation.rejected.title: A gist was not published
 notification.moderation.rejected.body: '"%s" stays private: %s'
+notification.comment.title: New comment
+notification.comment.body: '%s commented on "%s"'

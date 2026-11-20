@@ -50,6 +50,23 @@ gist.edit.delete: 删除
 gist.edit.cancel: 取消
 gist.edit.save: 保存
 
+gist.comments: 评论
+gist.comments.comment: 发表评论
+gist.comments.commented: 发表于
+gist.comments.edited: 已编辑
+gist.comments.owner: 作者
+gist.comments.edit: 编辑评论
+gist.comments.delete: 删除评论
+gist.comments.delete-confirm: 确定要删除这条评论吗？
+gist.comments.placeholder: 写点什么…
+gist.comments.markdown-help: 支持 Markdown 语法。
+gist.comments.login: 登录后即可评论
+gist.comments.archived: 该 Gist 已归档，无法添加新评论。
+gist.comments.view-more: 查看全部评论
+gist.comments.back-to-gist: 返回 Gist
+gist.comments.no: 还没有评论
+gist.comments.for: 「%s」的评论
+
 gist.list.joined: 加入于
 gist.list.all: 所有 Gist
 gist.list.search-results: 搜索结果
@@ -64,6 +81,7 @@ gist.list.likes: 喜欢
 gist.list.forked: 已派生
 gist.list.forked-from: 派生自
 gist.list.forks: 派生
+gist.list.comments: 评论
 gist.list.files: 文件
 gist.list.last-active: 最后活跃于
 gist.list.no-gists: 没有任何 Gist
@@ -222,6 +240,7 @@ admin.gists.delete_confirm: 您想要删除此 Gist 吗？
 gist.new.url: '自定义 URL 路径名'
 gist.new.preview: '预览'
 error.page-not-found: '页面未找到'
+error.comments-disabled: '评论功能已关闭'
 gist.new.create-a-new-gist: '创建一个新的 Gist'
 gist.edit.edit-gist: '编辑 %s'
 gist.list.all-liked-by: '%s 喜欢的所有 Gist'
@@ -329,6 +348,7 @@ flash.gist.visibility-changed: 'Gist 可见性已更改'
 flash.gist.deleted: 'Gist 已被删除'
 flash.gist.fork-own-gist: '无法派生自己的 Gist'
 flash.gist.forked: 'Gist 已被派生'
+flash.gist.comment-deleted: '评论已删除'
 flash.user.email-updated: '电子邮件已更新'
 flash.user.invalid-ssh-key: 'SSH 密钥无效'
 flash.user.ssh-key-added: 'SSH 密钥已添加'
@@ -437,6 +457,7 @@ settings.category.auth: 认证
 settings.category.oauth: 第三方登录
 settings.category.ldap: LDAP
 settings.category.upload: 上传
+settings.category.comments: 评论
 settings.category.search: 搜索
 settings.category.security: 安全
 settings.category.moderation: 内容审核
@@ -585,6 +606,10 @@ settings.upload.allow_media: 允许媒体文件
 settings.upload.allow_media_help: 接受图片、音频与视频。关闭可节省磁盘空间。
 settings.upload.blocked_extensions: 禁止的扩展名
 settings.upload.blocked_extensions_help: 以逗号分隔，永远不会被接受的扩展名列表。
+settings.comments.enabled: 允许评论
+settings.comments.enabled_help: 在 Gist 页面显示评论区并接受新评论。关闭后所有位置（包括 API）都不再显示已有评论。
+settings.comments.notify_owner: 提醒 Gist 作者
+settings.comments.notify_owner_help: 有人评论他人创建的 Gist 时，在作者的通知中心留下一条消息。
 settings.search.index_type: 搜索索引
 settings.search.index_type_help: Bleve 在进程内运行，Meilisearch 需要可访问的服务端。
 settings.search.index_bleve: Bleve（内置）
@@ -889,7 +914,7 @@ settings.style.wrap: 换行方式
 
 # Notifications
 notifications.title: 通知
-notifications.subtitle: 审核结果与管理员公告。
+notifications.subtitle: 审核结果、新评论与管理员公告。
 notifications.all: 收件箱
 notifications.unread: '%d 条未读'
 notifications.mark-all-read: 全部标为已读
@@ -898,3 +923,5 @@ notifications.open: 查看
 notifications.empty: 暂时没有通知。
 notification.moderation.rejected.title: 有 gist 未通过审核
 notification.moderation.rejected.body: 「%s」仍保持私有：%s
+notification.comment.title: 新评论
+notification.comment.body: '%s 评论了「%s」'

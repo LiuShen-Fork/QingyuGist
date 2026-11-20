@@ -199,6 +199,17 @@ func notArchived(next Handler) Handler {
 	}
 }
 
+// commentsEnabled blocks the gist comment routes when comments are disabled in
+// the config.
+func commentsEnabled(next Handler) Handler {
+	return func(ctx *context.Context) error {
+		if !config.C.CommentsEnabled {
+			return ctx.ErrorRes(403, ctx.Tr("error.comments-disabled"), nil)
+		}
+		return next(ctx)
+	}
+}
+
 func adminPermission(next Handler) Handler {
 	return func(ctx *context.Context) error {
 		user := ctx.User
@@ -333,8 +344,7 @@ func locale(next Handler) Handler {
 
 		// 3.Then check from 'Accept-Language' header.
 		if len(lang) == 0 {
-			tags, _, _ := language.ParseAcceptLanguage(ctx.Request().Header.Get("Accept-Language"))
-			lang = i18n.Locales.MatchTag(tags)
+			lang = i18n.Locales.MatchTag(i18n.ParseAcceptLanguage(ctx.Request().Header.Get("Accept-Language")))
 		}
 
 		if changeLang {
@@ -700,6 +710,17 @@ func apiBindAuth(next Handler) Handler {
 		// round-trip the caller already paid.
 		_ = tok.UpdateLastUsed()
 
+		return next(ctx)
+	}
+}
+
+// apiCommentsEnabled is the /api counterpart of commentsEnabled, responding
+// with a JSON 403 when comments are disabled in the config.
+func apiCommentsEnabled(next Handler) Handler {
+	return func(ctx *context.Context) error {
+		if !config.C.CommentsEnabled {
+			return ctx.ErrorJson(403, "Comments are disabled", nil)
+		}
 		return next(ctx)
 	}
 }

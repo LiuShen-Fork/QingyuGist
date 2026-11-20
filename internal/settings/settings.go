@@ -50,6 +50,7 @@ const (
 	CategoryOAuth      Category = "oauth"
 	CategoryLDAP       Category = "ldap"
 	CategoryUpload     Category = "upload"
+	CategoryComments   Category = "comments"
 	CategorySearch     Category = "search"
 	CategorySecurity   Category = "security"
 	CategoryModeration Category = "moderation"
@@ -65,6 +66,7 @@ func Categories() []Category {
 		CategoryOAuth,
 		CategoryLDAP,
 		CategoryUpload,
+		CategoryComments,
 		CategorySearch,
 		CategorySecurity,
 		CategoryModeration,
@@ -112,6 +114,9 @@ const (
 	KeyUploadMaxTotalMB = "upload.max-total-size"
 	KeyUploadAllowMedia = "upload.allow-media"
 	KeyUploadBlockedExt = "upload.blocked-extensions"
+
+	KeyCommentsEnabled     = "comments.enabled"
+	KeyCommentsNotifyOwner = "comments.notify-owner"
 
 	KeySearchReindexDays = "search.reindex-days"
 	KeySearchLastIndex   = "search.last-index" // internal, not exposed in the UI
@@ -255,6 +260,10 @@ var baseDefinitions = []Definition{
 	{Key: KeyUploadMaxTotalMB, Kind: KindInt, Default: "128", Category: CategoryUpload, Label: "settings.upload.max_total_size", Help: "settings.upload.max_total_size_help", Min: 1, Max: 65536, Unit: "settings.unit.mb"},
 	{Key: KeyUploadAllowMedia, Kind: KindBool, Default: "1", Category: CategoryUpload, Label: "settings.upload.allow_media", Help: "settings.upload.allow_media_help"},
 	{Key: KeyUploadBlockedExt, Kind: KindText, Default: "exe,msi,dll,so,dylib,iso,dmg,img,bin,apk,ipa,zip,7z,rar,tar,gz,bz2,xz,zst", Category: CategoryUpload, Label: "settings.upload.blocked_extensions", Help: "settings.upload.blocked_extensions_help", Rows: 2},
+
+	// Comments
+	{Key: KeyCommentsEnabled, Kind: KindBool, Default: "1", Category: CategoryComments, Label: "settings.comments.enabled", Help: "settings.comments.enabled_help"},
+	{Key: KeyCommentsNotifyOwner, Kind: KindBool, Default: "1", Category: CategoryComments, Label: "settings.comments.notify_owner", Help: "settings.comments.notify_owner_help"},
 
 	// Search & index
 	{Key: KeyIndexType, Kind: KindEnum, Default: "bleve", ApplyAfterRestart: true, Category: CategorySearch, Label: "settings.search.index_type", Help: "settings.search.index_type_help", Options: []Option{
@@ -472,6 +481,16 @@ func defaultValues() map[string]string {
 		apiEnabled = "1"
 	}
 
+	commentsEnabled := "0"
+	if config.C.CommentsEnabled {
+		commentsEnabled = "1"
+	}
+
+	commentNotify := "0"
+	if config.C.CommentNotify {
+		commentNotify = "1"
+	}
+
 	boolFromLegacy := func(key, fallback string) string {
 		if v, ok := legacy[key]; ok {
 			return v
@@ -502,6 +521,8 @@ func defaultValues() map[string]string {
 		KeyDisableLoginForm:       boolFromLegacy(db.SettingDisableLoginForm, "0"),
 		KeyDisableGravatar:        boolFromLegacy(db.SettingDisableGravatar, "0"),
 		KeyUploadEnabled:          uploadEnabled,
+		KeyCommentsEnabled:        commentsEnabled,
+		KeyCommentsNotifyOwner:    commentNotify,
 		KeyGitDefaultBranch:       config.C.GitDefaultBranch,
 		KeyGitHTTPEnabled:         httpGit,
 		KeyGitSSHExternalDomain:   config.C.SshExternalDomain,
@@ -576,6 +597,8 @@ func applyLocked(v map[string]string) {
 		next.GitDefaultBranch = b
 	}
 	next.ApiEnabled = v[KeyAPIEnabled] == "1"
+	next.CommentsEnabled = v[KeyCommentsEnabled] == "1"
+	next.CommentNotify = v[KeyCommentsNotifyOwner] == "1"
 	next.DisableFileUpload = v[KeyUploadEnabled] != "1"
 	next.HttpGit = v[KeyGitHTTPEnabled] != "0"
 	next.SshExternalDomain = trimmed(KeyGitSSHExternalDomain)

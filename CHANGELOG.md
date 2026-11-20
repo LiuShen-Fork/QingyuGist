@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.2.0](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.2.0) - 2026-11-20
+
+### Added
+- Gists can be commented on. The gist page shows the latest five comments with
+  the composer inline, every comment has a permalink, an author can edit or
+  delete their own reply, and a dedicated page lists them thirty at a time with
+  Markdown preview in both places
+- **Admin → Configuration → Comments** has a switch that hides the comment
+  section, the comments page and the comment API everywhere, and a second switch
+  that leaves a notification in the gist owner's inbox when somebody else
+  comments on their gist. The notification links straight to the comment
+- The comment API (`/api/gists/{uuid}/comments`) and the comment count returned
+  by `/api/v1/gists` come from the same feature
+- `QYG_COMMENTS_ENABLED` turns comments off for instances that configure
+  everything through the environment
+
+### Changed
+- The comment list follows this fork's interface: one card divided into rows
+  instead of a stack of boxes, the owner marked with a badge, relative
+  timestamps, icon buttons for edit and delete
+
+### Fixed
+- A comment is saved even when the owner notification cannot be written; the
+  failure is logged instead of surfacing as an error the commenter cannot act on
+
 ## [1.1.1](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.1.1) - 2026-11-20
 
 ### Changed

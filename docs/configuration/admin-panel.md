@@ -76,6 +76,15 @@ user id, name, email and avatar — dotted paths such as `data.user.login` work.
 - Blocked file extensions (comma-separated). The default list blocks common
   executable and archive formats.
 
+### Comments
+
+- **Comments** — on by default. Turning it off hides the comment section of
+  every gist, the Comments page and the comment API. Comments are kept, not
+  deleted, and come back when it is turned on again.
+- **Notify the gist owner** — on by default. When somebody else comments on a
+  gist, its owner gets a notification in the site inbox linking to the comment.
+  Owners are never notified of their own comments.
+
 ### Search
 
 - Backend: none, the built-in Bleve index, or Meilisearch. Changing it takes

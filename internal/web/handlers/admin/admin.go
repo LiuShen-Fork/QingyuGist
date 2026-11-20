@@ -231,6 +231,7 @@ var configSectionMeta = map[settings.Category]struct {
 	settings.CategoryOAuth:      {"settings.category.oauth", "log-in"},
 	settings.CategoryLDAP:       {"settings.category.ldap", "users"},
 	settings.CategoryUpload:     {"settings.category.upload", "upload"},
+	settings.CategoryComments:   {"settings.category.comments", "message-square"},
 	settings.CategorySearch:     {"settings.category.search", "search"},
 	settings.CategorySecurity:   {"settings.category.security", "shield-check"},
 	settings.CategoryModeration: {"settings.category.moderation", "sparkles"},

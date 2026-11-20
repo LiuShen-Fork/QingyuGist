@@ -1,0 +1,20 @@
+{{ define "content" }}
+<div class="space-y-6">
+    {{ template "gist_header" . }}
+
+    <div class="flex items-center justify-between gap-3">
+        <h2 class="flex items-center gap-2 text-sm font-medium">
+            <svg class="text-muted-foreground size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            {{ .locale.Tr "gist.comments" }}
+            {{ if .gist.NbComments }}<span class="text-muted-foreground text-xs font-normal tabular-nums">{{ .gist.NbComments }}</span>{{ end }}
+        </h2>
+        <a href="{{ .c.ExternalUrl }}/{{ .gist.User.Username }}/{{ .gist.Identifier }}" class="text-muted-foreground hover:text-foreground text-xs underline underline-offset-4">{{ .locale.Tr "gist.comments.back-to-gist" }}</a>
+    </div>
+
+    <div class="bg-card overflow-hidden rounded-xl border">
+        {{ template "gist_comment_list" . }}
+    </div>
+
+    {{ template "pagination" . }}
+</div>
+{{ end }}

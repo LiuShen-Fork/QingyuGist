@@ -40,6 +40,7 @@ type User struct {
 	Liked               []Gist               `gorm:"many2many:likes;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	WebAuthnCredentials []WebAuthnCredential `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID"`
 	AccessTokens        []AccessToken        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID"`
+	GistComments        []GistComment        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID"`
 }
 
 func (user *User) BeforeSave(_ *gorm.DB) error {
@@ -82,13 +83,35 @@ func (user *User) BeforeDelete(tx *gorm.DB) error {
 		return err
 	}
 
+	// Decrement the comment counters of the gists the account commented on,
+	// before the comments themselves go away.
+	err = tx.Exec(`
+		UPDATE gists
+		SET nb_comments = nb_comments - (
+			SELECT count(*)
+			FROM gist_comments
+			WHERE gist_comments.gist_id = gists.id AND gist_comments.user_id = ?
+		)
+		WHERE id IN (
+			SELECT gist_id
+			FROM (
+				SELECT gist_id
+				FROM gist_comments
+				WHERE user_id = ?
+			) AS derived_comments
+		)
+	`, user.ID, user.ID).Error
+	if err != nil {
+		return err
+	}
+
 	// Rows that belong to the account but are not tied to it by a foreign key
 	// (or, on databases created before 1.1.0, by a cascading one) are removed
 	// explicitly so deleting an account cannot leave orphans behind or trip a
 	// foreign key error on the second factor.
 	for _, model := range []interface{}{
 		&SSHKey{}, &WebAuthnCredential{}, &AccessToken{}, &TOTP{},
-		&Activity{}, &Notification{}, &NotificationRead{},
+		&Activity{}, &Notification{}, &NotificationRead{}, &GistComment{},
 	} {
 		if err := tx.Where("user_id = ?", user.ID).Delete(model).Error; err != nil {
 			return err

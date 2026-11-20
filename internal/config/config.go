@@ -70,6 +70,12 @@ type config struct {
 
 	DisableFileUpload bool `env:"QYG_DISABLE_FILE_UPLOAD"`
 
+	CommentsEnabled bool `env:"QYG_COMMENTS_ENABLED"`
+
+	// CommentNotify is panel-only: it decides whether the owner of a gist gets
+	// an in-site notification when someone comments on it.
+	CommentNotify bool
+
 	UnixSocketPermissions string `env:"QYG_UNIX_SOCKET_PERMISSIONS"`
 
 	SshGit                string `env:"QYG_SSH_GIT_ENABLED"` // builtin | host | disabled (true → builtin, false → disabled)
@@ -220,6 +226,9 @@ func configWithDefaults() (*config, error) {
 	c.HttpGit = true
 
 	c.ApiEnabled = true
+
+	c.CommentsEnabled = true
+	c.CommentNotify = true
 
 	c.UnixSocketPermissions = "0666"
 
