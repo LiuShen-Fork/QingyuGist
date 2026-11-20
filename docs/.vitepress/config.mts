@@ -51,7 +51,6 @@ const docsSidebar = [
             {text: 'Introduction', link: '/docs'},
             {text: 'Installation', link: '/docs/installation', items: [
                 {text: 'Docker', link: '/docs/installation/docker'},
-                {text: 'Kubernetes', link: '/docs/installation/kubernetes'},
                 {text: 'Binary', link: '/docs/installation/binary'},
                 {text: 'Source', link: '/docs/installation/source'},
                 ],
