@@ -44,7 +44,7 @@
                             {{ range $c := .themeColors }}
                             <label class="cursor-pointer" title="{{ $c }}">
                                 <input type="radio" name="themecolor" value="{{ $c }}" class="peer sr-only" {{ if eq $c $selected }}checked{{ end }} />
-                                <span class="ring-ring/50 ring-offset-background block size-6 rounded-full ring-offset-2 peer-checked:ring-2 peer-focus-visible:ring-2" style="background-color: oklch(from var(--color-{{ $c }}-500) calc(l * var(--primary-l)) calc(c * var(--primary-c)) h)"></span>
+                                <span class="ring-foreground/70 ring-offset-background block size-6 rounded-full ring-offset-2 peer-checked:ring-2 peer-focus-visible:ring-2" style="background-color: oklch(from var(--color-{{ $c }}-500) calc(l * var(--primary-l)) calc(c * var(--primary-c)) h)"></span>
                             </label>
                             {{ end }}
                         </div>

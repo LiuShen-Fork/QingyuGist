@@ -68,7 +68,7 @@ const docsSidebar = [
                 {text: 'MySQL', link: '/databases/mysql'},
                 ], collapsed: true
             },
-            {text: 'OAuth Providers', link: '/oauth-providers'},
+            {text: 'Third-party sign-in', link: '/oauth-providers'},
             {text: 'Custom assets', link: '/custom-assets'},
             {text: 'Custom links', link: '/custom-links'},
             {text: 'Cheat Sheet', link: '/cheat-sheet'},

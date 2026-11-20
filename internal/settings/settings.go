@@ -146,7 +146,12 @@ const (
 
 	KeyGitDefaultBranch = "git.default-branch"
 	KeyGitHTTPEnabled   = "git.http-enabled"
-	KeyAPIEnabled       = "api.enabled"
+	// Clone URLs shown under the SSH tab. Empty means "use the host the
+	// request arrived on", which is right for most installs, but a site behind
+	// a proxy or reachable through a dedicated SSH hostname wants its own.
+	KeyGitSSHExternalDomain = "git.ssh-external-domain"
+	KeyGitSSHUsername       = "git.ssh-username"
+	KeyAPIEnabled           = "api.enabled"
 
 	// Registration modes.
 	RegistrationModeOpen      = "open"
@@ -288,6 +293,8 @@ var baseDefinitions = []Definition{
 	// Git / API
 	{Key: KeyGitDefaultBranch, Kind: KindString, Category: CategoryGit, Label: "settings.git.default_branch", Help: "settings.git.default_branch_help", Placeholder: "main", Max: 100},
 	{Key: KeyGitHTTPEnabled, Kind: KindBool, Default: "1", ApplyAfterRestart: true, Category: CategoryGit, Label: "settings.git.http_enabled", Help: "settings.git.http_enabled_help"},
+	{Key: KeyGitSSHExternalDomain, Kind: KindString, Category: CategoryGit, Label: "settings.git.ssh_external_domain", Help: "settings.git.ssh_external_domain_help", Placeholder: "git.example.com", Max: 255},
+	{Key: KeyGitSSHUsername, Kind: KindString, Category: CategoryGit, Label: "settings.git.ssh_username", Help: "settings.git.ssh_username_help", Placeholder: "git", Max: 64},
 	{Key: KeyAPIEnabled, Kind: KindBool, Default: "1", Category: CategoryAPI, Label: "settings.api.enabled", Help: "settings.api.enabled_help"},
 }
 
@@ -497,6 +504,8 @@ func defaultValues() map[string]string {
 		KeyUploadEnabled:          uploadEnabled,
 		KeyGitDefaultBranch:       config.C.GitDefaultBranch,
 		KeyGitHTTPEnabled:         httpGit,
+		KeyGitSSHExternalDomain:   config.C.SshExternalDomain,
+		KeyGitSSHUsername:         config.C.SshUsername,
 		KeyAPIEnabled:             apiEnabled,
 
 		KeyLDAPURL:          config.C.LDAPUrl,
@@ -569,6 +578,8 @@ func applyLocked(v map[string]string) {
 	next.ApiEnabled = v[KeyAPIEnabled] == "1"
 	next.DisableFileUpload = v[KeyUploadEnabled] != "1"
 	next.HttpGit = v[KeyGitHTTPEnabled] != "0"
+	next.SshExternalDomain = trimmed(KeyGitSSHExternalDomain)
+	next.SshUsername = trimmed(KeyGitSSHUsername)
 
 	applyOAuthSettings(&next, v)
 

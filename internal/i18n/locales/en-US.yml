@@ -740,6 +740,10 @@ settings.git.default_branch: Default branch
 settings.git.default_branch_help: Branch created for new repositories.
 settings.git.http_enabled: HTTP Git access
 settings.git.http_enabled_help: Allow clone and push over HTTP(S).
+settings.git.ssh_external_domain: SSH host name
+settings.git.ssh_external_domain_help: Host shown in SSH clone URLs. Leave empty to use the host the request arrived on.
+settings.git.ssh_username: SSH user name
+settings.git.ssh_username_help: User shown in SSH clone URLs, as in git@host. Leave empty to show only the host.
 settings.api.enabled: Enable API
 settings.api.enabled_help: Expose the REST API and access tokens.
 

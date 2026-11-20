@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.1.0](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.1.0) - 2026-11-20
+
+### Added
+- The SSH host name and SSH user name shown in clone URLs are editable in
+  **Admin → Configuration → Git**, so an instance behind a proxy or reachable
+  through a dedicated SSH host no longer needs an environment variable
+- Migration 4 adds the unique index on normalized usernames that earlier
+  releases declared but never created, after checking for duplicates
+
+### Changed
+- Indexed columns now carry explicit sizes and the database is indexed for the
+  queries that run on every request: tokens by hash, gists by owner, date and
+  moderation state, users by email and by each third-party account id. Existing
+  databases are migrated on start
+
+### Fixed
+- Deleting an account left its two-factor secret behind and failed with a
+  foreign-key error, so an account with 2FA enabled could not be deleted at all;
+  notifications, read markers and activity rows were left orphaned as well
+- `users.username` and `access_tokens.token_hash` carried a malformed GORM tag
+  (a comma instead of a semicolon), so neither unique constraint nor index was
+  ever created. API requests that look a token up by hash no longer scan the
+  whole table
+
 ## [1.0.4](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.0.4) - 2026-11-20
 
 ### Added

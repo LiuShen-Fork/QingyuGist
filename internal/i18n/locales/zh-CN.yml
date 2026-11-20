@@ -618,6 +618,10 @@ settings.git.default_branch: 默认分支
 settings.git.default_branch_help: 新仓库使用的分支名称。
 settings.git.http_enabled: HTTP Git 访问
 settings.git.http_enabled_help: 允许通过 HTTP(S) 克隆和推送。
+settings.git.ssh_external_domain: SSH 主机名
+settings.git.ssh_external_domain_help: SSH 克隆地址中显示的主机名。留空则使用请求到达时的域名。
+settings.git.ssh_username: SSH 用户名
+settings.git.ssh_username_help: SSH 克隆地址中显示的用户名，例如 git@host 中的 git。留空则只显示主机名。
 settings.api.enabled: 启用 API
 settings.api.enabled_help: 开放 REST API 与访问令牌。
 
