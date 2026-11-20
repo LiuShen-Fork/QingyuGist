@@ -471,3 +471,61 @@ func TestCommentsPagination(t *testing.T) {
 		requireNbComments(t, username, identifier, 35)
 	})
 }
+
+func TestCommentNotifiesOwner(t *testing.T) {
+	s := webtest.Setup(t)
+	defer webtest.Teardown(t)
+
+	s.Register(t, "thomas")
+	s.Register(t, "alice")
+
+	thomas, err := db.GetUserByUsername("thomas")
+	require.NoError(t, err)
+
+	thomasNotifications := func(t *testing.T) []*db.UserNotification {
+		rows, err := db.GetVisibleNotifications(thomas.ID, 50, 0)
+		require.NoError(t, err)
+		return rows
+	}
+
+	t.Run("NotifiesTheOwner", func(t *testing.T) {
+		_, _, username, identifier := s.CreateGist(t, "0")
+		before := len(thomasNotifications(t))
+
+		s.Login(t, "alice")
+		comment := postComment(t, s, username, identifier, "hello", 302)
+
+		rows := thomasNotifications(t)
+		require.Len(t, rows, before+1)
+		latest := rows[0]
+		require.Equal(t, "comment", latest.Kind)
+		require.Equal(t, "notification.comment.title", latest.TitleKey)
+		require.Equal(t, []any{"alice", "Test"}, latest.NotificationArgs())
+		require.Equal(t, "/"+username+"/"+identifier+"#comment-"+strconv.FormatUint(uint64(comment.ID), 10), latest.Link)
+	})
+
+	t.Run("SkipsTheOwner", func(t *testing.T) {
+		_, _, username, identifier := s.CreateGist(t, "0")
+		before := len(thomasNotifications(t))
+
+		s.Login(t, "thomas")
+		postComment(t, s, username, identifier, "my own comment", 302)
+
+		require.Len(t, thomasNotifications(t), before)
+	})
+
+	t.Run("SwitchedOff", func(t *testing.T) {
+		require.NoError(t, settings.Set(settings.KeyCommentsNotifyOwner, "0"))
+		defer func() {
+			require.NoError(t, settings.Set(settings.KeyCommentsNotifyOwner, "1"))
+		}()
+
+		_, _, username, identifier := s.CreateGist(t, "0")
+		before := len(thomasNotifications(t))
+
+		s.Login(t, "alice")
+		postComment(t, s, username, identifier, "hello", 302)
+
+		require.Len(t, thomasNotifications(t), before)
+	})
+}

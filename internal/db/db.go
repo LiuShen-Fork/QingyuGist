@@ -308,6 +308,14 @@ func DeprecationDBFilename() {
 	}
 }
 
+// TruncateDatabase drops every table. The postgres and mysql test databases
+// are shared by successive tests, so a table left out of this list keeps its
+// rows and leaks into whatever the next test counts.
 func TruncateDatabase() error {
-	return db.Migrator().DropTable("likes", &User{}, "gists", &SSHKey{}, &AdminSetting{}, &Invitation{}, &WebAuthnCredential{}, &TOTP{}, &GistTopic{}, &GistLanguage{}, &GistInitQueue{}, &AccessToken{}, &GistComment{})
+	return db.Migrator().DropTable(
+		"likes", "gists",
+		&User{}, &SSHKey{}, &AdminSetting{}, &Invitation{}, &WebAuthnCredential{}, &TOTP{},
+		&GistTopic{}, &GistLanguage{}, &GistInitQueue{}, &AccessToken{}, &ActionLock{},
+		&Activity{}, &ModerationReview{}, &NotificationRead{}, &Notification{}, &GistComment{},
+	)
 }
