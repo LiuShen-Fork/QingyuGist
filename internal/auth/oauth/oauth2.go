@@ -3,7 +3,6 @@ package oauth
 import (
 	gocontext "context"
 	"fmt"
-	"strings"
 
 	"github.com/LiuShen-Fork/QingyuGist/internal/auth/oauth/genericoauth"
 	"github.com/LiuShen-Fork/QingyuGist/internal/config"
@@ -93,12 +92,4 @@ func (p *OAuth2CallbackProvider) IsAdmin() bool {
 
 func NewOAuth2CallbackProvider(user *goth.User) CallbackProvider {
 	return &OAuth2CallbackProvider{User: user}
-}
-
-// oauth2ProviderName is the label shown for provider errors and flash messages.
-func oauth2ProviderName() string {
-	if name := strings.TrimSpace(config.C.OAuth2Name); name != "" {
-		return name
-	}
-	return "OAuth 2.0"
 }
