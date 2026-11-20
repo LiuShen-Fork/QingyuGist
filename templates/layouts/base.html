@@ -2,7 +2,7 @@
 
 {{ define "header" }}
 <!DOCTYPE html>
-<html lang="en" class="h-full {{ if eq (mainTheme .currentStyle) "dark" }}dark{{ end }}" data-theme="{{ mainTheme .currentStyle }}">
+<html lang="{{ .locale.Code }}" class="h-full {{ if eq (mainTheme .currentStyle) "dark" }}dark{{ end }}" data-theme="{{ mainTheme .currentStyle }}">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

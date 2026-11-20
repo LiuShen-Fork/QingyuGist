@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/fs"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -19,14 +20,36 @@ import (
 
 var Locales = NewLocaleStore()
 
+// DefaultLocaleCode is the language every missing message falls back to.
+const DefaultLocaleCode = "en-US"
+
+// CompleteCoverage is the share of en-US messages a locale needs before it is
+// offered to visitors. A half-translated locale renders as a mix of two
+// languages, which reads worse than plain English, so partial translations
+// stay in the repository unused until they are finished.
+const CompleteCoverage = 0.95
+
 type LocaleStore struct {
 	Locales map[string]*Locale
+
+	// offered holds the complete locales, sorted by code. offeredCodes and
+	// offeredTags are parallel slices indexed by the matcher, built once in
+	// LoadAll.
+	offered      map[string]*Locale
+	offeredCodes []string
+	offeredTags  []language.Tag
+	matcher      language.Matcher
 }
 
 type Locale struct {
 	Code     string
 	Name     string
 	Messages map[string]string
+
+	// Coverage is the share of en-US messages this locale defines, from 0 to 1.
+	Coverage float64
+	// Complete reports whether the locale is finished enough to be offered.
+	Complete bool
 }
 
 // NewLocaleStore creates a new LocaleStore
@@ -82,7 +105,7 @@ func (store *LocaleStore) loadLocaleFromYAML(localeCode, path string) error {
 }
 
 func (store *LocaleStore) LoadAll() error {
-	return fs.WalkDir(locales.Files, ".", func(path string, d fs.DirEntry, err error) error {
+	err := fs.WalkDir(locales.Files, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -95,6 +118,85 @@ func (store *LocaleStore) LoadAll() error {
 		}
 		return nil
 	})
+	if err != nil {
+		return err
+	}
+
+	store.markCoverage()
+	return nil
+}
+
+// markCoverage scores every locale against en-US and decides which ones the
+// language switcher and Accept-Language negotiation may use.
+func (store *LocaleStore) markCoverage() {
+	reference := store.Locales[DefaultLocaleCode]
+	referenceKeys := 0
+	if reference != nil {
+		referenceKeys = len(reference.Messages)
+	}
+
+	store.offered = make(map[string]*Locale)
+	store.offeredCodes = nil
+	store.offeredTags = nil
+
+	codes := make([]string, 0, len(store.Locales))
+	for code := range store.Locales {
+		codes = append(codes, code)
+	}
+	sort.Strings(codes)
+
+	for _, code := range codes {
+		locale := store.Locales[code]
+		if referenceKeys == 0 {
+			locale.Coverage = 1
+		} else {
+			translated := 0
+			for key := range reference.Messages {
+				if locale.Messages[key] != "" {
+					translated++
+				}
+			}
+			locale.Coverage = float64(translated) / float64(referenceKeys)
+		}
+
+		locale.Complete = locale.Coverage >= CompleteCoverage
+		if locale.Complete {
+			store.offered[code] = locale
+			store.offeredCodes = append(store.offeredCodes, code)
+			store.offeredTags = append(store.offeredTags, locale.tag())
+		}
+	}
+
+	if _, ok := store.offered[DefaultLocaleCode]; !ok && store.Locales[DefaultLocaleCode] != nil {
+		// The default has to be usable even if it somehow fell below the bar.
+		store.offered[DefaultLocaleCode] = store.Locales[DefaultLocaleCode]
+		store.offeredCodes = append(store.offeredCodes, DefaultLocaleCode)
+		store.offeredTags = append(store.offeredTags, language.AmericanEnglish)
+	}
+
+	store.matcher = nil
+	if len(store.offeredTags) > 0 {
+		store.matcher = language.NewMatcher(store.offeredTags)
+	}
+}
+
+// tag turns the locale code into a language tag for matching. Codes that
+// x/text would normalize into something else (it would read "uk-UK" as a
+// British-region tag) are corrected by naming the file after the real region.
+func (l *Locale) tag() language.Tag {
+	tag, err := language.Parse(l.Code)
+	if err != nil {
+		return language.English
+	}
+	return tag
+}
+
+// Offered returns the complete locales in menu order.
+func (store *LocaleStore) Offered() map[string]*Locale {
+	if store.offered == nil {
+		return store.Locales
+	}
+	return store.offered
 }
 
 func (store *LocaleStore) GetLocale(lang string) (*Locale, error) {
@@ -106,19 +208,29 @@ func (store *LocaleStore) GetLocale(lang string) (*Locale, error) {
 	return store.Locales[lang], nil
 }
 
-func (store *LocaleStore) HasLocale(lang string) bool {
-	_, ok := store.Locales[lang]
-	return ok
+// Usable reports whether lang may be selected: it exists and is complete.
+func (store *LocaleStore) Usable(lang string) bool {
+	locale, ok := store.Locales[lang]
+	return ok && locale.Complete
 }
 
+// MatchTag picks the complete locale that best fits the browser's preferences.
+// It matches on base languages too, so a browser asking for "ja" or "de-AT"
+// resolves instead of silently falling back to English, and a region-less
+// "zh" resolves to whichever Chinese locale is offered.
 func (store *LocaleStore) MatchTag(langs []language.Tag) string {
-	for _, lang := range langs {
-		if store.HasLocale(lang.String()) {
-			return lang.String()
-		}
+	if store.matcher == nil || len(langs) == 0 {
+		return DefaultLocaleCode
 	}
 
-	return "en-US"
+	_, index, confidence := store.matcher.Match(langs...)
+	if confidence == language.No || index < 0 || index >= len(store.offeredCodes) {
+		// No is what the matcher returns when it fell back to its first tag
+		// without understanding anything the browser asked for.
+		return DefaultLocaleCode
+	}
+
+	return store.offeredCodes[index]
 }
 
 func (l *Locale) String(key string, args ...any) string {

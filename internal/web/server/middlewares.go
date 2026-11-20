@@ -349,7 +349,7 @@ func locale(next Handler) Handler {
 		}
 
 		// Check again in case someone changes the supported language list.
-		if lang != "" && !i18n.Locales.HasLocale(lang) {
+		if lang != "" && !i18n.Locales.Usable(lang) {
 			lang = ""
 			changeLang = false
 		}
@@ -371,7 +371,7 @@ func locale(next Handler) Handler {
 		ctx.SetData("localeName", localeUsed.Name)
 		ctx.SetData("locale", localeUsed)
 		ctx.SetData("requestUri", ctx.Request().URL.RequestURI())
-		ctx.SetData("allLocales", i18n.Locales.Locales)
+		ctx.SetData("allLocales", i18n.Locales.Offered())
 
 		return next(ctx)
 	}

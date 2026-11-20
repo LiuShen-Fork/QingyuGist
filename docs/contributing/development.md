@@ -37,3 +37,19 @@ make watch
 ```
 
 QingyuGist is now running on port 6157, you can browse http://localhost:6157
+
+## Translations
+
+The interface is translated with the YAML files in `internal/i18n/locales/`,
+one file per locale, named after its BCP 47 tag (`zh-CN.yml`, `pt-BR.yml`).
+Copy `en-US.yml` and translate the values; the keys stay as they are.
+
+A locale is only offered in the language menu once it covers at least 95% of
+the keys in `en-US.yml`. Below that, pages would mix translated and English
+sentences, so a partial file stays in the repository unused until it is
+finished — nothing needs to be registered anywhere, the coverage is measured
+when the server starts.
+
+`scripts/check-translations.sh` (also run by CI) reports keys that a locale
+defines but `en-US.yml` does not, which are usually typos or leftovers from a
+renamed key.

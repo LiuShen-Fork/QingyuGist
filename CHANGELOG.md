@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.2.1](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.2.1) - 2026-11-21
+
+### Changed
+- The language menu only lists languages that are actually finished. Every
+  locale except English and Simplified Chinese was a third translated at best,
+  so picking Japanese or German produced a page where a handful of words were
+  localised and everything else fell back to English. Those files stay in the
+  repository and appear in the menu once they cover 95% of the English keys,
+  which is measured when the server starts
+
+### Fixed
+- Four locales were named with underscores (`ja_JP.yml`, `pl_PL.yml`,
+  `it_IT.yml`, `uk-UK.yml`). Since the file name is the locale code, they could
+  never be picked from a browser's `Accept-Language` header — and `uk-UK` is
+  not a valid Ukrainian region, so they are now `ja-JP.yml`, `pl-PL.yml`,
+  `it-IT.yml` and `uk-UA.yml`
+- Language negotiation matches on the base language, so `zh`, `zh-Hans` or
+  `en-GB` resolve to the matching language instead of falling straight through
+  to English
+- `<html lang>` follows the page language instead of being hardcoded to `en`,
+  which helps screen readers and search engines
+
 ## [1.2.0](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.2.0) - 2026-11-20
 
 ### Added
