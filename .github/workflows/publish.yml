@@ -87,11 +87,57 @@ jobs:
           name: release-notes
           path: release-notes.md
 
+  # A release ships whatever the branch holds, and the archives cannot be
+  # corrected once they are downloaded. The same gates CI runs on every push
+  # therefore run here too, so a red linter or a type error stops the release
+  # before a tag exists.
+  verify:
+    name: Verify
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version: '1.27.x'
+          cache: true
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.15
+          args: --timeout=20m --disable=errcheck
+
+      - name: Format
+        run: make fmt check_changes
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Check translations
+        run: make check-tr
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
   # Binaries and the container image only share the source tree, so they run
   # in parallel instead of making the release wait for both in sequence.
   binaries:
     name: Binaries
-    needs: prepare
+    needs: [prepare, verify]
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
@@ -168,7 +214,7 @@ jobs:
 
   image:
     name: Image
-    needs: prepare
+    needs: [prepare, verify]
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
