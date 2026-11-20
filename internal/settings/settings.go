@@ -117,6 +117,7 @@ const (
 
 	KeyCommentsEnabled     = "comments.enabled"
 	KeyCommentsNotifyOwner = "comments.notify-owner"
+	KeyCommentsAllowGuests = "comments.allow-guests"
 
 	KeySearchReindexDays = "search.reindex-days"
 	KeySearchLastIndex   = "search.last-index" // internal, not exposed in the UI
@@ -264,6 +265,7 @@ var baseDefinitions = []Definition{
 	// Comments
 	{Key: KeyCommentsEnabled, Kind: KindBool, Default: "1", Category: CategoryComments, Label: "settings.comments.enabled", Help: "settings.comments.enabled_help"},
 	{Key: KeyCommentsNotifyOwner, Kind: KindBool, Default: "1", Category: CategoryComments, Label: "settings.comments.notify_owner", Help: "settings.comments.notify_owner_help"},
+	{Key: KeyCommentsAllowGuests, Kind: KindBool, Default: "0", Category: CategoryComments, Label: "settings.comments.allow_guests", Help: "settings.comments.allow_guests_help"},
 
 	// Search & index
 	{Key: KeyIndexType, Kind: KindEnum, Default: "bleve", ApplyAfterRestart: true, Category: CategorySearch, Label: "settings.search.index_type", Help: "settings.search.index_type_help", Options: []Option{
@@ -491,6 +493,11 @@ func defaultValues() map[string]string {
 		commentNotify = "1"
 	}
 
+	commentsAllowGuests := "0"
+	if config.C.CommentsAllowGuests {
+		commentsAllowGuests = "1"
+	}
+
 	boolFromLegacy := func(key, fallback string) string {
 		if v, ok := legacy[key]; ok {
 			return v
@@ -523,6 +530,7 @@ func defaultValues() map[string]string {
 		KeyUploadEnabled:          uploadEnabled,
 		KeyCommentsEnabled:        commentsEnabled,
 		KeyCommentsNotifyOwner:    commentNotify,
+		KeyCommentsAllowGuests:    commentsAllowGuests,
 		KeyGitDefaultBranch:       config.C.GitDefaultBranch,
 		KeyGitHTTPEnabled:         httpGit,
 		KeyGitSSHExternalDomain:   config.C.SshExternalDomain,
@@ -599,6 +607,7 @@ func applyLocked(v map[string]string) {
 	next.ApiEnabled = v[KeyAPIEnabled] == "1"
 	next.CommentsEnabled = v[KeyCommentsEnabled] == "1"
 	next.CommentNotify = v[KeyCommentsNotifyOwner] == "1"
+	next.CommentsAllowGuests = v[KeyCommentsAllowGuests] == "1"
 	next.DisableFileUpload = v[KeyUploadEnabled] != "1"
 	next.HttpGit = v[KeyGitHTTPEnabled] != "0"
 	next.SshExternalDomain = trimmed(KeyGitSSHExternalDomain)

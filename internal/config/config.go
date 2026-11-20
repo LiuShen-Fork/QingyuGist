@@ -76,6 +76,10 @@ type config struct {
 	// an in-site notification when someone comments on it.
 	CommentNotify bool
 
+	// CommentsAllowGuests is panel-only: it lets visitors who are not signed in
+	// comment, with a name they type in.
+	CommentsAllowGuests bool
+
 	UnixSocketPermissions string `env:"QYG_UNIX_SOCKET_PERMISSIONS"`
 
 	SshGit                string `env:"QYG_SSH_GIT_ENABLED"` // builtin | host | disabled (true → builtin, false → disabled)
@@ -229,6 +233,7 @@ func configWithDefaults() (*config, error) {
 
 	c.CommentsEnabled = true
 	c.CommentNotify = true
+	c.CommentsAllowGuests = false
 
 	c.UnixSocketPermissions = "0666"
 

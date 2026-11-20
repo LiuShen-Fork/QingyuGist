@@ -131,16 +131,20 @@ func (c *GistCommit) ToAPI() types.GistCommit {
 }
 
 // ToAPI returns the v1 API representation of a comment posted on gist. The
-// comment's User must be preloaded.
+// comment's User is left empty for a comment posted by a guest.
 func (comment *GistComment) ToAPI(baseURL string, gist *Gist) types.GistComment {
 	id := strconv.FormatUint(uint64(comment.ID), 10)
-	return types.GistComment{
+	api := types.GistComment{
 		ID:        comment.ID,
 		URL:       baseURL + "/api/gists/" + gist.Uuid + "/comments/" + id,
 		HTMLUrl:   baseURL + "/" + gist.User.Username + "/" + gist.Identifier() + "/comments/" + id,
 		Body:      comment.Content,
-		User:      comment.User.ToSimpleAPI(),
+		ParentID:  comment.ParentID,
 		CreatedAt: time.Unix(comment.CreatedAt, 0).UTC(),
 		UpdatedAt: time.Unix(comment.UpdatedAt, 0).UTC(),
 	}
+	if comment.User != nil {
+		api.User = comment.User.ToSimpleAPI()
+	}
+	return api
 }

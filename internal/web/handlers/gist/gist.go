@@ -42,15 +42,19 @@ func GistIndex(ctx *context.Context) error {
 
 	if config.C.CommentsEnabled {
 		// One more than shown, to know if there are older ones on the comments page
-		comments, err := gist.GetLastComments(lastCommentsCount + 1)
+		roots, err := gist.GetLastRootComments(lastCommentsCount + 1)
 		if err != nil {
 			return ctx.ErrorRes(500, "Error fetching comments", err)
 		}
-		if len(comments) > lastCommentsCount {
-			comments = comments[1:]
+		if len(roots) > lastCommentsCount {
+			roots = roots[1:]
 			ctx.SetData("moreComments", true)
 		}
-		ctx.SetData("comments", render.RenderComments(comments))
+		if err = setCommentThreads(ctx, gist, roots); err != nil {
+			return ctx.ErrorRes(500, "Error fetching comments", err)
+		}
+		ctx.SetData("canComment", !gist.Archived && (ctx.User != nil || config.C.CommentsAllowGuests))
+		ctx.SetData("commentAsGuest", ctx.User == nil && config.C.CommentsAllowGuests)
 	}
 
 	ctx.SetData("page", "code")

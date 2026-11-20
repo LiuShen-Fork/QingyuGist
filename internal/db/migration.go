@@ -38,6 +38,7 @@ func applyAllMigrations(dbType databaseType) error {
 		{3, nil, v3_normalizedColumns},
 		{4, nil, v4_uniqueUsername},
 		{5, nil, v5_gistCommentsCount},
+		{6, nil, v6_gistCommentParents},
 	}
 
 	for _, m := range migrations {
@@ -168,4 +169,12 @@ func v4_uniqueUsername(tx *gorm.DB) error {
 func v5_gistCommentsCount(tx *gorm.DB) error {
 	return tx.Model(&Gist{}).Where("nb_comments IS NULL").
 		UpdateColumn("nb_comments", 0).Error
+}
+
+// v6_gistCommentParents marks the comments written before replies existed as
+// top-level ones: AutoMigrate added their parent_id as NULL, which no query
+// matches, so they disappeared from every page.
+func v6_gistCommentParents(tx *gorm.DB) error {
+	return tx.Model(&GistComment{}).Where("parent_id IS NULL").
+		UpdateColumn("parent_id", 0).Error
 }

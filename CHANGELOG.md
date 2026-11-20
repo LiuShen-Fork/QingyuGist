@@ -7,12 +7,19 @@
   the composer inline, every comment has a permalink, an author can edit or
   delete their own reply, and a dedicated page lists them thirty at a time with
   Markdown preview in both places
+- Comments can be answered. Threads are one level deep — a reply to a reply
+  joins the same thread — and a reply notifies the author of the comment it
+  answers rather than the gist owner. Deleting a thread's first comment removes
+  its replies with it
 - **Admin → Configuration → Comments** has a switch that hides the comment
-  section, the comments page and the comment API everywhere, and a second switch
+  section, the comments page and the comment API everywhere, a second switch
   that leaves a notification in the gist owner's inbox when somebody else
-  comments on their gist. The notification links straight to the comment
+  comments on their gist, and a third one that lets visitors who are not signed
+  in comment under a name they type in. Guest comments can only be removed by
+  the gist owner and admins. The notification links straight to the comment
 - The comment API (`/api/gists/{uuid}/comments`) and the comment count returned
-  by `/api/v1/gists` come from the same feature
+  by `/api/v1/gists` come from the same feature. Comments carry their
+  `parent_id`, and a reply is posted by sending one
 - `QYG_COMMENTS_ENABLED` turns comments off for instances that configure
   everything through the environment
 

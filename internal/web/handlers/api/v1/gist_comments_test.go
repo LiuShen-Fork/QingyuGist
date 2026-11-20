@@ -84,6 +84,35 @@ func TestCreateComment_API(t *testing.T) {
 		require.Equal(t, 1, got.CommentCount)
 	})
 
+	t.Run("Reply", func(t *testing.T) {
+		_, gReply, _, _ := s.CreateGistAs(t, "owner", "0")
+		root := postCommentAPI(t, s, otherWrite, gReply.Uuid, "root")
+		require.Zero(t, root.ParentID)
+
+		var reply types.GistComment
+		s.APIRequestUnmarshal(t, "POST", "/api/gists/"+gReply.Uuid+"/comments", otherWrite,
+			map[string]any{"body": "an answer", "parent_id": root.ID}, &reply, 201)
+		require.Equal(t, root.ID, reply.ParentID)
+
+		// A reply to a reply joins the same thread
+		var deeper types.GistComment
+		s.APIRequestUnmarshal(t, "POST", "/api/gists/"+gReply.Uuid+"/comments", otherWrite,
+			map[string]any{"body": "deeper", "parent_id": reply.ID}, &deeper, 201)
+		require.Equal(t, root.ID, deeper.ParentID)
+
+		// Both are listed flat, oldest first
+		var list []types.GistComment
+		s.APIRequestUnmarshal(t, "GET", "/api/gists/"+gReply.Uuid+"/comments", "", nil, &list, 200)
+		require.Len(t, list, 3)
+		require.Equal(t, []uint{0, root.ID, root.ID}, []uint{list[0].ParentID, list[1].ParentID, list[2].ParentID})
+	})
+
+	t.Run("ReplyToUnknownComment", func(t *testing.T) {
+		_, gReply, _, _ := s.CreateGistAs(t, "owner", "0")
+		s.APIRequest(t, "POST", "/api/gists/"+gReply.Uuid+"/comments", otherWrite,
+			map[string]any{"body": "hi", "parent_id": 999999}, 404)
+	})
+
 	t.Run("Anonymous", func(t *testing.T) {
 		s.APIRequest(t, "POST", "/api/gists/"+g.Uuid+"/comments", "", map[string]string{"body": "hi"}, 401)
 	})

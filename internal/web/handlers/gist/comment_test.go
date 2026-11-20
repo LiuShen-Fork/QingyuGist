@@ -31,6 +31,13 @@ func commentPath(username, identifier string, comment *db.GistComment) string {
 	return "/" + username + "/" + identifier + "/comments/" + strconv.FormatUint(uint64(comment.ID), 10)
 }
 
+func fetchBody(t *testing.T, s *webtest.Server, uri string) string {
+	resp := s.Request(t, "GET", uri, nil, 200)
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	return string(body)
+}
+
 func requireNbComments(t *testing.T, username, identifier string, expected int) {
 	gist, err := db.GetGist(username, identifier)
 	require.NoError(t, err)
@@ -395,7 +402,7 @@ func TestCommentsPagination(t *testing.T) {
 	// first 30 on page 1 and the last 6 on page 2
 	comments := make([]*db.GistComment, 36)
 	for i := range comments {
-		comments[i] = &db.GistComment{GistID: gist.ID, UserID: alice.ID, Content: fmt.Sprintf("Comment %02d.", i+1)}
+		comments[i] = &db.GistComment{GistID: gist.ID, UserID: &alice.ID, Content: fmt.Sprintf("Comment %02d.", i+1)}
 		require.NoError(t, comments[i].Create())
 	}
 	commentId := func(nb int) string {
@@ -420,7 +427,7 @@ func TestCommentsPagination(t *testing.T) {
 	t.Run("NoViewMoreWithFewComments", func(t *testing.T) {
 		_, other, otherUsername, otherIdentifier := s.CreateGist(t, "0")
 		for nb := 1; nb <= 5; nb++ {
-			require.NoError(t, (&db.GistComment{GistID: other.ID, UserID: alice.ID, Content: fmt.Sprintf("Other %d.", nb)}).Create())
+			require.NoError(t, (&db.GistComment{GistID: other.ID, UserID: &alice.ID, Content: fmt.Sprintf("Other %d.", nb)}).Create())
 		}
 
 		body := getBody("/" + otherUsername + "/" + otherIdentifier)
@@ -527,5 +534,227 @@ func TestCommentNotifiesOwner(t *testing.T) {
 		postComment(t, s, username, identifier, "hello", 302)
 
 		require.Len(t, thomasNotifications(t), before)
+	})
+}
+
+func TestReplyToComment(t *testing.T) {
+	s := webtest.Setup(t)
+	defer webtest.Teardown(t)
+
+	s.Register(t, "thomas")
+	s.Register(t, "alice")
+	s.Register(t, "bob")
+
+	alice, err := db.GetUserByUsername("alice")
+	require.NoError(t, err)
+
+	aliceNotifications := func(t *testing.T) []*db.UserNotification {
+		rows, err := db.GetVisibleNotifications(alice.ID, 50, 0)
+		require.NoError(t, err)
+		return rows
+	}
+
+	reply := func(t *testing.T, username, identifier string, parent *db.GistComment, content string) {
+		s.Request(t, "POST", "/"+username+"/"+identifier+"/comments",
+			url.Values{"content": {content}, "parent_id": {strconv.FormatUint(uint64(parent.ID), 10)}}, 302)
+	}
+
+	t.Run("ReplyJoinsTheThread", func(t *testing.T) {
+		_, gist, username, identifier := s.CreateGist(t, "0")
+
+		s.Login(t, "alice")
+		root := postComment(t, s, username, identifier, "the first word", 302)
+
+		s.Login(t, "bob")
+		reply(t, username, identifier, root, "a reply")
+
+		comments, err := gist.GetComments()
+		require.NoError(t, err)
+		require.Len(t, comments, 2)
+		require.Equal(t, root.ID, comments[1].ParentID)
+		require.False(t, comments[1].IsRoot())
+		requireNbComments(t, username, identifier, 2)
+
+		resp := s.Request(t, "GET", "/"+username+"/"+identifier, nil, 200)
+		body, err := io.ReadAll(resp.Body)
+		require.NoError(t, err)
+		require.Contains(t, string(body), "the first word")
+		require.Contains(t, string(body), "a reply")
+		// The reply is nested inside the thread of the comment it answers
+		require.Contains(t, string(body), `id="comment-`+strconv.FormatUint(uint64(comments[1].ID), 10)+`"`)
+		require.Contains(t, string(body), "border-l")
+	})
+
+	t.Run("ReplyToAReplyJoinsTheSameThread", func(t *testing.T) {
+		_, gist, username, identifier := s.CreateGist(t, "0")
+
+		s.Login(t, "alice")
+		root := postComment(t, s, username, identifier, "root", 302)
+
+		s.Login(t, "bob")
+		reply(t, username, identifier, root, "first reply")
+		comments, err := gist.GetComments()
+		require.NoError(t, err)
+		first := comments[len(comments)-1]
+
+		s.Login(t, "alice")
+		reply(t, username, identifier, first, "answer to the answer")
+
+		comments, err = gist.GetComments()
+		require.NoError(t, err)
+		last := comments[len(comments)-1]
+		// Flattened onto the root, not onto the reply it answered
+		require.Equal(t, root.ID, last.ParentID)
+		requireNbComments(t, username, identifier, 3)
+	})
+
+	t.Run("NotifiesTheRepliedTo", func(t *testing.T) {
+		_, _, username, identifier := s.CreateGist(t, "0")
+		before := len(aliceNotifications(t))
+
+		s.Login(t, "alice")
+		root := postComment(t, s, username, identifier, "root", 302)
+
+		s.Login(t, "bob")
+		reply(t, username, identifier, root, "a reply")
+
+		rows := aliceNotifications(t)
+		require.Len(t, rows, before+1)
+		latest := rows[0]
+		require.Equal(t, "reply", latest.Kind)
+		require.Equal(t, "notification.reply.title", latest.TitleKey)
+		require.Equal(t, []any{"bob", "Test"}, latest.NotificationArgs())
+		require.Equal(t, "/"+username+"/"+identifier+"#comment-"+strconv.FormatUint(uint64(root.ID)+1, 10), latest.Link)
+	})
+
+	t.Run("DeletingAThreadRemovesItsReplies", func(t *testing.T) {
+		_, gist, username, identifier := s.CreateGist(t, "0")
+
+		s.Login(t, "alice")
+		root := postComment(t, s, username, identifier, "root", 302)
+
+		s.Login(t, "bob")
+		reply(t, username, identifier, root, "first reply")
+		reply(t, username, identifier, root, "second reply")
+		requireNbComments(t, username, identifier, 3)
+
+		s.Login(t, "alice")
+		resp := s.Request(t, "POST", commentPath(username, identifier, root)+"/delete", nil, 302)
+		require.Equal(t, "/"+username+"/"+identifier+"#comments", resp.Header.Get("Location"))
+		requireNbComments(t, username, identifier, 0)
+
+		comments, err := gist.GetComments()
+		require.NoError(t, err)
+		require.Empty(t, comments)
+	})
+}
+
+func TestGuestComments(t *testing.T) {
+	s := webtest.Setup(t)
+	defer webtest.Teardown(t)
+
+	s.Register(t, "thomas")
+	thomas, err := db.GetUserByUsername("thomas")
+	require.NoError(t, err)
+
+	_, gist, username, identifier := s.CreateGist(t, "0")
+	path := "/" + username + "/" + identifier + "/comments"
+
+	thomasNotifications := func(t *testing.T) []*db.UserNotification {
+		rows, err := db.GetVisibleNotifications(thomas.ID, 50, 0)
+		require.NoError(t, err)
+		return rows
+	}
+
+	lastComment := func(t *testing.T) *db.GistComment {
+		comments, err := gist.GetComments()
+		require.NoError(t, err)
+		if len(comments) == 0 {
+			return nil
+		}
+		return comments[len(comments)-1]
+	}
+
+	t.Run("OffByDefault", func(t *testing.T) {
+		s.Logout()
+		resp := s.Request(t, "POST", path, url.Values{"content": {"hello"}, "name": {"Visitor"}}, 302)
+		require.Equal(t, "/explore", resp.Header.Get("Location"))
+		requireNbComments(t, username, identifier, 0)
+
+		// And the gist page offers no way in
+		body := fetchBody(t, s, "/"+username+"/"+identifier)
+		require.NotContains(t, body, `name="name"`)
+	})
+
+	t.Run("OnAcceptsAGuest", func(t *testing.T) {
+		require.NoError(t, settings.Set(settings.KeyCommentsAllowGuests, "1"))
+		defer func() {
+			require.NoError(t, settings.Set(settings.KeyCommentsAllowGuests, "0"))
+		}()
+
+		s.Logout()
+		before := len(thomasNotifications(t))
+		resp := s.Request(t, "POST", path, url.Values{"content": {"hello from a guest"}, "name": {" Visitor "}}, 302)
+		require.True(t, strings.HasPrefix(resp.Header.Get("Location"), "/"+username+"/"+identifier+"#comment-"))
+
+		comment := lastComment(t)
+		require.NotNil(t, comment)
+		require.True(t, comment.IsGuest())
+		require.Nil(t, comment.UserID)
+		require.Equal(t, "Visitor", comment.GuestName)
+		require.Equal(t, "Visitor", comment.AuthorName())
+		requireNbComments(t, username, identifier, 1)
+
+		// The gist owner hears about it
+		rows := thomasNotifications(t)
+		require.Len(t, rows, before+1)
+		require.Equal(t, "comment", rows[0].Kind)
+		require.Equal(t, []any{"Visitor", "Test"}, rows[0].NotificationArgs())
+
+		// Shown as a guest, without a profile to link to
+		body := fetchBody(t, s, "/"+username+"/"+identifier)
+		require.Contains(t, body, "hello from a guest")
+		require.Contains(t, body, "Guest")
+		require.Contains(t, body, `name="name"`)
+	})
+
+	t.Run("RequiresAName", func(t *testing.T) {
+		require.NoError(t, settings.Set(settings.KeyCommentsAllowGuests, "1"))
+		defer func() {
+			require.NoError(t, settings.Set(settings.KeyCommentsAllowGuests, "0"))
+		}()
+
+		s.Logout()
+		s.Request(t, "POST", path, url.Values{"content": {"nameless"}, "name": {"   "}}, 302)
+		requireNbComments(t, username, identifier, 1)
+		require.NotContains(t, lastComment(t).Content, "nameless")
+	})
+
+	t.Run("GuestsCannotEditOrDelete", func(t *testing.T) {
+		require.NoError(t, settings.Set(settings.KeyCommentsAllowGuests, "1"))
+		defer func() {
+			require.NoError(t, settings.Set(settings.KeyCommentsAllowGuests, "0"))
+		}()
+
+		comment := lastComment(t)
+		require.NotNil(t, comment)
+
+		s.Logout()
+		// Both routes require a signed-in user, and a guest is sent away
+		resp := s.Request(t, "POST", commentPath(username, identifier, comment)+"/edit", url.Values{"content": {"hijacked"}}, 302)
+		require.Equal(t, "/explore", resp.Header.Get("Location"))
+
+		s.Request(t, "POST", commentPath(username, identifier, comment)+"/delete", nil, 302)
+		requireNbComments(t, username, identifier, 1)
+		require.Equal(t, "hello from a guest", lastComment(t).Content)
+	})
+
+	t.Run("OwnerCanDeleteGuestComment", func(t *testing.T) {
+		comment := lastComment(t)
+		require.NotNil(t, comment)
+
+		s.Login(t, "thomas")
+		s.Request(t, "POST", commentPath(username, identifier, comment)+"/delete", nil, 302)
+		requireNbComments(t, username, identifier, 0)
 	})
 }

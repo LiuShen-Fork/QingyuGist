@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strconv"
 
+	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 
 	"github.com/LiuShen-Fork/QingyuGist/internal/db"
@@ -86,13 +87,30 @@ func CreateComment(ctx *context.Context) error {
 
 	c := &db.GistComment{
 		GistID:  g.ID,
-		UserID:  ctx.User.ID,
+		UserID:  &ctx.User.ID,
 		Content: dto.Content,
+	}
+	if dto.ParentID != 0 {
+		parent, err := db.GetGistComment(g.ID, dto.ParentID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ctx.ErrorJson(404, "Parent comment not found", nil)
+		} else if err != nil {
+			return ctx.ErrorJson(500, "failed to fetch parent comment", err)
+		}
+		// Replies are one level deep: answering a reply joins the same thread
+		c.ParentID = parent.ParentID
+		if c.ParentID == 0 {
+			c.ParentID = parent.ID
+		}
 	}
 	if err := c.Create(); err != nil {
 		return ctx.ErrorJson(500, "failed to create comment", err)
 	}
-	c.User = *ctx.User
+	c.User = ctx.User
+
+	if err := c.NotifyParticipants(g); err != nil {
+		log.Error().Err(err).Msgf("Comment: cannot notify about comment %d", c.ID)
+	}
 
 	baseURL := apiBaseURL(ctx)
 	resp := c.ToAPI(baseURL, g)
@@ -179,7 +197,7 @@ func bindCommentInput(ctx *context.Context) (*db.GistCommentDTO, error) {
 	if err := ctx.Bind(&req); err != nil {
 		return nil, ctx.ErrorJson(422, "could not bind data", nil)
 	}
-	dto := &db.GistCommentDTO{Content: req.Body}
+	dto := &db.GistCommentDTO{Content: req.Body, ParentID: req.ParentID}
 	dto.Normalize()
 	if err := ctx.Validate(dto); err != nil {
 		return nil, ctx.ErrorJson(422, err.Error(), nil)

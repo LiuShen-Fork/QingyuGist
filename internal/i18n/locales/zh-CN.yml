@@ -66,6 +66,10 @@ gist.comments.view-more: 查看全部评论
 gist.comments.back-to-gist: 返回 Gist
 gist.comments.no: 还没有评论
 gist.comments.for: 「%s」的评论
+gist.comments.reply: 回复
+gist.comments.guest: 访客
+gist.comments.guest-name: 你的名字
+gist.comments.guest-name-required: 评论前请先填写名字
 
 gist.list.joined: 加入于
 gist.list.all: 所有 Gist
@@ -610,6 +614,8 @@ settings.comments.enabled: 允许评论
 settings.comments.enabled_help: 在 Gist 页面显示评论区并接受新评论。关闭后所有位置（包括 API）都不再显示已有评论。
 settings.comments.notify_owner: 提醒 Gist 作者
 settings.comments.notify_owner_help: 有人评论他人创建的 Gist 时，在作者的通知中心留下一条消息。
+settings.comments.allow_guests: 允许访客评论
+settings.comments.allow_guests_help: 未登录的访客也可以评论，评论会显示他们自行填写的名字。访客不能编辑或删除自己的评论，Gist 作者和管理员仍可以。
 settings.search.index_type: 搜索索引
 settings.search.index_type_help: Bleve 在进程内运行，Meilisearch 需要可访问的服务端。
 settings.search.index_bleve: Bleve（内置）
@@ -925,3 +931,5 @@ notification.moderation.rejected.title: 有 gist 未通过审核
 notification.moderation.rejected.body: 「%s」仍保持私有：%s
 notification.comment.title: 新评论
 notification.comment.body: '%s 评论了「%s」'
+notification.reply.title: 新回复
+notification.reply.body: '%s 回复了「%s」'

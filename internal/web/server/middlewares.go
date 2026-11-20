@@ -230,6 +230,18 @@ func logged(next Handler) Handler {
 	}
 }
 
+// commentable lets signed-in users post comments, and guests too when the
+// instance allows anonymous comments. Anyone else is sent to the explore page,
+// like the logged middleware does.
+func commentable(next Handler) Handler {
+	return func(ctx *context.Context) error {
+		if ctx.User != nil || config.C.CommentsAllowGuests {
+			return next(ctx)
+		}
+		return ctx.RedirectTo("/explore")
+	}
+}
+
 func inMFASession(next Handler) Handler {
 	return func(ctx *context.Context) error {
 		sess := ctx.GetSession()

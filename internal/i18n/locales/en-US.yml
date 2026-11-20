@@ -100,6 +100,10 @@ gist.comments.view-more: View more comments
 gist.comments.back-to-gist: Back to the gist
 gist.comments.no: No comments yet
 gist.comments.for: Comments for %s
+gist.comments.reply: Reply
+gist.comments.guest: Guest
+gist.comments.guest-name: Your name
+gist.comments.guest-name-required: Enter a name before commenting
 
 gist.list.joined: Joined
 gist.list.all: All gists
@@ -735,6 +739,8 @@ settings.comments.enabled: Allow comments
 settings.comments.enabled_help: Show the comment section on gists and accept new comments. Disabling hides existing comments everywhere, including the API.
 settings.comments.notify_owner: Notify gist owners
 settings.comments.notify_owner_help: Put a comment in the gist owner's inbox when someone else writes it.
+settings.comments.allow_guests: Allow guest comments
+settings.comments.allow_guests_help: Let visitors who are not signed in comment under a name they type in. Guests cannot edit or delete their comments; the gist owner and admins still can.
 settings.search.index_type: Search index
 settings.search.index_type_help: Bleve runs inside the process; Meilisearch needs a reachable server.
 settings.search.index_bleve: Bleve (built in)
@@ -940,3 +946,5 @@ notification.moderation.rejected.title: A gist was not published
 notification.moderation.rejected.body: '"%s" stays private: %s'
 notification.comment.title: New comment
 notification.comment.body: '%s commented on "%s"'
+notification.reply.title: New reply
+notification.reply.body: '%s replied on "%s"'

@@ -23,23 +23,35 @@ const (
 )
 
 // Comments lists every comment posted on the gist, oldest first, paginated.
+// Pages hold whole threads: they are numbered by top-level comments, and the
+// replies of a page's threads are loaded with them.
 func Comments(ctx *context.Context) error {
 	gist := ctx.GetData("gist").(*db.Gist)
 
 	pageInt := handlers.GetPage(ctx)
 
-	comments, err := gist.GetCommentsPage(pageInt-1, commentsPerPage+1, commentsPerPage)
+	// One more than shown, to know if there is a next page
+	roots, err := gist.GetRootCommentsPage(pageInt-1, commentsPerPage+1, commentsPerPage)
 	if err != nil {
 		return ctx.ErrorRes(500, "Error fetching comments", err)
 	}
 
-	if err = handlers.Paginate(ctx, render.RenderComments(comments), pageInt, commentsPerPage, "comments", gist.User.Username+"/"+gist.Identifier()+"/comments", 1, nil); err != nil {
+	if err = handlers.Paginate(ctx, roots, pageInt, commentsPerPage, "rootComments", gist.User.Username+"/"+gist.Identifier()+"/comments", 1, nil); err != nil {
 		return ctx.ErrorRes(404, ctx.Tr("error.page-not-found"), nil)
+	}
+
+	// Paginate dropped the peek-next extra comment from the page
+	roots = ctx.GetData("rootComments").([]*db.GistComment)
+	if err = setCommentThreads(ctx, gist, roots); err != nil {
+		return ctx.ErrorRes(500, "Error fetching comments", err)
 	}
 
 	ctx.SetData("page", "comments")
 	ctx.SetData("htmlTitle", ctx.TrH("gist.comments.for", gist.Title))
 	ctx.SetData("revision", "HEAD")
+	// Comments can be answered from this page too
+	ctx.SetData("canComment", !gist.Archived && (ctx.User != nil || config.C.CommentsAllowGuests))
+	ctx.SetData("commentAsGuest", ctx.User == nil && config.C.CommentsAllowGuests)
 	return ctx.Html("comments.html")
 }
 
@@ -55,7 +67,8 @@ func CommentPermalink(ctx *context.Context) error {
 	return redirectToComment(ctx, gist, comment)
 }
 
-// CreateComment posts a comment on the gist as the logged-in user.
+// CreateComment posts a comment on the gist, either as the logged-in user or,
+// when the instance allows it, as a guest with the name they typed in.
 func CreateComment(ctx *context.Context) error {
 	gist := ctx.GetData("gist").(*db.Gist)
 
@@ -66,39 +79,45 @@ func CreateComment(ctx *context.Context) error {
 
 	comment := &db.GistComment{
 		GistID:  gist.ID,
-		UserID:  ctx.User.ID,
 		Content: dto.Content,
 	}
+	if ctx.User != nil {
+		comment.UserID = &ctx.User.ID
+	} else {
+		// The route lets guests through only when the instance allows it
+		if dto.GuestName == "" {
+			ctx.AddFlash(ctx.Tr("gist.comments.guest-name-required"), "error")
+			return ctx.RedirectTo(gistUrl(gist) + "#comments")
+		}
+		comment.GuestName = dto.GuestName
+	}
+
+	if dto.ParentID != 0 {
+		parent, err := db.GetGistComment(gist.ID, dto.ParentID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ctx.NotFound("Comment not found")
+		} else if err != nil {
+			return ctx.ErrorRes(500, "Error fetching comment", err)
+		}
+		// Replies are one level deep: answering a reply joins the same thread
+		comment.ParentID = parent.ParentID
+		if comment.ParentID == 0 {
+			comment.ParentID = parent.ID
+		}
+	}
+
 	if err := comment.Create(); err != nil {
 		return ctx.ErrorRes(500, "Error creating comment", err)
 	}
+	// Preloaded on read, set here so the notification has the author's name
+	comment.User = ctx.User
 
-	notifyGistOwner(ctx, gist, comment)
+	if err := comment.NotifyParticipants(gist); err != nil {
+		// The comment is posted either way: only the notification is lost
+		log.Error().Err(err).Msgf("Comment: cannot notify about comment %d", comment.ID)
+	}
 
 	return redirectToComment(ctx, gist, comment)
-}
-
-// notifyGistOwner puts a comment in the gist owner's inbox, unless they wrote
-// it themselves. A failed notification must not fail the comment: the author
-// already sees it posted, so the error is only logged.
-func notifyGistOwner(ctx *context.Context, gist *db.Gist, comment *db.GistComment) {
-	if gist.UserID == ctx.User.ID || !config.C.CommentNotify {
-		return
-	}
-
-	title := gist.Title
-	if title == "" {
-		title = gist.Identifier()
-	}
-	link := gistUrl(gist) + "#comment-" + strconv.FormatUint(uint64(comment.ID), 10)
-	if err := db.CreateNotification("comment", gist.UserID,
-		"notification.comment.title",
-		"notification.comment.body",
-		[]string{ctx.User.Username, title},
-		link,
-	); err != nil {
-		log.Error().Err(err).Msgf("Comment: cannot notify the owner of gist %d", gist.ID)
-	}
 }
 
 // EditComment changes the content of a comment. Only its author can.
@@ -205,13 +224,24 @@ func redirectToComment(ctx *context.Context, gist *db.Gist, comment *db.GistComm
 }
 
 // commentPage returns the page of the comments page listing the comment, or 0
-// if it is one of the last comments shown on the gist page.
+// if its thread is one of the last comments shown on the gist page. A reply
+// is looked for through the top-level comment it belongs to, since pages hold
+// whole threads.
 func commentPage(gist *db.Gist, comment *db.GistComment) (int, error) {
-	position, err := comment.Position()
+	root := comment
+	if !comment.IsRoot() {
+		var err error
+		root, err = db.GetGistComment(gist.ID, comment.ParentID)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	position, err := root.RootPosition()
 	if err != nil {
 		return 0, err
 	}
-	total, err := gist.CountComments()
+	total, err := gist.CountRootComments()
 	if err != nil {
 		return 0, err
 	}
@@ -219,6 +249,23 @@ func commentPage(gist *db.Gist, comment *db.GistComment) (int, error) {
 		return 0, nil
 	}
 	return int(position)/commentsPerPage + 1, nil
+}
+
+// setCommentThreads loads the replies of the given top-level comments and sets
+// the whole threads as the page's comments.
+func setCommentThreads(ctx *context.Context, gist *db.Gist, roots []*db.GistComment) error {
+	rootIDs := make([]uint, 0, len(roots))
+	for _, root := range roots {
+		rootIDs = append(rootIDs, root.ID)
+	}
+
+	replies, err := gist.GetReplies(rootIDs)
+	if err != nil {
+		return err
+	}
+
+	ctx.SetData("comments", render.RenderCommentThreads(append(roots, replies...)))
+	return nil
 }
 
 func gistUrl(gist *db.Gist) string {
