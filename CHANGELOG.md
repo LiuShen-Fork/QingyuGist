@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.1.1) - 2026-11-20
+
+### Changed
+- The site icon fills the corner the feather leaves empty with a `</>` mark,
+  drawn with square terminals so it reads as a code symbol rather than a
+  scribble at tab size. The favicon set, the documentation site's icon and the
+  mark at the top of the README are all updated
+
 ## [1.1.0](https://github.com/LiuShen-Fork/QingyuGist/releases/tag/v1.1.0) - 2026-11-20
 
 ### Added
