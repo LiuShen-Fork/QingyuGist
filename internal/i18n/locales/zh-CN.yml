@@ -631,6 +631,7 @@ auth.welcome-back: 欢迎回来
 auth.create-account: 创建账户
 auth.login-subtitle: 登录以继续访问你的 Gist。
 auth.register-subtitle: 一个账户，管理所有代码片段。
+auth.brand-tagline: 一个安静的代码片段之家，运行在你自己掌控的服务器上。
 auth.oauth-only-notice: 本地注册已关闭，请使用下方任一第三方账户创建账号。
 auth.oauth-only-no-provider: 本地注册已关闭。请联系管理员配置第三方登录。
 auth.form-disabled: 密码登录已禁用，请使用第三方账户继续。

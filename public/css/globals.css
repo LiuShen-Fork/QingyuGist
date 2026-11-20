@@ -786,24 +786,6 @@ body.auth-page .og-toast-stack {
     color: var(--foreground);
 }
 
-/* Auth ------------------------------------------------------------------ */
-/* A faint, edge-faded grid gives the unauthenticated entry point depth
-   without competing with the form. Uses theme tokens so it follows the
-   user's selected accent and light/dark mode. */
-.auth-grid {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-        linear-gradient(to right, color-mix(in oklab, var(--border) 75%, transparent) 1px, transparent 1px),
-        linear-gradient(to bottom, color-mix(in oklab, var(--border) 75%, transparent) 1px, transparent 1px);
-    background-size: 64px 64px;
-    background-position: center top;
-    opacity: 0.55;
-    -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 38%, #000 10%, transparent 78%);
-    mask-image: radial-gradient(ellipse 70% 55% at 50% 38%, #000 10%, transparent 78%);
-}
-
 /* Sidebar navigation ---------------------------------------------------- */
 .og-nav-link {
     display: flex;

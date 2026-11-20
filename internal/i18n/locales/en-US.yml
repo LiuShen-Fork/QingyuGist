@@ -754,6 +754,7 @@ auth.welcome-back: Welcome back
 auth.create-account: Create your account
 auth.login-subtitle: Sign in to continue to your gists.
 auth.register-subtitle: One account for all your snippets.
+auth.brand-tagline: A quiet home for your snippets, on a server you control.
 auth.oauth-only-notice: Local sign-up is disabled. Continue with one of the providers below to create an account.
 auth.oauth-only-no-provider: Local sign-up is disabled. Ask an administrator to configure a third-party provider.
 auth.form-disabled: The sign-in form is disabled. Use a third-party provider to continue.

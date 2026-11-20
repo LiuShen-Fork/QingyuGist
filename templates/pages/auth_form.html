@@ -1,16 +1,16 @@
 {{ define "content" }}
 {{ $hasOauth := or .githubOauth .googleOauth .gitlabOauth .giteaOauth .oidcOauth .oauth2Oauth }}
-<div class="relative flex min-h-[100dvh] flex-col overflow-hidden bg-background">
-    <div class="auth-grid" aria-hidden="true"></div>
+{{ $siteName := "QingyuGist" }}{{ if .SiteName }}{{ $siteName = .SiteName }}{{ else if .c.CustomName }}{{ $siteName = .c.CustomName }}{{ end }}
+<div class="flex min-h-[100dvh] flex-col bg-background">
 
-    <header class="relative z-10 flex h-16 shrink-0 items-center justify-between px-5 sm:px-8">
-        <a href="{{ .c.ExternalUrl }}/" class="flex items-center gap-2.5">
+    <header class="border-border flex h-16 shrink-0 items-center justify-between border-b px-5 sm:px-8">
+        <a href="{{ .c.ExternalUrl }}/" class="flex items-center gap-2.5 lg:invisible">
             {{ if .c.CustomLogo }}
             <img src="{{ custom .c.CustomLogo }}" class="size-7 object-contain" alt="" />
             {{ else }}
             <img src="{{ asset "img/qingyugist.svg" }}" class="size-7 dark:invert" alt="" />
             {{ end }}
-            <span class="text-sm font-semibold tracking-tight">{{ if .SiteName }}{{ .SiteName }}{{ else if .c.CustomName }}{{ .c.CustomName }}{{ else }}QingyuGist{{ end }}</span>
+            <span class="text-sm font-semibold tracking-tight">{{ $siteName }}</span>
         </a>
 
         <div class="flex items-center gap-2">
@@ -22,31 +22,46 @@
         </div>
     </header>
 
-    <main class="relative z-10 flex flex-1 items-center justify-center px-4 pb-16 pt-2 sm:pb-24">
-        <div class="w-full max-w-[400px]">
-            <div class="rounded-xl border bg-card p-6 shadow-sm sm:p-8">
+    <main class="flex flex-1 flex-col lg:flex-row">
+
+        <aside class="border-border bg-muted/30 hidden border-r px-14 py-12 lg:flex lg:w-[42%] lg:flex-col lg:justify-center xl:px-20">
+            <div class="max-w-[17rem]">
+                {{ if .c.CustomLogo }}
+                <img src="{{ custom .c.CustomLogo }}" class="size-10 object-contain" alt="" />
+                {{ else }}
+                <img src="{{ asset "img/qingyugist.svg" }}" class="size-10 dark:invert" alt="" />
+                {{ end }}
+                <p class="mt-6 text-xl font-semibold tracking-[-0.02em]">{{ $siteName }}</p>
+                <p class="text-muted-foreground mt-2.5 text-sm leading-6">
+                    {{ if .SiteDescription }}{{ .SiteDescription }}{{ else }}{{ .locale.Tr "auth.brand-tagline" }}{{ end }}
+                </p>
+            </div>
+        </aside>
+
+        <div class="flex flex-1 items-center justify-center px-4 py-12 sm:px-8 lg:py-16">
+            <div class="w-full max-w-[380px]">
 
                 {{ if .disableSignup }}
                 <div class="space-y-6">
                     <div class="space-y-2">
-                        <h1 class="text-2xl font-semibold tracking-[-0.02em]">{{ .locale.Tr "auth.signup" }}</h1>
+                        <h1 class="text-[28px] font-semibold leading-[1.15] tracking-[-0.025em]">{{ .locale.Tr "auth.signup" }}</h1>
                         <p class="text-muted-foreground text-sm leading-6">{{ .locale.Tr "auth.signup-disabled" }}</p>
                     </div>
-                    <a href="{{ .c.ExternalUrl }}/login" class="btn h-10 w-full">{{ .locale.Tr "auth.login" }}</a>
+                    <a href="{{ .c.ExternalUrl }}/login" class="btn h-11 w-full">{{ .locale.Tr "auth.login" }}</a>
                 </div>
                 {{ else }}
 
-                <div class="mb-7">
-                    <h1 class="text-2xl font-semibold tracking-[-0.02em]">
+                <div class="mb-8">
+                    <h1 class="text-[28px] font-semibold leading-[1.15] tracking-[-0.025em]">
                         {{ if .isLoginPage }}{{ .locale.Tr "auth.welcome-back" }}{{ else }}{{ .locale.Tr "auth.create-account" }}{{ end }}
                     </h1>
-                    <p class="text-muted-foreground mt-2 text-sm leading-6">
+                    <p class="text-muted-foreground mt-2.5 text-sm leading-6">
                         {{ if .isLoginPage }}{{ .locale.Tr "auth.login-subtitle" }}{{ else }}{{ .locale.Tr "auth.register-subtitle" }}{{ end }}
                     </p>
                 </div>
 
                 {{ if .disableForm }}
-                <div class="border-border bg-muted/40 text-muted-foreground mb-6 rounded-xl border border-dashed p-4 text-sm leading-6">
+                <div class="border-border bg-muted/40 text-muted-foreground mb-6 rounded-lg border border-dashed p-4 text-sm leading-6">
                     {{ if and (not .isLoginPage) .OAuthOnlyRegistration }}
                         {{ if $hasOauth }}{{ .locale.Tr "auth.oauth-only-notice" }}{{ else }}{{ .locale.Tr "auth.oauth-only-no-provider" }}{{ end }}
                     {{ else }}
@@ -58,37 +73,37 @@
                 {{ if $hasOauth }}
                 <div class="space-y-2">
                     {{ if .githubOauth }}
-                    <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/github" class="btn-outline h-10 w-full justify-center gap-2 font-medium">
+                    <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/github" class="btn-outline h-11 w-full justify-center gap-2 font-medium">
                         <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.21 3.44 9.63 8.21 11.19.6.11.82-.26.82-.57v-2.01c-3.34.71-4.04-1.58-4.04-1.58-.55-1.36-1.34-1.73-1.34-1.73-1.09-.73.08-.72.08-.72 1.2.08 1.84 1.21 1.84 1.21 1.07 1.8 2.81 1.28 3.5.98.11-.76.42-1.28.76-1.58-2.67-.3-5.47-1.31-5.47-5.83 0-1.29.47-2.34 1.24-3.17-.13-.3-.54-1.52.11-3.18 0 0 1.01-.32 3.3 1.21a11.6 11.6 0 0 1 3-.4c1.02 0 2.05.13 3 .4 2.29-1.53 3.3-1.21 3.3-1.21.65 1.66.24 2.88.12 3.18.77.83 1.23 1.88 1.23 3.17 0 4.53-2.81 5.53-5.49 5.82.43.36.82 1.09.82 2.2v3.26c0 .31.21.69.82.57A12.01 12.01 0 0 0 24 12.29C24 5.78 18.63.5 12 .5Z"/></svg>
                         <span>{{ .locale.Tr "auth.continue-with" }} {{ .c.GithubName }}</span>
                     </a>
                     {{ end }}
                     {{ if .googleOauth }}
-                    <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/google" class="btn-outline h-10 w-full justify-center gap-2 font-medium">
+                    <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/google" class="btn-outline h-11 w-full justify-center gap-2 font-medium">
                         <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34A21.99 21.99 0 0 0 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/></svg>
                         <span>{{ .locale.Tr "auth.continue-with" }} {{ .c.GoogleName }}</span>
                     </a>
                     {{ end }}
                     {{ if .gitlabOauth }}
-                    <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/gitlab" class="btn-outline h-10 w-full justify-center gap-2 font-medium">
+                    <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/gitlab" class="btn-outline h-11 w-full justify-center gap-2 font-medium">
                         <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 21 9-6.5-2.7-8.1a.6.6 0 0 0-1.1 0L14.6 15H9.4L6.8 6.4a.6.6 0 0 0-1.1 0L3 14.5 12 21Z"/></svg>
                         <span>{{ .locale.Tr "auth.continue-with" }} {{ .c.GitlabName }}</span>
                     </a>
                     {{ end }}
                     {{ if .giteaOauth }}
-                    <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/gitea" class="btn-outline h-10 w-full justify-center gap-2 font-medium">
+                    <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/gitea" class="btn-outline h-11 w-full justify-center gap-2 font-medium">
                         <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 8v8M8 6h4a4 4 0 0 1 4 4"/></svg>
                         <span>{{ .locale.Tr "auth.continue-with" }} {{ .c.GiteaName }}</span>
                     </a>
                     {{ end }}
                     {{ if .oidcOauth }}
-                    <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/openid-connect" class="btn-outline h-10 w-full justify-center gap-2 font-medium">
+                    <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/openid-connect" class="btn-outline h-11 w-full justify-center gap-2 font-medium">
                         <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 8.2-8.2M17 4l3 3M15 6l3 3"/></svg>
                         <span>{{ .locale.Tr "auth.continue-with" }} {{ if .c.OIDCProviderName }}{{ .c.OIDCProviderName }}{{ else }}OpenID{{ end }}</span>
                     </a>
                     {{ end }}
                     {{ if .oauth2Oauth }}
-                    <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/oauth2" class="btn-outline h-10 w-full justify-center gap-2 font-medium">
+                    <a hx-boost="false" href="{{ .c.ExternalUrl }}/oauth/oauth2" class="btn-outline h-11 w-full justify-center gap-2 font-medium">
                         <svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 14.5 14.5 9.5"/><path d="M7.6 11.9 5.7 13.8a3.6 3.6 0 0 0 5.1 5.1l1.9-1.9"/><path d="m16.4 12.1 1.9-1.9a3.6 3.6 0 0 0-5.1-5.1l-1.9 1.9"/></svg>
                         <span>{{ .locale.Tr "auth.continue-with" }} {{ if .c.OAuth2Name }}{{ .c.OAuth2Name }}{{ else }}OAuth 2.0{{ end }}</span>
                     </a>
@@ -97,7 +112,7 @@
                 {{ end }}
 
                 {{ if and $hasOauth (not .disableForm) }}
-                <div class="my-6 flex items-center gap-3">
+                <div class="my-7 flex items-center gap-3">
                     <span class="border-border flex-1 border-t"></span>
                     <span class="text-muted-foreground text-xs font-medium uppercase tracking-[0.14em]">{{ .locale.Tr "auth.or" }}</span>
                     <span class="border-border flex-1 border-t"></span>
@@ -107,16 +122,16 @@
                 {{ if not .disableForm }}
                 <form class="space-y-5" method="post">
                     <div class="space-y-2">
-                        <label for="username" class="text-sm font-medium">{{ .locale.Tr "auth.username" }}</label>
-                        <input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus class="input h-10 w-full" />
+                        <label for="username" class="text-[13px] font-medium leading-none">{{ .locale.Tr "auth.username" }}</label>
+                        <input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus class="input h-11 w-full" />
                     </div>
 
                     <div class="space-y-2">
-                        <label for="password" class="text-sm font-medium">{{ .locale.Tr "auth.password" }}</label>
-                        <input id="password" name="password" type="password" autocomplete="{{ if .isLoginPage }}current-password{{ else }}new-password{{ end }}" required class="input h-10 w-full" />
+                        <label for="password" class="text-[13px] font-medium leading-none">{{ .locale.Tr "auth.password" }}</label>
+                        <input id="password" name="password" type="password" autocomplete="{{ if .isLoginPage }}current-password{{ else }}new-password{{ end }}" required class="input h-11 w-full" />
                     </div>
 
-                    <button type="submit" class="btn h-10 w-full">
+                    <button type="submit" class="btn mt-7 h-11 w-full">
                         {{ if .isLoginPage }}{{ .locale.Tr "auth.login" }}{{ else }}{{ .locale.Tr "auth.signup" }}{{ end }}
                     </button>
 
@@ -125,9 +140,9 @@
                 {{ end }}
 
                 {{ if and .isLoginPage (not .disableForm) }}
-                <form id="webauthn" class="mt-5 text-center">
+                <form id="webauthn" class="mt-5">
                     {{ .csrfHtml }}
-                    <button type="button" id="login-passkey-button" class="text-muted-foreground hover:text-foreground inline-flex cursor-pointer items-center gap-1.5 text-sm font-medium transition-colors">
+                    <button type="button" id="login-passkey-button" class="text-muted-foreground hover:text-foreground inline-flex w-full cursor-pointer items-center justify-center gap-1.5 text-sm font-medium transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="size-4" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
                         </svg>
@@ -138,15 +153,15 @@
                 {{ end }}
 
                 {{ if or .isLoginPage (not .DisableSignup) }}
-                <div class="border-border mt-7 border-t pt-6 text-center text-sm">
+                <div class="border-border mt-8 border-t pt-6 text-center text-sm">
                     {{ if .isLoginPage }}
                         {{ if not .DisableSignup }}
                         <span class="text-muted-foreground">{{ .locale.Tr "auth.no-account" }}</span>
-                        <a href="{{ .c.ExternalUrl }}/register" class="text-foreground font-medium underline-offset-4 hover:underline">{{ .locale.Tr "auth.signup" }}</a>
+                        <a href="{{ .c.ExternalUrl }}/register" class="text-foreground ml-1.5 font-medium underline-offset-4 hover:underline">{{ .locale.Tr "auth.signup" }}</a>
                         {{ end }}
                     {{ else }}
                         <span class="text-muted-foreground">{{ .locale.Tr "auth.have-account" }}</span>
-                        <a href="{{ .c.ExternalUrl }}/login" class="text-foreground font-medium underline-offset-4 hover:underline">{{ .locale.Tr "auth.login" }}</a>
+                        <a href="{{ .c.ExternalUrl }}/login" class="text-foreground ml-1.5 font-medium underline-offset-4 hover:underline">{{ .locale.Tr "auth.login" }}</a>
                     {{ end }}
                 </div>
                 {{ end }}
