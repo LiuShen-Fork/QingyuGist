@@ -92,30 +92,33 @@ func ParseVisibility[T string | int](v T) Visibility {
 }
 
 type Gist struct {
-	ID              uint `gorm:"primaryKey"`
-	Uuid            string
+	ID uint `gorm:"primaryKey"`
+	// Uuid is the immutable 32-character identifier used in every URL, and the
+	// URL column is the (case-insensitive) slug the owner picked. Both are
+	// looked up on nearly every request, so both carry an index.
+	Uuid            string `gorm:"size:64;uniqueIndex"`
 	Title           string
-	URL             string
-	URLNormalized   string
+	URL             string `gorm:"size:191"`
+	URLNormalized   string `gorm:"size:191;index"`
 	Preview         string
 	PreviewFilename string
 	PreviewMimeType string
 	Description     string
 	Private         Visibility // 0: public, 1: unlisted, 2: private
-	UserID          uint
+	UserID          uint       `gorm:"index"`
 	User            User
 	NbFiles         int
 	NbLikes         int
 	NbForks         int
-	CreatedAt       int64
-	UpdatedAt       int64
-	ExpiresAt       int64 // 0: never expires
+	CreatedAt       int64 `gorm:"index"`
+	UpdatedAt       int64 `gorm:"index"`
+	ExpiresAt       int64 `gorm:"index"` // 0: never expires
 	Archived        bool
 
 	// ModerationStatus tracks the asynchronous compliance check that gates
 	// public visibility when AI moderation is enabled.
 	// 0: not moderated / moderation disabled, 1: pending, 2: approved, 3: rejected.
-	ModerationStatus    ModerationStatus
+	ModerationStatus    ModerationStatus `gorm:"index"`
 	ModerationReason    string
 	ModerationCheckedAt int64
 
@@ -129,7 +132,7 @@ type Gist struct {
 
 type Like struct {
 	UserID    uint `gorm:"primaryKey"`
-	GistID    uint `gorm:"primaryKey"`
+	GistID    uint `gorm:"primaryKey;index"` // likes are counted and listed per gist
 	CreatedAt int64
 }
 

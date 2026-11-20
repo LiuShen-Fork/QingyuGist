@@ -2,7 +2,7 @@ package db
 
 type GistTopic struct {
 	GistID uint   `gorm:"primaryKey"`
-	Topic  string `gorm:"primaryKey;size:50"`
+	Topic  string `gorm:"primaryKey;size:50;index"` // topic pages filter by topic alone
 }
 
 // TopicCount is a topic together with the number of gists tagged with it.

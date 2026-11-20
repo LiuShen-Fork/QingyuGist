@@ -2,7 +2,7 @@ package db
 
 type GistLanguage struct {
 	GistID   uint   `gorm:"primaryKey"`
-	Language string `gorm:"primaryKey;size:100"`
+	Language string `gorm:"primaryKey;size:100;index"` // the language filter joins on this column
 }
 
 func GetGistLanguagesForUser(fromUserId, currentUserId uint) ([]struct {

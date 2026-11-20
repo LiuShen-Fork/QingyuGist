@@ -36,11 +36,11 @@ func IsAccessToken(s string) bool {
 type AccessToken struct {
 	ID         uint `gorm:"primaryKey"`
 	Name       string
-	TokenHash  string `gorm:"uniqueIndex,size:64"` // SHA-256 hash of the token
+	TokenHash  string `gorm:"size:64;uniqueIndex"` // SHA-256 hash of the token, looked up on every API call
 	CreatedAt  int64
 	ExpiresAt  int64 // 0 means no expiration
 	LastUsedAt int64
-	UserID     uint
+	UserID     uint `gorm:"index"`
 	User       User `validate:"-"`
 
 	ScopeGist uint // 0 = none, 1 = read, 2 = read+write

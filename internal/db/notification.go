@@ -33,7 +33,7 @@ type Notification struct {
 // NotificationRead marks one notification as read for one user.
 type NotificationRead struct {
 	UserID         uint `gorm:"primaryKey"`
-	NotificationID uint `gorm:"primaryKey"`
+	NotificationID uint `gorm:"primaryKey;index"` // deleting a broadcast clears its reads by notification id
 	ReadAt         int64
 }
 

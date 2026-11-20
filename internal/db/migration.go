@@ -36,6 +36,7 @@ func applyAllMigrations(dbType databaseType) error {
 		{1, []databaseType{SQLite}, v1_modifyConstraintToSSHKeys},
 		{2, []databaseType{SQLite}, v2_lowercaseEmails},
 		{3, nil, v3_normalizedColumns},
+		{4, nil, v4_uniqueUsername},
 	}
 
 	for _, m := range migrations {
@@ -129,4 +130,33 @@ func v3_normalizedColumns(tx *gorm.DB) error {
 	}
 	return tx.Model(&Gist{}).Where("url_normalized = '' OR url_normalized IS NULL").
 		Updates(map[string]interface{}{"url_normalized": gorm.Expr("LOWER(url)")}).Error
+}
+
+// v4_uniqueUsername turns the plain index on users.username_normalized into a
+// unique one. Usernames are compared case-insensitively everywhere (login,
+// registration, profile URLs), so two accounts whose names differ only by case
+// must not exist; until now that was only enforced in the registration handler,
+// which two simultaneous sign-ups can slip past.
+//
+// Older databases cannot be repaired automatically, so duplicates win: the
+// migration keeps the plain index and logs the offending names instead of
+// refusing to start the server.
+func v4_uniqueUsername(tx *gorm.DB) error {
+	var duplicates []string
+	if err := tx.Raw(`SELECT username_normalized FROM users
+		GROUP BY username_normalized HAVING COUNT(*) > 1`).Scan(&duplicates).Error; err != nil {
+		return err
+	}
+	if len(duplicates) > 0 {
+		log.Warn().Strs("usernames", duplicates).
+			Msg("Duplicate usernames exist; keeping the non-unique index. Rename the accounts listed to enable the unique index.")
+		return nil
+	}
+
+	if tx.Migrator().HasIndex(&User{}, "idx_users_username_normalized") {
+		if err := tx.Migrator().DropIndex(&User{}, "idx_users_username_normalized"); err != nil {
+			return err
+		}
+	}
+	return tx.Exec("CREATE UNIQUE INDEX idx_users_username_normalized ON users (username_normalized)").Error
 }

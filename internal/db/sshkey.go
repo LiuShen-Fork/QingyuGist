@@ -12,10 +12,10 @@ type SSHKey struct {
 	ID         uint `gorm:"primaryKey"`
 	Title      string
 	Content    string
-	SHA        string
+	SHA        string `gorm:"size:64"` // SHA-256 of the key, shown in the settings list
 	CreatedAt  int64
 	LastUsedAt int64
-	UserID     uint
+	UserID     uint `gorm:"index"`
 	User       User `validate:"-" `
 }
 

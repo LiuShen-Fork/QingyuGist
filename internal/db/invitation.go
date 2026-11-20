@@ -9,8 +9,8 @@ import (
 )
 
 type Invitation struct {
-	ID        uint `gorm:"primaryKey"`
-	Code      string
+	ID        uint   `gorm:"primaryKey"`
+	Code      string `gorm:"size:64;uniqueIndex"` // invitations are redeemed by code
 	ExpiresAt int64
 	NbUsed    uint
 	NbMax     uint

@@ -12,22 +12,28 @@ import (
 )
 
 type User struct {
-	ID                 uint   `gorm:"primaryKey"`
-	Username           string `gorm:"uniqueIndex,size:191"`
-	UsernameNormalized string `gorm:"index"`
+	ID uint `gorm:"primaryKey"`
+	// Usernames are looked up case-insensitively, so both the display name and
+	// the normalized copy are unique at the database level; the login and
+	// registration handlers also check first, this is what makes a race between
+	// two identical registrations impossible.
+	Username           string `gorm:"size:191;uniqueIndex"`
+	UsernameNormalized string `gorm:"size:191;uniqueIndex"`
 	Password           string
 	IsAdmin            bool
 	CreatedAt          int64
-	Email              string
+	Email              string `gorm:"size:191;index"`
 	MD5Hash            string // for gravatar, if no Email is specified, the value is random
 	AvatarURL          string // an absolute URL (from an OAuth provider) or a bare filename for a manually uploaded avatar stored under {home}/avatars/users
-	GithubID           string
-	GoogleID           string
-	GitlabID           string
-	GiteaID            string
-	OIDCID             string `gorm:"column:oidc_id"`
-	OAuth2ID           string `gorm:"column:oauth2_id"`
-	StylePreferences   string
+	// One column per provider: an account is bound to a single identity per
+	// provider, and the OAuth callback looks the account up by these columns.
+	GithubID         string `gorm:"size:191;index"`
+	GoogleID         string `gorm:"size:191;index"`
+	GitlabID         string `gorm:"size:191;index"`
+	GiteaID          string `gorm:"size:191;index"`
+	OIDCID           string `gorm:"column:oidc_id;size:191;index:idx_users_oidc_id"`
+	OAuth2ID         string `gorm:"column:oauth2_id;size:191;index:idx_users_oauth2_id"`
+	StylePreferences string
 
 	Gists               []Gist               `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID"`
 	SSHKeys             []SSHKey             `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID"`
@@ -76,19 +82,17 @@ func (user *User) BeforeDelete(tx *gorm.DB) error {
 		return err
 	}
 
-	err = tx.Where("user_id = ?", user.ID).Delete(&SSHKey{}).Error
-	if err != nil {
-		return err
-	}
-
-	err = tx.Where("user_id = ?", user.ID).Delete(&WebAuthnCredential{}).Error
-	if err != nil {
-		return err
-	}
-
-	err = tx.Where("user_id = ?", user.ID).Delete(&AccessToken{}).Error
-	if err != nil {
-		return err
+	// Rows that belong to the account but are not tied to it by a foreign key
+	// (or, on databases created before 1.1.0, by a cascading one) are removed
+	// explicitly so deleting an account cannot leave orphans behind or trip a
+	// foreign key error on the second factor.
+	for _, model := range []interface{}{
+		&SSHKey{}, &WebAuthnCredential{}, &AccessToken{}, &TOTP{},
+		&Activity{}, &Notification{}, &NotificationRead{},
+	} {
+		if err := tx.Where("user_id = ?", user.ID).Delete(model).Error; err != nil {
+			return err
+		}
 	}
 
 	err = tx.Session(&gorm.Session{NewDB: true, SkipHooks: true}).Where("user_id = ?", user.ID).Delete(&Gist{}).Error

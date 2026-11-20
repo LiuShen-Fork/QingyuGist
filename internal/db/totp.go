@@ -16,7 +16,7 @@ import (
 type TOTP struct {
 	ID            uint `gorm:"primaryKey"`
 	UserID        uint `gorm:"uniqueIndex"`
-	User          User
+	User          User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Secret        string
 	RecoveryCodes jsonData `gorm:"type:json"`
 	CreatedAt     int64
