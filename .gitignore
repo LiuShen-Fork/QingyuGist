@@ -23,3 +23,6 @@ vendor/
 # npm is the package manager; other lockfiles are noise
 bun.lock
 bun.lockb
+
+# Local tool artifacts
+paseo.json
